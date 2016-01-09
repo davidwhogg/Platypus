@@ -2,16 +2,21 @@ import numpy as np
 import scipy.optimize as op
 import scipy.stats as st
 import matplotlib.pyplot as plt
+import corner
 
 def penalty(vec):
-    return np.abs(np.dot(vec, vec) - 1.)
+    return (np.dot(vec, vec) - 1.) ** 2
 
 def scalars(vec, basis, data):
     return np.sum(data * np.dot(basis, vec)[None,:], axis=1)
 
-def objective(vec, basis, data):
+def obj_kurtosis(vec, basis, data):
     this = vec / np.sqrt(np.dot(vec, vec)) # TOTALLY UNNECESSARY
     return st.kurtosis(scalars(this, basis, data)) + penalty(vec)
+
+def obj_skew(vec, basis, data):
+    this = vec / np.sqrt(np.dot(vec, vec)) # TOTALLY UNNECESSARY
+    return st.skew(scalars(this, basis, data)) + penalty(vec)
 
 def orthogonalize(basis):
     basis[0] /= np.sqrt(np.dot(basis[0], basis[0]))
@@ -27,27 +32,46 @@ if __name__ == "__main__":
     data = np.vstack((feh,c,n,o,na,mg,al,s,v,mn,ni) ).T
     N, D = data.shape
 
+    # choose the objective
+    if True:
+        objective = obj_kurtosis
+        name = "kurtosis"
+    if False:
+        objective = obj_skew
+        name = "skew"
+
     # start the loop
     basis = np.eye(D)
-    for d in range(D):
+    for d in range(D-1):
 
         # initialize
         vec0 = np.zeros(D-d)
         vec0[0] = 1.
-        thisbasis = basis[d:].T
+        subbasis = basis[d:].T
 
         # optimize
         def cb(vec): print(vec, np.dot(vec, vec))
         cb(vec0)
-        vec1 = op.fmin_powell(objective, vec0, args=(thisbasis, data), callback=cb) 
+        vec1 = op.fmin_powell(objective, vec0, args=(subbasis, data), callback=cb) 
         cb(vec1)
 
         # plot
         plt.clf()
-        plt.hist(scalars(vec1, basis, data), bins=1000)
+        plt.hist(scalars(vec1, subbasis, data), bins=1000)
         plt.xlabel("optimized projection")
-        plt.savefig("kurtosis_{:02d}.png".format(d))
+        plt.savefig("{}_{:02d}.png".format(name, d))
     
         # orthogonalize
-        basis[0] = vec1
+        print("before orthogonalization", objective(vec1, subbasis, data))
+        basis[d] = np.dot(subbasis, vec1)
+        print(basis[d])
         orthogonalize(basis)
+        print(basis[d])
+        print("after orthogonalization", objective(basis[d], np.eye(D), data))
+
+    rotated_data = np.dot(data, basis.T)
+    figure = corner.corner(rotated_data)
+    figure.savefig("{}.png".format(name))
+    figure = corner.corner(data)
+    figure.savefig("unrotated.png")
+
