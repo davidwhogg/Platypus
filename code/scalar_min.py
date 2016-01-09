@@ -18,6 +18,10 @@ def obj_skew(vec, basis, data):
     this = vec / np.sqrt(np.dot(vec, vec)) # TOTALLY UNNECESSARY
     return st.skew(scalars(this, basis, data)) + penalty(vec)
 
+def obj_variance(vec, basis, data):
+    this = vec / np.sqrt(np.dot(vec, vec)) # MUST DO!
+    return -1. * np.var(scalars(this, basis, data)) + penalty(vec)
+
 def orthogonalize(basis):
     basis[0] /= np.sqrt(np.dot(basis[0], basis[0]))
     for i in range(1,D):
@@ -25,23 +29,11 @@ def orthogonalize(basis):
             basis[i] -= np.dot(basis[i], basis[j]) * basis[j]
         basis[i] /= np.sqrt(np.dot(basis[i], basis[i]))
 
-if __name__ == "__main__":
-    
-    filein2 = 'play_cnalmgnaosvmnni.txt'
-    t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = np.loadtxt(filein2, usecols = (0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack =1, dtype = float) 
-    data = np.vstack((feh,c,n,o,na,mg,al,s,v,mn,ni) ).T
+def main(data, objective, name):
     N, D = data.shape
-
-    # choose the objective
-    if True:
-        objective = obj_kurtosis
-        name = "kurtosis"
-    if False:
-        objective = obj_skew
-        name = "skew"
-
-    # start the loop
     basis = np.eye(D)
+    figure = corner.corner(data)
+    figure.savefig("unrotated.png")
     for d in range(D-1):
 
         # initialize
@@ -72,6 +64,16 @@ if __name__ == "__main__":
     rotated_data = np.dot(data, basis.T)
     figure = corner.corner(rotated_data)
     figure.savefig("{}.png".format(name))
-    figure = corner.corner(data)
-    figure.savefig("unrotated.png")
+
+if __name__ == "__main__":
+    
+    filein2 = 'play_cnalmgnaosvmnni.txt'
+    t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = np.loadtxt(filein2, usecols = (0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack =1, dtype = float) 
+    data = np.vstack((feh,c,n,o,na,mg,al,s,v,mn,ni) ).T
+
+    # choose the objective
+    for objective, name in [(obj_variance, "variance"),
+                            (obj_skew, "skew"),
+                            (obj_kurtosis, "kurtosis")]:
+        main(data, objective, name)
 
