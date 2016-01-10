@@ -1,3 +1,7 @@
+"""
+This project is part of the Platypus project.
+Copyright 2016 David W. Hogg (NYU).
+"""
 import numpy as np 
 import scipy.optimize as op
 import scipy.stats as st
