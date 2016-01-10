@@ -31,10 +31,11 @@ def orthogonalize(basis):
         basis[i] /= np.sqrt(np.dot(basis[i], basis[i]))
 
 def main(data, objective, name):
+    dir = "scalar_figs"
     N, D = data.shape
     basis = np.eye(D)
     figure = corner.corner(data)
-    figure.savefig("unrotated.png")
+    figure.savefig("{}/unrotated.png".format(dir))
     for d in range(D-1):
 
         # initialize
@@ -52,7 +53,7 @@ def main(data, objective, name):
         plt.clf()
         plt.hist(scalars(vec1, subbasis, data), bins=1000)
         plt.xlabel("optimized projection")
-        plt.savefig("{}_{:02d}.png".format(name, d))
+        plt.savefig("{}/{}_{:02d}.png".format(dir, name, d))
     
         # orthogonalize
         print("before orthogonalization", objective(vec1, subbasis, data))
@@ -64,7 +65,7 @@ def main(data, objective, name):
 
     rotated_data = np.dot(data, basis.T)
     figure = corner.corner(rotated_data)
-    figure.savefig("{}.png".format(name))
+    figure.savefig("{}/{}.png".format(dir, name))
 
 if __name__ == "__main__":
     
