@@ -23,6 +23,7 @@ def obj_variance(vec, basis, data):
     return -1. * np.var(scalars(this, basis, data)) + penalty(vec)
 
 def orthogonalize(basis):
+    D, DD = basis.shape
     basis[0] /= np.sqrt(np.dot(basis[0], basis[0]))
     for i in range(1,D):
         for j in range(i):
@@ -67,9 +68,10 @@ def main(data, objective, name):
 
 if __name__ == "__main__":
     
-    filein2 = 'play_cnalmgnaosvmnni.txt'
+    filein2 = 'play_cnalmgnaosvmnni.txt' # ouch, ascii
     t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = np.loadtxt(filein2, usecols = (0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack =1, dtype = float) 
     data = np.vstack((feh,c,n,o,na,mg,al,s,v,mn,ni) ).T
+    data = data[feh > -1.5] # according to MKN
 
     # choose the objective
     for objective, name in [(obj_variance, "variance"),
