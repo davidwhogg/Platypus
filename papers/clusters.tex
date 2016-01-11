@@ -3,13 +3,43 @@
 
 \documentclass[12pt, letterpaper, preprint]{aastex}
 
+\newcommand{\acronym}[1]{{\small{#1}}}
+\newcommand{\project}[1]{\textsl{#1}}
+\newcommand{\apogee}{\acronym{\project{APOGEE}}}
+\newcommand{\thecannon}{\project{The~Cannon}}
+
 \begin{document}
 
-\title{Identifying stellar clusters in chemical abundance space}
-\author{DWH, AC, MKN, HWR, others}
+\title{Identifying stellar clusters in chemical-abundance space}
+\author{DWH, MKN, AC, HWR, others}
 
 \begin{abstract}
-Hello World.
+% Context:
+There is a dusty, old, and un-realized idea (dubbed ``chemical tagging'')
+that every star ought to carry---%
+in its detailed chemical abundances---%
+an informative signature of its molecular-cloud birth location and time.
+This idea is pretty, but has never yielded scientific fruit.
+While astronomers have become more jaded, we have quietly been making
+spectroscopic measurements of chemical abundances far more precise with \thecannon\ 
+(now delivering 0.03-dex-level precision).
+% Aims:
+The chemical-tagging hypothesis is tested by looking at clusters in abundance space
+and confirming that they are clustered in phase space.
+% Methods:
+We identify (by eye) overdensities of stars observed by the \apogee\ spectroscopic survey
+in a 15-dimensional chemical-abundance space delivered by \thecannon,
+and plot their locations in phase-space.
+We use \emph{only} abundance-space information (no positional information) to identify stellar groups.
+We don't know full 6-d phase-space positions;
+we only have precise angular positions and radial velocities, and imprecise distances.
+% Results:
+We find that clusters in abundance space are indeed clusters in position space.
+This confirms the chemical-tagging hypothesis and
+verifies the precision of abundances delivered by \thecannon.
+This is the first-ever project to identify stellar clusters by blind search in abundance space.
 \end{abstract}
+
+Hello World!!
 
 \end{document}
