@@ -5,7 +5,6 @@ Copyright 2016 David W. Hogg (NYU).
 ## bugs:
 - does not create `dir`
 - needs a concept of a metric in the space (or a rescaling of the data)
-- does nothing
 """
 import numpy as np 
 import matplotlib.pyplot as plt
