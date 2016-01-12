@@ -3,14 +3,13 @@ This project is part of the Platypus project.
 Copyright 2016 David W. Hogg (NYU).
 
 ## bugs:
-- does not create `dir`
 - needs a concept of a metric in the space (or a rescaling of the data)
-- does nothing
 """
 import numpy as np 
 import sklearn.cluster as cl
 import corner
 import pickle as cp
+import os
 
 def pickle_to_file(fn, stuff):
     fd = open(fn, "wb")
@@ -18,40 +17,84 @@ def pickle_to_file(fn, stuff):
     print("writing", fn)
     fd.close()
 
+def read_pickle_file(fn):
+    fd = open(fn, "rb")
+    stuff = cp.load(fd)
+    fd.close()
+    return stuff
+
 if __name__ == "__main__":
-    dir = "kmeans_figs"
+    dir = "./kmeans_figs"
+    if not os.path.exists(dir):
+        os.mkdir(dir)
     suffix = "png"
+    data = None
+    metadata = None
     
-    print("reading data")
-    filein2 = 'data/play_cnalmgnaosvmnni.txt' # ouch, ascii
-    t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = np.loadtxt(filein2, usecols = (0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack =1, dtype = float) 
-    data = np.vstack(
-             ( feh,         c,           n,           o,           na,
-               mg,          al,          s,           v,           mn,          ni) ).T
-    labels = ["Fe",        "C",         "N",         "O",         "Na",
-              "Mg",        "Al",        "S",         "V",         "Mn",        "Ni"]
-    ranges = [(-1.5, 0.6), (-0.5, 0.6), (-0.7, 0.7), (-0.2, 0.5), (-2.0, 1.0),
-              (-0.2, 0.6), (-1.7, 0.8), (-0.2, 0.7), (-2.0, 0.9), (-2.0, 1.0), (-2.0, 0.7)]
-    data = data[feh > -1.5] # according to MKN, but I don't believe her
-    N, D = data.shape
-    print(data.shape)
-
     for K in 2 ** np.arange(3, 10):
-        print("running k-means at", K)
-        km = cl.KMeans(n_clusters=K, random_state=42, n_init=32)
-        clusters = km.fit_predict(data)
-        centers = km.cluster_centers_.copy()
-        print(centers.shape)
-
-        print("writing pickle")
         pfn = "kmeans_{:04d}.pkl".format(K)
-        pickle_to_file(pfn, (data, clusters, centers))
-        print(pfn)
+        try:
+            print("attempting to read pickle", pfn)
+            data, metadata, clusters, centers = read_pickle_file(pfn)
+            K, D = centers.shape
+            N, DD = data.shape
+            assert D == DD
+            NN = len(clusters)
+            assert N == NN
+            assert np.max(clusters) + 1 == K
+            print(N, K, D)
+
+        except:
+            print("failed to read pickle", pfn)
+
+            if (data is None) or (metadata is None):
+                print("reading data")
+                filein2 = 'data/play_cnalmgnaosvmnni.txt' # ouch, ascii
+                t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = \
+                    np.loadtxt(filein2, usecols=(0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack=1, dtype=float) 
+                data = np.vstack(
+                         ( feh,         c,           n,           o,           na,
+                           mg,          al,          s,           v,           mn,          ni) ).T
+                labels = ["Fe",        "C",         "N",         "O",         "Na",
+                          "Mg",        "Al",        "S",         "V",         "Mn",        "Ni"]
+                ranges = [(-1.5, 0.6), (-0.5, 0.6), (-0.7, 0.7), (-0.2, 0.5), (-2.0, 1.0),
+                          (-0.2, 0.6), (-1.7, 0.8), (-0.2, 0.7), (-2.0, 0.9), (-2.0, 1.0), (-2.0, 0.7)]
+                metadata = {"labels": labels, "ranges": ranges}
+                data = data[feh > -1.5] # according to MKN, but I don't believe her
+                print(data.shape)
+
+            print("running k-means at", K)
+            km = cl.KMeans(n_clusters=K, random_state=42, n_init=32)
+            clusters = km.fit_predict(data)
+            centers = km.cluster_centers_.copy()
+            print(centers.shape)
+
+            print("writing pickle")
+            pickle_to_file(pfn, (data, metadata, clusters, centers))
+            print(pfn)
+        
+        print("analyzing clusters")
+        N, D = data.shape
+        sizes = np.zeros(K).astype(int)
+        logdets = np.zeros(K)
+        for k in range(K):
+            I = (clusters == k)
+            sizes[k] = np.sum(I)
+            subdata = data[I]
+            if sizes[k] > (D + 1):
+                variance = np.sum(subdata[:,:,None] * subdata[:,None,:], axis=0)
+                s, logdets[k] = np.linalg.slogdet(variance)
+                assert s > 0
+            else:
+                logdets[k] = -np.Inf
+        densities = sizes * np.exp(-0.5 * logdets)
+        print(K, "size range:", np.min(sizes), np.median(sizes), np.max(sizes))
+        print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
+        print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
 
 if False:
     for k in range(-1,K):
-        print("plotting corner", k)
-        # corner.corner() order matters, apparently
+        print("plotting cluster", k)
         if k < 0:
             subdata = data
             fn = "{}/data.{}".format(dir, suffix)
