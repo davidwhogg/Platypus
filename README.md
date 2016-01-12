@@ -12,3 +12,4 @@ See the file `LICENSE` for more details.
 ## Projects
 - rotating rectangular data into interesting orthonormal coordinate systems
 - finding clusters with friends-of-friends
+- finding clusters with k-means
