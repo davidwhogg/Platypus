@@ -25,28 +25,32 @@ if __name__ == "__main__":
     print("reading data")
     filein2 = 'data/play_cnalmgnaosvmnni.txt' # ouch, ascii
     t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = np.loadtxt(filein2, usecols = (0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack =1, dtype = float) 
-    data = np.vstack((feh,c,n,o,na,mg,al,s,v,mn,ni) ).T
+    data = np.vstack(
+             ( feh,         c,           n,           o,           na,
+               mg,          al,          s,           v,           mn,          ni) ).T
+    labels = ["Fe",        "C",         "N",         "O",         "Na",
+              "Mg",        "Al",        "S",         "V",         "Mn",        "Ni"]
+    ranges = [(-1.5, 0.5), (-0.6, 0.6), (-0.6, 0.6), (-0.3, 0.5), (-1.5, 1.0),
+              (-0.2, 0.6), (-1.5, 0.7), (-0.2, 0.6), (-1.5, 0.8), (-1.5, 1.0), (-1.5, 0.6)]
     data = data[feh > -1.5] # according to MKN, but I don't believe her
     N, D = data.shape
-    print(data, data.shape)
-
-    if False:
-        print("plotting corner")
-        figure = corner.corner(data, color="0.5")
-        fn = "{}/data.{}".format(dir, suffix)
-        figure.savefig(fn)
-        print(fn)
+    print(data.shape)
 
     print("running k-means")
-    km = cl.KMeans()
-    labels = km.fit_predict(data)
+    km = cl.KMeans(n_clusters=16, random_state=42, n_init=1)
+    clusters = km.fit_predict(data)
     centers = km.cluster_centers_.copy()
     print(labels)
     print(centers)
+    print(centers.shape)
 
-    if False:
-        print("overplotting corner")
-        corner.corner(centers, color="r", fig=figure)
+    if True:
+        print("plotting corner")
+        # corner.corner() order matters, apparently
+        figure = corner.corner(data, range=ranges, labels=labels, color="b",
+                               bins=128, plot_datapoints=True, plot_density=True, plot_contours=True)
+        corner.corner(centers, range=ranges, color="r", fig=figure,
+                      plot_datapoints=True, plot_density=False, plot_contours=False)
         fn = "{}/centers.{}".format(dir, suffix)
         figure.savefig(fn)
         print(fn)
