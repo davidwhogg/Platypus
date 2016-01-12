@@ -5,11 +5,12 @@ Copyright 2016 David W. Hogg (NYU).
 ## bugs:
 - needs a concept of a metric in the space (or a rescaling of the data)
 """
+import os
+import pickle as cp
 import numpy as np 
 import sklearn.cluster as cl
-import corner
-import pickle as cp
-import os
+from astropy.io import fits
+from corner import corner
 
 def pickle_to_file(fn, stuff):
     fd = open(fn, "wb")
@@ -32,7 +33,7 @@ if __name__ == "__main__":
     metadata = None
     
     for K in 2 ** np.arange(3, 10):
-        pfn = "kmeans_{:04d}.pkl".format(K)
+        pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
             data, metadata, clusters, centers = read_pickle_file(pfn)
@@ -49,6 +50,45 @@ if __name__ == "__main__":
 
             if (data is None) or (metadata is None):
                 print("reading data")
+                dfn = "data/results-unregularized-matched.fits.gz"
+                hdulist = fits.open(dfn)
+                hdu = hdulist[1]
+                cols = hdu.columns
+                table = hdu.data
+                okay = ((table.field("TEFF_ASPCAP") > 3500.) *
+                        (table.field("TEFF_ASPCAP") < 5500.) *
+                        (table.field("LOGG_ASPCAP") > 0.) *
+                        (table.field("LOGG_ASPCAP") < 3.5))
+                table = table[okay]
+                metadata_labels = ["RA", "DEC", "TEFF_ASPCAP", "LOGG_ASPCAP"]
+                metadata = np.vstack((table.field(label) for label in metadata_labels)).T
+                okay = np.all(np.isfinite(metadata), axis=1)
+                table = table[okay]
+                metadata = metadata[okay]
+                data_labels = ["AL_H", "CA_H", "C_H", "FE_H", "K_H", "MG_H", "MN_H", "NA_H",
+                               "NI_H", "N_H", "O_H", "SI_H", "S_H", "TI_H", "V_H"]
+                data = np.vstack((table.field(label) for label in data_labels)).T
+                okay = np.all(np.isfinite(data), axis=1)
+                table = table[okay]
+                metadata = metadata[okay]
+                data = data[okay]
+                print(dfn, metadata.shape, data.shape)
+
+                print("plotting metadata")
+                cfn = "{}/metadata.{}".format(dir, suffix)
+                figure = corner(metadata, labels=metadata_labels, bins=128)
+                figure.savefig(cfn)
+                print(cfn)
+
+                print("plotting data")
+                cfn = "{}/data.{}".format(dir, suffix)
+                figure = corner(data, labels=data_labels, bins=128)
+                figure.savefig(cfn)
+                print(cfn)
+
+                assert False
+
+            if False:
                 filein2 = 'data/play_cnalmgnaosvmnni.txt' # ouch, ascii
                 t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = \
                     np.loadtxt(filein2, usecols=(0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack=1, dtype=float) 
@@ -104,7 +144,7 @@ if False:
         print(subdata.shape)
         N, D = subdata.shape
         if N > D:
-            figure = corner.corner(subdata, range=ranges, labels=labels, color="k",
-                                   bins=128, plot_datapoints=True, plot_density=True, plot_contours=True)
+            figure = corner(subdata, range=ranges, labels=labels, color="k",
+                            bins=128, plot_datapoints=True, plot_density=True, plot_contours=True)
             figure.savefig(fn)
             print(fn)
