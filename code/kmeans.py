@@ -36,13 +36,20 @@ if __name__ == "__main__":
     N, D = data.shape
     print(data.shape)
 
-    print("running k-means")
-    K = 256
-    km = cl.KMeans(n_clusters=K, random_state=42, n_init=32)
-    clusters = km.fit_predict(data)
-    centers = km.cluster_centers_.copy()
-    print(centers.shape)
+    for K in [128, 256, 512]:
+        print("running k-means")
+        K = 512
+        km = cl.KMeans(n_clusters=K, random_state=42, n_init=32)
+        clusters = km.fit_predict(data)
+        centers = km.cluster_centers_.copy()
+        print(centers.shape)
 
+        print("writing pickle")
+        pfn = "kmeans_{:04d}.pkl".format(K)
+        pickle_to_file(pfn, (data, clusters, centers))
+        print(pfn)
+
+if False:
     for k in range(-1,K):
         print("plotting corner", k)
         # corner.corner() order matters, apparently
