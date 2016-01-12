@@ -36,9 +36,8 @@ if __name__ == "__main__":
     N, D = data.shape
     print(data.shape)
 
-    for K in [128, 256, 512]:
-        print("running k-means")
-        K = 512
+    for K in 2 ** np.arange(3, 10):
+        print("running k-means at", K)
         km = cl.KMeans(n_clusters=K, random_state=42, n_init=32)
         clusters = km.fit_predict(data)
         centers = km.cluster_centers_.copy()
