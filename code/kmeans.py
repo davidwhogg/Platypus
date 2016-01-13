@@ -3,7 +3,8 @@ This project is part of the Platypus project.
 Copyright 2016 David W. Hogg (NYU).
 
 ## bugs:
-- needs a concept of a metric in the space (or a rescaling of the data)
+- need to set ranges on corner
+- needs better labels on corner
 """
 import os
 import pickle as cp
@@ -31,12 +32,48 @@ if __name__ == "__main__":
     suffix = "png"
     data = None
     metadata = None
-    
+
+    scale_dict = {"FE_H": 0.0191707168068,
+                  "AL_H": 0.0549037045265, # all from AC
+                  "CA_H": 0.0426365845422,
+                  "C_H": 0.0405909985963,
+                  "K_H": 0.0680897262727,
+                  "MG_H": 0.0324021951804,
+                  "MN_H": 0.0410348634747,
+                  "NA_H": 0.111044350016,
+                  "NI_H": 0.03438986215,
+                  "N_H": 0.0440559383568,
+                  "O_H": 0.037015877736,
+                  "SI_H": 0.0407894206516,
+                  "S_H": 0.0543424861906,
+                  "TI_H": 0.0718311106542,
+                  "V_H": 0.146438163035, }
+
+    range_dict = {"FE_H": (-1.9, 0.6),
+                  "AL_H - FE_H": (-0.6, 0.7),
+                  "CA_H - FE_H": (-0.4, 0.4),
+                  "C_H - FE_H": (-0.6, 0.7),
+                  "K_H - FE_H": (-0.9, 0.5),
+                  "MG_H - FE_H": (-0.25, 0.5),
+                  "MN_H - FE_H": (-0.4, 0.5),
+                  "NA_H - FE_H": (-1.4, 1.2),
+                  "NI_H - FE_H": (-0.4, 0.3),
+                  "N_H - FE_H": (-0.6, 0.9),
+                  "O_H - FE_H": (-0.25, 0.5),
+                  "SI_H - FE_H": (-0.25, 0.6),
+                  "S_H - FE_H": (-0.4, 0.9),
+                  "TI_H - FE_H": (-0.6, 0.5),
+                  "V_H - FE_H": (-0.9, 0.8),
+                  "RA": (0., 360.),
+                  "DEC": (-35., 90.),
+                  "TEFF_ASPCAP": (3500., 5500.),
+                  "LOGG_ASPCAP": (0., 3.9), }
+
     for K in 2 ** np.arange(3, 10):
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
-            data, metadata, clusters, centers = read_pickle_file(pfn)
+            data, data_labels, metadata, metadata_labels, clusters, centers = read_pickle_file(pfn)
             K, D = centers.shape
             N, DD = data.shape
             assert D == DD
@@ -58,59 +95,34 @@ if __name__ == "__main__":
                 okay = ((table.field("TEFF_ASPCAP") > 3500.) *
                         (table.field("TEFF_ASPCAP") < 5500.) *
                         (table.field("LOGG_ASPCAP") > 0.) *
-                        (table.field("LOGG_ASPCAP") < 3.5))
+                        (table.field("LOGG_ASPCAP") < 3.9)) # MKN recommendation
                 table = table[okay]
                 metadata_labels = ["RA", "DEC", "TEFF_ASPCAP", "LOGG_ASPCAP"]
                 metadata = np.vstack((table.field(label) for label in metadata_labels)).T
                 okay = np.all(np.isfinite(metadata), axis=1)
                 table = table[okay]
                 metadata = metadata[okay]
-                data_labels = ["AL_H", "CA_H", "C_H", "FE_H", "K_H", "MG_H", "MN_H", "NA_H",
-                               "NI_H", "N_H", "O_H", "SI_H", "S_H", "TI_H", "V_H"]
+                data_labels = ["FE_H",
+                               "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
+                               "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
                 data = np.vstack((table.field(label) for label in data_labels)).T
                 okay = np.all(np.isfinite(data), axis=1)
                 table = table[okay]
                 metadata = metadata[okay]
                 data = data[okay]
+                N, D = data.shape
                 print(dfn, metadata.shape, data.shape)
 
-                print("plotting metadata")
-                cfn = "{}/metadata.{}".format(dir, suffix)
-                figure = corner(metadata, labels=metadata_labels, bins=128)
-                figure.savefig(cfn)
-                print(cfn)
-
-                print("plotting data")
-                cfn = "{}/data.{}".format(dir, suffix)
-                figure = corner(data, labels=data_labels, bins=128)
-                figure.savefig(cfn)
-                print(cfn)
-
-                assert False
-
-            if False:
-                filein2 = 'data/play_cnalmgnaosvmnni.txt' # ouch, ascii
-                t,g,feh,alpha,c,n,o,na,mg,al,s,v,mn,ni = \
-                    np.loadtxt(filein2, usecols=(0,1,2,3,4,5,6,7,8,9,10,11,12,13), unpack=1, dtype=float) 
-                data = np.vstack(
-                         ( feh,         c,           n,           o,           na,
-                           mg,          al,          s,           v,           mn,          ni) ).T
-                labels = ["Fe",        "C",         "N",         "O",         "Na",
-                          "Mg",        "Al",        "S",         "V",         "Mn",        "Ni"]
-                ranges = [(-1.5, 0.6), (-0.5, 0.6), (-0.7, 0.7), (-0.2, 0.5), (-2.0, 1.0),
-                          (-0.2, 0.6), (-1.7, 0.8), (-0.2, 0.7), (-2.0, 0.9), (-2.0, 1.0), (-2.0, 0.7)]
-                metadata = {"labels": labels, "ranges": ranges}
-                data = data[feh > -1.5] # according to MKN, but I don't believe her
-                print(data.shape)
-
+            # note the HORRIBLE metric (non-affine) hack here
             print("running k-means at", K)
             km = cl.KMeans(n_clusters=K, random_state=42, n_init=32)
-            clusters = km.fit_predict(data)
+            scales = np.array([scale_dict[label] for label in data_labels])
+            clusters = km.fit_predict(data / scales[None, :]) # work with scaled data!
             centers = km.cluster_centers_.copy()
             print(centers.shape)
 
             print("writing pickle")
-            pickle_to_file(pfn, (data, metadata, clusters, centers))
+            pickle_to_file(pfn, (data, data_labels, metadata, metadata_labels, clusters, centers))
             print(pfn)
         
         print("analyzing clusters")
@@ -132,19 +144,48 @@ if __name__ == "__main__":
         print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
 
-if False:
-    for k in range(-1,K):
-        print("plotting cluster", k)
-        if k < 0:
-            subdata = data
-            fn = "{}/data.{}".format(dir, suffix)
-        else:
-            subdata = data[clusters == k]
-            fn = "{}/cluster_{:04d}.{}".format(dir, k, suffix)
+
+    # make plotting data
+    plotdata = data.copy()
+    plotdata_labels = data_labels.copy()
+    for d in range(1, D):
+        plotdata[:,d] = data[:,d] - data[:,0]
+        plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
+    plotdata_ranges = [range_dict[label] for label in plotdata_labels]
+    metadata_ranges = [range_dict[label] for label in metadata_labels]
+
+    # plot clusters from the last K run
+    plotcount = 0
+    for k in (np.argsort(densities))[::-1]:
+        print("considering cluster", k)
+        subdata = plotdata[clusters == k]
+        submetadata = metadata[clusters == k]
         print(subdata.shape)
         N, D = subdata.shape
         if N > D:
-            figure = corner(subdata, range=ranges, labels=labels, color="k",
-                            bins=128, plot_datapoints=True, plot_density=True, plot_contours=True)
-            figure.savefig(fn)
-            print(fn)
+            clustername = "cluster_{:04d}_{:04d}".format(K, k)
+            cfn = "{}/{}_data.{}".format(dir, clustername, suffix)
+            figure = corner(subdata, labels=plotdata_labels, range=plotdata_ranges, bins=128)
+            figure.savefig(cfn)
+            print(cfn)
+            cfn = "{}/{}_metadata.{}".format(dir, clustername, suffix)
+            figure = corner(submetadata, labels=metadata_labels, range=metadata_ranges, bins=128)
+            figure.savefig(cfn)
+            print(cfn)
+            plotcount += 1
+            if plotcount == 16:
+                break
+
+    # plot all metadata
+    print("plotting all metadata")
+    cfn = "{}/metadata.{}".format(dir, suffix)
+    figure = corner(metadata, labels=metadata_labels, range=metadata_ranges, bins=128)
+    figure.savefig(cfn)
+    print(cfn)
+
+    # plot all data
+    print("plotting all data")
+    cfn = "{}/data.{}".format(dir, suffix)
+    figure = corner(plotdata, labels=plotdata_labels, range=plotdata_ranges, bins=128)
+    figure.savefig(cfn)
+    print(cfn)
