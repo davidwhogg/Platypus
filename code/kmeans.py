@@ -24,6 +24,36 @@ def read_pickle_file(fn):
     fd.close()
     return stuff
 
+def get_data(fn, labels):
+    print("get_data(): reading table")
+    hdulist = fits.open(fn)
+    hdu = hdulist[1]
+    cols = hdu.columns
+    table = hdu.data
+    mask = ((table.field("TEFF_ASPCAP") > 3500.) *
+            (table.field("TEFF_ASPCAP") < 5500.) *
+            (table.field("LOGG_ASPCAP") > 0.) *
+            (table.field("LOGG_ASPCAP") < 3.9)) # MKN recommendation
+    metadata_labels = ["RA", "DEC", "TEFF_ASPCAP", "LOGG_ASPCAP"]
+    metadata = np.vstack((table.field(label) for label in metadata_labels)).T
+    mask *= np.all(np.isfinite(metadata), axis=1)
+    data = np.vstack((table.field(label) for label in labels)).T
+    mask *= np.all(np.isfinite(data), axis=1)
+    data = data[mask]
+    print("get_data()", dfn, data.shape)
+    return data, mask
+
+def get_metadata(fn, labels, mask):
+    print("get_metadata(): reading table")
+    hdulist = fits.open(fn)
+    hdu = hdulist[1]
+    cols = hdu.columns
+    table = hdu.data
+    metadata = np.vstack((table.field(label) for label in labels)).T
+    metadata = metadata[mask]
+    print("get_metadata()", dfn, metadata.shape)
+    return metadata
+
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
     dir = "./kmeans_figs"
@@ -31,7 +61,6 @@ if __name__ == "__main__":
         os.mkdir(dir)
     suffix = "png"
     data = None
-    metadata = None
 
     scale_dict = {"FE_H": 0.0191707168068, # all from AC
                   "AL_H": 0.0549037045265,
@@ -89,15 +118,20 @@ if __name__ == "__main__":
                   "TEFF_ASPCAP": "ASPCAP $T_\mathrm{eff}$ (K)",
                   "LOGG_ASPCAP": "ASPCAP log$g$ (dex)", }
 
-    for K in 2 ** np.arange(3, 10):
+    data_labels = ["FE_H",
+                   "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
+                   "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
+
+    for K in 2 ** np.arange(3, 6):
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
             data, data_labels, mask, clusters, centers = read_pickle_file(pfn)
+            print(data.shape, len(mask), np.sum(mask), len(clusters), centers.shape)
             K, D = centers.shape
             N, DD = data.shape
             assert D == DD
-            assert D == np.sum(mask)
+            assert N == np.sum(mask)
             NN = len(clusters)
             assert N == NN
             assert np.max(clusters) + 1 == K
@@ -105,30 +139,7 @@ if __name__ == "__main__":
 
         except:
             print("failed to read pickle", pfn)
-
-            if (data is None):
-                print("reading data")
-                hdulist = fits.open(dfn)
-                hdu = hdulist[1]
-                cols = hdu.columns
-                table = hdu.data
-                mask = ((table.field("TEFF_ASPCAP") > 3500.) *
-                        (table.field("TEFF_ASPCAP") < 5500.) *
-                        (table.field("LOGG_ASPCAP") > 0.) *
-                        (table.field("LOGG_ASPCAP") < 3.9)) # MKN recommendation
-                metadata_labels = ["RA", "DEC", "TEFF_ASPCAP", "LOGG_ASPCAP"]
-                metadata = np.vstack((table.field(label) for label in metadata_labels)).T
-                mask *= np.all(np.isfinite(metadata), axis=1)
-                data_labels = ["FE_H",
-                               "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
-                               "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
-                data = np.vstack((table.field(label) for label in data_labels)).T
-                mask *= np.all(np.isfinite(data), axis=1)
-                print(len(mask), np.sum(mask), data.shape, mask)
-                table = table[mask]
-                data = data[mask]
-                N, D = data.shape
-                print(dfn, data.shape)
+            data, mask = get_data(dfn, data_labels)
 
             # note the HORRIBLE metric (non-affine) hack here
             print("running k-means at", K)
@@ -170,6 +181,9 @@ if __name__ == "__main__":
         plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
     plotdata_ranges = [range_dict[label] for label in plotdata_labels]
     plotdata_plotlabels = [label_dict[label] for label in plotdata_labels]
+
+    metadata_labels = ["RA", "DEC", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
+    metadata = get_metadata(dfn, metadata_labels, mask)
     metadata_ranges = [range_dict[label] for label in metadata_labels]
     metadata_plotlabels = [label_dict[label] for label in metadata_labels]
 
