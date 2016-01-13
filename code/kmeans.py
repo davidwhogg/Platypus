@@ -58,9 +58,9 @@ def plot_one_cluster(data, labels, mask, name, dir):
     print("plot_one_cluster(): plotting", name)
     suffix = "png"
     for ly, lx, plotname in [
-        ("O_H - FE_H", "NA_H - FE_H", "ONa"),
+        ("Na_H - FE_H", "O_H - FE_H", "NaO"),
         ("C_H - FE_H", "N_H - FE_H", "CN"),
-        ("MG_H - FE_H", "AL_H - FE_H", "MgAl"),
+        ("AL_H - FE_H", "MG_H - FE_H", "AlMg"),
         ("S_H - FE_H", "AL_H - FE_H", "SAl"),
         ("DEC", "RA", "sky"),
         ("DEC", "VHELIO_AVG", "decv"),
