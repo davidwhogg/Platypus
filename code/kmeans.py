@@ -3,7 +3,6 @@ This project is part of the Platypus project.
 Copyright 2016 David W. Hogg (NYU).
 
 ## bugs:
-- need to set ranges on corner
 - needs better labels on corner
 """
 import os
@@ -26,6 +25,7 @@ def read_pickle_file(fn):
     return stuff
 
 if __name__ == "__main__":
+    dfn = "./data/results-unregularized-matched.fits.gz"
     dir = "./kmeans_figs"
     if not os.path.exists(dir):
         os.mkdir(dir)
@@ -33,8 +33,8 @@ if __name__ == "__main__":
     data = None
     metadata = None
 
-    scale_dict = {"FE_H": 0.0191707168068,
-                  "AL_H": 0.0549037045265, # all from AC
+    scale_dict = {"FE_H": 0.0191707168068, # all from AC
+                  "AL_H": 0.0549037045265,
                   "CA_H": 0.0426365845422,
                   "C_H": 0.0405909985963,
                   "K_H": 0.0680897262727,
@@ -69,14 +69,35 @@ if __name__ == "__main__":
                   "TEFF_ASPCAP": (3500., 5500.),
                   "LOGG_ASPCAP": (0., 3.9), }
 
+    label_dict = {"FE_H": "[Fe/H] (dex)",
+                  "AL_H - FE_H": "[Al/Fe] (dex)",
+                  "CA_H - FE_H": "[Ca/Fe] (dex)",
+                  "C_H - FE_H":  "[C/Fe] (dex)",
+                  "K_H - FE_H":  "[K/Fe] (dex)",
+                  "MG_H - FE_H": "[Mg/Fe] (dex)",
+                  "MN_H - FE_H": "[Mn/Fe] (dex)",
+                  "NA_H - FE_H": "[Na/Fe] (dex)",
+                  "NI_H - FE_H": "[Ni/Fe] (dex)",
+                  "N_H - FE_H":  "[N/Fe] (dex)",
+                  "O_H - FE_H":  "[O/Fe] (dex)",
+                  "SI_H - FE_H": "[Si/Fe] (dex)",
+                  "S_H - FE_H":  "[S/Fe] (dex)",
+                  "TI_H - FE_H": "[Ti/Fe] (dex)",
+                  "V_H - FE_H":  "[V/Fe] (dex)",
+                  "RA":          "RA (J2000 deg)",
+                  "DEC":         "Dec (J2000 deg)",
+                  "TEFF_ASPCAP": "ASPCAP $T_\mathrm{eff}$ (K)",
+                  "LOGG_ASPCAP": "ASPCAP log$g$ (dex)", }
+
     for K in 2 ** np.arange(3, 10):
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
-            data, data_labels, metadata, metadata_labels, clusters, centers = read_pickle_file(pfn)
+            data, data_labels, mask, clusters, centers = read_pickle_file(pfn)
             K, D = centers.shape
             N, DD = data.shape
             assert D == DD
+            assert D == np.sum(mask)
             NN = len(clusters)
             assert N == NN
             assert np.max(clusters) + 1 == K
@@ -85,33 +106,29 @@ if __name__ == "__main__":
         except:
             print("failed to read pickle", pfn)
 
-            if (data is None) or (metadata is None):
+            if (data is None):
                 print("reading data")
-                dfn = "data/results-unregularized-matched.fits.gz"
                 hdulist = fits.open(dfn)
                 hdu = hdulist[1]
                 cols = hdu.columns
                 table = hdu.data
-                okay = ((table.field("TEFF_ASPCAP") > 3500.) *
+                mask = ((table.field("TEFF_ASPCAP") > 3500.) *
                         (table.field("TEFF_ASPCAP") < 5500.) *
                         (table.field("LOGG_ASPCAP") > 0.) *
                         (table.field("LOGG_ASPCAP") < 3.9)) # MKN recommendation
-                table = table[okay]
                 metadata_labels = ["RA", "DEC", "TEFF_ASPCAP", "LOGG_ASPCAP"]
                 metadata = np.vstack((table.field(label) for label in metadata_labels)).T
-                okay = np.all(np.isfinite(metadata), axis=1)
-                table = table[okay]
-                metadata = metadata[okay]
+                mask *= np.all(np.isfinite(metadata), axis=1)
                 data_labels = ["FE_H",
                                "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                                "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
                 data = np.vstack((table.field(label) for label in data_labels)).T
-                okay = np.all(np.isfinite(data), axis=1)
-                table = table[okay]
-                metadata = metadata[okay]
-                data = data[okay]
+                mask *= np.all(np.isfinite(data), axis=1)
+                print(len(mask), np.sum(mask), data.shape, mask)
+                table = table[mask]
+                data = data[mask]
                 N, D = data.shape
-                print(dfn, metadata.shape, data.shape)
+                print(dfn, data.shape)
 
             # note the HORRIBLE metric (non-affine) hack here
             print("running k-means at", K)
@@ -122,7 +139,7 @@ if __name__ == "__main__":
             print(centers.shape)
 
             print("writing pickle")
-            pickle_to_file(pfn, (data, data_labels, metadata, metadata_labels, clusters, centers))
+            pickle_to_file(pfn, (data, data_labels, mask, clusters, centers))
             print(pfn)
         
         print("analyzing clusters")
@@ -152,7 +169,9 @@ if __name__ == "__main__":
         plotdata[:,d] = data[:,d] - data[:,0]
         plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
     plotdata_ranges = [range_dict[label] for label in plotdata_labels]
+    plotdata_plotlabels = [label_dict[label] for label in plotdata_labels]
     metadata_ranges = [range_dict[label] for label in metadata_labels]
+    metadata_plotlabels = [label_dict[label] for label in metadata_labels]
 
     # plot clusters from the last K run
     plotcount = 0
@@ -165,11 +184,11 @@ if __name__ == "__main__":
         if N > D:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
             cfn = "{}/{}_data.{}".format(dir, clustername, suffix)
-            figure = corner(subdata, labels=plotdata_labels, range=plotdata_ranges, bins=128)
+            figure = corner(subdata, labels=plotdata_plotlabels, range=plotdata_ranges, bins=128)
             figure.savefig(cfn)
             print(cfn)
             cfn = "{}/{}_metadata.{}".format(dir, clustername, suffix)
-            figure = corner(submetadata, labels=metadata_labels, range=metadata_ranges, bins=128)
+            figure = corner(submetadata, labels=metadata_plotlabels, range=metadata_ranges, bins=128)
             figure.savefig(cfn)
             print(cfn)
             plotcount += 1
@@ -179,13 +198,13 @@ if __name__ == "__main__":
     # plot all metadata
     print("plotting all metadata")
     cfn = "{}/metadata.{}".format(dir, suffix)
-    figure = corner(metadata, labels=metadata_labels, range=metadata_ranges, bins=128)
+    figure = corner(metadata, labels=metadata_plotlabels, range=metadata_ranges, bins=128)
     figure.savefig(cfn)
     print(cfn)
 
     # plot all data
     print("plotting all data")
     cfn = "{}/data.{}".format(dir, suffix)
-    figure = corner(plotdata, labels=plotdata_labels, range=plotdata_ranges, bins=128)
+    figure = corner(plotdata, labels=plotdata_plotlabels, range=plotdata_ranges, bins=128)
     figure.savefig(cfn)
     print(cfn)
