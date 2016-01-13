@@ -10,7 +10,7 @@ import pickle as cp
 import numpy as np 
 import sklearn.cluster as cl
 from astropy.io import fits
-from corner import corner
+import pylab as plt
 
 def pickle_to_file(fn, stuff):
     fd = open(fn, "wb")
@@ -54,6 +54,39 @@ def get_metadata(fn, labels, mask):
     print("get_metadata()", dfn, metadata.shape)
     return metadata
 
+def plot_one_cluster(data, labels, mask, name, dir):
+    print("plot_one_cluster(): plotting", name)
+    suffix = "png"
+    for ly, lx, plotname in [
+        ("O_H - FE_H", "NA_H - FE_H", "ONa"),
+        ("C_H - FE_H", "N_H - FE_H", "CN"),
+        ("MG_H - FE_H", "AL_H - FE_H", "MgAl"),
+        ("S_H - FE_H", "AL_H - FE_H", "SAl"),
+        ("DEC", "RA", "sky"),
+        ("DEC", "VHELIO_AVG", "decv"),
+        ("LOGG_ASPCAP", "TEFF_ASPCAP", "HR"),
+        ]:
+        y = np.where(np.array(labels) == ly)[0][0]
+        x = np.where(np.array(labels) == lx)[0][0]
+        plt.figure(figsize=(4,4))
+        plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
+        plt.clf()
+        kwargs = {"marker": ".", "ls": "none"}
+        if mask is None:
+            plt.plot(data[:,x], data[:,y], c="k", ms=1.0, alpha=0.20, **kwargs)
+        else:        
+            plt.plot(data[:,x], data[:,y], c="0.75", ms=1.0, alpha=0.20, **kwargs)
+            plt.plot(data[mask,x], data[mask,y], c="k", ms=5.0, alpha=0.5, **kwargs)
+        plt.ylim(range_dict[ly])
+        plt.xlim(range_dict[lx])
+        plt.ylabel(label_dict[ly])
+        plt.xlabel(label_dict[lx])
+        [l.set_rotation(45) for l in plt.gca().get_xticklabels()]
+        [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
+        fn = "{}/{}_{}.{}".format(dir, name, plotname, suffix)
+        plt.savefig(fn)
+        print("plot_one_cluster(): plotting", fn)
+
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
     dir = "./kmeans_figs"
@@ -93,10 +126,11 @@ if __name__ == "__main__":
                   "S_H - FE_H": (-0.4, 0.9),
                   "TI_H - FE_H": (-0.6, 0.5),
                   "V_H - FE_H": (-0.9, 0.8),
-                  "RA": (0., 360.),
+                  "RA": (360., 0.),
                   "DEC": (-35., 90.),
-                  "TEFF_ASPCAP": (3500., 5500.),
-                  "LOGG_ASPCAP": (0., 3.9), }
+                  "VHELIO_AVG": (-275., 275.),
+                  "TEFF_ASPCAP": (5500., 3500.),
+                  "LOGG_ASPCAP": (3.9, 0.0), }
 
     label_dict = {"FE_H": "[Fe/H] (dex)",
                   "AL_H - FE_H": "[Al/Fe] (dex)",
@@ -115,14 +149,15 @@ if __name__ == "__main__":
                   "V_H - FE_H":  "[V/Fe] (dex)",
                   "RA":          "RA (J2000 deg)",
                   "DEC":         "Dec (J2000 deg)",
-                  "TEFF_ASPCAP": "ASPCAP $T_\mathrm{eff}$ (K)",
-                  "LOGG_ASPCAP": "ASPCAP log$g$ (dex)", }
+                  "VHELIO_AVG":  "heliocentric RV (km/s)",
+                  "TEFF_ASPCAP": "ASPCAP Teff (K)",
+                  "LOGG_ASPCAP": "ASPCAP log g (dex)", }
 
     data_labels = ["FE_H",
                    "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                    "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
 
-    for K in 2 ** np.arange(3, 6):
+    for K in 2 ** np.arange(3, 9):
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
@@ -172,53 +207,22 @@ if __name__ == "__main__":
         print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
 
-
     # make plotting data
     plotdata = data.copy()
     plotdata_labels = data_labels.copy()
     for d in range(1, D):
         plotdata[:,d] = data[:,d] - data[:,0]
         plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
-    plotdata_ranges = [range_dict[label] for label in plotdata_labels]
-    plotdata_plotlabels = [label_dict[label] for label in plotdata_labels]
-
     metadata_labels = ["RA", "DEC", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
     metadata = get_metadata(dfn, metadata_labels, mask)
-    metadata_ranges = [range_dict[label] for label in metadata_labels]
-    metadata_plotlabels = [label_dict[label] for label in metadata_labels]
+    plotdata = np.hstack((plotdata, metadata))
+    plotdata_labels = plotdata_labels + metadata_labels
 
     # plot clusters from the last K run
     plotcount = 0
     for k in (np.argsort(densities))[::-1]:
-        print("considering cluster", k)
-        subdata = plotdata[clusters == k]
-        submetadata = metadata[clusters == k]
-        print(subdata.shape)
-        N, D = subdata.shape
-        if N > D:
-            clustername = "cluster_{:04d}_{:04d}".format(K, k)
-            cfn = "{}/{}_data.{}".format(dir, clustername, suffix)
-            figure = corner(subdata, labels=plotdata_plotlabels, range=plotdata_ranges, bins=128)
-            figure.savefig(cfn)
-            print(cfn)
-            cfn = "{}/{}_metadata.{}".format(dir, clustername, suffix)
-            figure = corner(submetadata, labels=metadata_plotlabels, range=metadata_ranges, bins=128)
-            figure.savefig(cfn)
-            print(cfn)
-            plotcount += 1
-            if plotcount == 16:
-                break
-
-    # plot all metadata
-    print("plotting all metadata")
-    cfn = "{}/metadata.{}".format(dir, suffix)
-    figure = corner(metadata, labels=metadata_plotlabels, range=metadata_ranges, bins=128)
-    figure.savefig(cfn)
-    print(cfn)
-
-    # plot all data
-    print("plotting all data")
-    cfn = "{}/data.{}".format(dir, suffix)
-    figure = corner(plotdata, labels=plotdata_plotlabels, range=plotdata_ranges, bins=128)
-    figure.savefig(cfn)
-    print(cfn)
+        clustername = "cluster_{:04d}_{:04d}".format(K, k)
+        plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
+        plotcount += 1
+        if plotcount == 16:
+            break
