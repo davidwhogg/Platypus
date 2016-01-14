@@ -8,6 +8,7 @@
 % - put in references
 % - cite codes!
 % - put in acknowledgement
+% - fix all remaining occurrences of ARC, MKN, HWR, or DWH
 % - forward to Freeman, others?
 % - submit to journal and arXiv
 
@@ -17,6 +18,7 @@
 \newcommand{\acronym}[1]{{\small{#1}}}
 \newcommand{\project}[1]{\textsl{#1}}
 \newcommand{\apogee}{\project{\acronym{APOGEE}}}
+\newcommand{\aspcap}{\project{\acronym{ASPCAP}}}
 \newcommand{\gaiaeso}{\project{Gaia--\acronym{ESO}}}
 \newcommand{\galah}{\project{\acronym{GALAH}}}
 \newcommand{\thecannon}{\project{The~Cannon}}
@@ -37,11 +39,11 @@
 \includegraphics[width=0.33\textwidth]{./figs/#1_AlMg.png}%
 \includegraphics[width=0.33\textwidth]{./figs/#1_SAl.png}%
 \includegraphics[width=0.33\textwidth]{./figs/#1_MgK.png}\\
-\includegraphics[width=0.33\textwidth]{./figs/#1_HR.png}%
 \includegraphics[width=0.33\textwidth]{./figs/#1_sky.png}%
-\includegraphics[width=0.33\textwidth]{./figs/#1_decv.png}}
+\includegraphics[width=0.33\textwidth]{./figs/#1_decv.png}%
+\includegraphics[width=0.33\textwidth]{./figs/#1_HR.png}}
 
-\begin{document}
+\begin{document}\sloppy\sloppypar
 
 \title{Chemical tagging: \\
        Identification of stellar phase-space structures \\
@@ -99,6 +101,7 @@ the prospects for future data sets are very good.
   stars: abundances
 }
 
+\clearpage
 \section{Introduction}\label{sec:intro}
 
 If every star in the Milky Way was born in a molecular cloud that has
@@ -231,20 +234,50 @@ found to be close in phase space?
 If the answer to this question is ``yes'' then chemical tagging is
 \emph{on.}
 
+\clearpage
 \section{Sample and abundances}
 
-MKN: Details about \apogee\ data.
+The details about how we select, reduce, and analyze the \apogee\ data
+are given in full detail in the companion papers \citep{casey16, ness16}.
+We summarize briefly here.
+For the spectroscopic data, we use the \apogee\ \acronym{DR12}
+(\cite{dr12}) spectroscopic data reductions for red-giant stars
+($\logg < 3.9$) that are not flagged as bad in the
+\apogee\ \aspcap\ (\cite{aspcap}) pipeline reductions.
+There are XXXXX stars that make our $\logg$ and flag cuts.
 
-AC: Details about \thecannon\ and implementation.
+The \apogee\ pipelines deliver stacked (co-added),
+pseudo-continuum-normalized spectra, but we do not use these; we
+perform our own continuum normalization on individual-exposure data
+and co-add it ourselves.
+This is required, because the performance of \thecannon\ depends
+critically on the methods used for spectral normalization.  It does
+not require accurate continuum estimation, but it requires that the
+normalization vector be obtained by a \emph{linear operation on the
+  data}.
+The linear operation we use is a smooth-function fit to pixels
+identified as continuum in our previous work \citep{thecannon}.
 
-DWH: Figure showing the full data set; discuss structure.
+For the training data labels (used to train \thecannon; see below), we
+use the \apogee\ \acronym{DR12} \aspcap\ atmospheric parameters and
+15-element abundances, but only for the subset of XXXXX red-giant
+stars that have spectral signal-to-noise ratio measurements greater
+than 200.
+This is a small fraction of the total sample, but these high
+signal-to-noise stars are observed to obtain consistent, low-scatter,
+sensible abundance-space measurements.
+
+DWH!!  How does \thecannon\ work here?
+
+Six two-dimensional projections of the abundance data, plus some other
+data quantities, are shown in \figurename~\ref{fig:all}.
 
 \begin{figure}[!p]
 \insanefigure{all}
 \caption{Whatevsinator.\label{fig:all}}
 \end{figure}
 
-\clearpage{}
+\clearpage
 \section{Method and results}
 
 Although only hints of small-scale clustering in the abundance space
@@ -273,6 +306,7 @@ DWH: Do we have streams or other structures?
 
 DWH: What have we demonstrated?
 
+\clearpage
 \section{Discussion}
 
 DWH: For the first time, we see small-scale informative features in abundance space.
@@ -295,5 +329,11 @@ DWH: NASA ADS
 DWH: github repo and hash.
 
 DWH: Be sure to cite software a la the new ApJ guidelines.
+
+\clearpage
+\begin{thebibliography}{24}\raggedright
+\bibitem[Ness \etal(2016)]{ness16}
+whatev
+\end{thebibliography}
 
 \end{document}
