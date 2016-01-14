@@ -2,7 +2,6 @@
 % Copyright 2016 the authors.
 
 % to-do
-% - finish writing MKN's introduction
 % - write data and cannon section
 % - write method and results section
 % - write discussion section
@@ -14,6 +13,7 @@
 
 \documentclass[12pt, letterpaper, preprint]{aastex}
 
+% text shit
 \newcommand{\acronym}[1]{{\small{#1}}}
 \newcommand{\project}[1]{\textsl{#1}}
 \newcommand{\apogee}{\project{\acronym{APOGEE}}}
@@ -23,6 +23,11 @@
 \newcommand{\foreign}[1]{\textsl{#1}}
 \newcommand{\eg}{\foreign{e.\,g.}}
 \newcommand{\etal}{\foreign{et\,al.}}
+\newcommand{\documentname}{\textsl{Article}}
+
+% math shit
+\newcommand{\teff}{T_{\mathrm{eff}}}
+\newcommand{\logg}{\log g}
 
 \begin{document}
 
@@ -126,7 +131,19 @@ that stellar sibling identification will be reliable.
 
 Stellar spectroscopic surveys now have the resolution, signal-to-noise,
 wavelength coverage, and sample sizes to deliver chemical tags.
-The issue at present is measurement precision (and accuracy).
+There are, however, two big issues.
+The first is that the physical assumptions behind the idea may require
+refinement:
+There may be chemical-abundance overlaps among open clusters
+\citep{blancocuaresma}; coeval groups of stars may have similar tags
+but different birth places \citep{mitschang}, and the
+chemical-abundance space might be low in dimensionality \citep{what}.
+On the other hand, precise studies of stellar twins \citep{melendez, jofre}
+and open clusters \citep{bovy} indicates that chemical abundances ought to be
+very precisely similar for co-eval stars.
+
+The second issue for chemical tagging---and the one we address
+here---is measurement precision (and accuracy).
 The current precision on abundance measurements is not high enough
 (for example, \citealt{Ting2015, Martel2015}).
 That said, it is clear that the \emph{data} are precise enough;
@@ -140,59 +157,67 @@ Improving the models and exploiting the entire information
 content in the data is critical if we are going to deliver useful
 chemical tags.
 
-One note on accuracy and precision:
+Our contribution in this space has been to develop
+\thecannon\ \citep{cannon, ages}, which is a data-driven model for
+stellar spectra.
+This model can deliver stellar parameters and chemical abundances to
+stars, making use of every pixel of every stellar spectrum (that is,
+all the information in the data) but making no use at all of physical
+models of stars.
+It relies only on there being training data---\emph{some} stars for
+which parameters and abundances are known and believed.
+In companion papers \citep{casey16, ness16} we show that
+\thecannon\ can deliver 15 to 19 abundances for stars in the
+\apogee\ survey, at precisions higher than even the training data on
+which the model is trained.
+We say more about this below.
+We will show here that \thecannon\ improves chemical abundance measurements
+to the point that \emph{chemical tagging is now possible.}
+We have thereby effectively saved the collective asses of all the
+collaborators in all of the above-referenced large spectroscopic
+surveys.
 
-In principle, the 
+One note on \emph{accuracy} and \emph{precision:}
+In principle, the problem of chemical tagging does not require
+absolute accuracy for chemical-abundance measurements.
+We only require that we can precisely see that two stars are similar
+in their abundances; even if we are wrong about the absolute values of
+those abundances.
+This point might make it seem like we don't care that our models are
+wrong, so long as they are \emph{consistent.}
+However, this is a bit misleading:
+For chemical tagging to succeed, we need stars with different
+atmospheric parameters $(\teff, \logg)$ but the same chemical
+abundances to be assigned the same position in chemical-abundance
+space.
+That doesn't require overall accuracy, but it requires that the models
+have the right dependencies on atmospheric parameters such that the
+wrongness in abundance space is consistent across the H-R diagram.
+That is, we need a substantial amount of accuracy to achieve our goals.
 
-These have not successfully identified components of the galaxy's
-assembly that had distinct formation sites (\eg, Ting et al., 2015, Mitschang. et al. 2013,
-Blanco-Cuaresma2015).
+In what follows, we are going to use \apogee\ \acronym{DR12} data, in
+which we can measure 15 element abundances (C, N, O, Na, Mg, Al, Si,
+S, K, Ca, Ti, V, Mn, Fe, Ni).
+The \apogee\ data set covers a huge radial extent and---because the
+data are taken in the infrared---explores the thin disk.
+However, it has the disadvantage that it's spatial coverage is swiss
+cheese, which makes it hard to see, within the data set, linear or
+extended stellar structures.
+In many ways, \galah\ will deliver improvements, both because it will
+have more abundances (possibly 29) and contiguous sky coverage.
 
-Blanco-Cuaresma et al., 2015 demonstrate that there is a large degree
-of overlap when exploring the chemical space of known open clusters
-which challenges chemically tagging and separating them, but also note
-that there is room for improvement if more elements were included in
-their analysis and models improved.
-Ting et al., 2015 presented an algorithm to detect groups of
-chemically homogeneous stars which they reported as challenging and
-with a low signal to noise in the APOGEE dataset.
-Mitschang et al., 2013 propose that chemical tagging may be able to
-identify coeval groups of stars but these are not necessarily from a
-distinct origin of formation.
-
-The by-hand study of solar twins, for a handful of stars, has shown
-however that the chemical information in some elements offers powerful
-signatures for chemical tagging (Melendez2014, Jofre2015) and PCA
-approach of Ting et al., 2014 shows there are many independent
-dimensions of information contained in the multi abundance phase space
-being delivered by the large spectroscopic surveys (e.g. Ting et al.,
-2014 report a dimensionality of 7 for GALAH survey).
-These approaches are important to establish which elements should be
-targeted in surveys.
-
-DWH:  We successfully achieve chemical tagging and we do so because we are
-working with a higher precision that previously and exploit the full
-information in the data....
-
-DWH: With \thecannon\ we achieve both higher precision and exploit the full
-information content of the data.....cite Casey et al., 2016 Ness et
-al., 2016 in prep = do you want me to write things about this...
-
-DWH: We do this with the APOGEE survey which covers a much wider
-spatial extent but GALAH will be much more powerful as they will
-report 29 elemental abundances which carry a larger quantity of
-nucleosynthetic information...
-
-DWH: Open clusters look one-metal (CITE); globulars look peculiar
-(CITE); but no-one has ever gone the other way!...
-
-DWH: Fast intro to \apogee.
-
-DWH: Fast intro to \thecannon.
-
-DWH: BASH the \apogee\ discontiguous field positioning.
-
-DWH: Think of this as a hypothesis test.
+One final note:
+We think of this \documentname\ as performing a hypothesis test.
+We know that the stellar members of open and globular clusters---stars
+that are identified by being close in phase space---contain highly
+informative abundance information that identifies them also in
+chemical-abundance space.
+Does this work the other way around?
+Are groups of stars that are identified as being close in abundance
+space---collections of stars with near-identical chemical tags---also
+found to be close in phase space?
+If the answer to this question is ``yes'' then chemical tagging is
+\emph{on.}
 
 \section{Sample and abundances}
 
