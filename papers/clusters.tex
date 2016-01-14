@@ -29,6 +29,18 @@
 \newcommand{\teff}{T_{\mathrm{eff}}}
 \newcommand{\logg}{\log g}
 
+% figure shit
+\newcommand{\insanefigure}[1]{%
+\includegraphics[width=0.33\textwidth]{./figs/#1_MgFe.png}%
+\includegraphics[width=0.33\textwidth]{./figs/#1_NaO.png}%
+\includegraphics[width=0.33\textwidth]{./figs/#1_CN.png}\\
+\includegraphics[width=0.33\textwidth]{./figs/#1_AlMg.png}%
+\includegraphics[width=0.33\textwidth]{./figs/#1_SAl.png}%
+\includegraphics[width=0.33\textwidth]{./figs/#1_MgK.png}\\
+\includegraphics[width=0.33\textwidth]{./figs/#1_HR.png}%
+\includegraphics[width=0.33\textwidth]{./figs/#1_sky.png}%
+\includegraphics[width=0.33\textwidth]{./figs/#1_decv.png}}
+
 \begin{document}
 
 \title{Chemical tagging: \\
@@ -227,10 +239,16 @@ AC: Details about \thecannon\ and implementation.
 
 DWH: Figure showing the full data set; discuss structure.
 
+\begin{figure}[!p]
+\insanefigure{all}
+\caption{Whatevsinator.\label{fig:all}}
+\end{figure}
+
+\clearpage{}
 \section{Method and results}
 
 Although only hints of small-scale clustering in the abundance space
-are visible in \figurename~DWH, exploration of the data indicates that
+are visible in \figurename~\ref{fig:all}, exploration of the data indicates that
 known clusters do appear in the abundance space as over-densities.
 This encourages us to look for over-densities automatically in the
 abundance space and see if anything found that way would be over-dense
