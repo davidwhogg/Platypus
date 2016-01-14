@@ -65,6 +65,7 @@ def plot_one_cluster(data, labels, mask, name, dir):
         ("S_H - FE_H", "AL_H - FE_H", "SAl"),
         ("MG_H - FE_H", "K_H - FE_H", "MgK"),
         ("DEC", "RA", "sky"),
+        ("GLAT", "GLON", "gal"),
         ("DEC", "VHELIO_AVG", "decv"),
         ("LOGG_ASPCAP", "TEFF_ASPCAP", "HR"),
         ]:
@@ -134,6 +135,8 @@ if __name__ == "__main__":
                   "V_H - FE_H": (-0.9, 0.8),
                   "RA": (360., 0.),
                   "DEC": (-35., 90.),
+                  "GLON": (60., 0.),
+                  "GLAT": (-30., 30.),
                   "VHELIO_AVG": (-275., 275.),
                   "TEFF_ASPCAP": (5500., 3500.),
                   "LOGG_ASPCAP": (3.9, 0.0), }
@@ -155,6 +158,8 @@ if __name__ == "__main__":
                   "V_H - FE_H":  "[V/Fe] (dex)",
                   "RA":          "RA (J2000 deg)",
                   "DEC":         "Dec (J2000 deg)",
+                  "GLON":        "Galactic l (deg)",
+                  "GLAT":        "Galactic b (deg)",
                   "VHELIO_AVG":  "heliocentric RV (km/s)",
                   "TEFF_ASPCAP": "ASPCAP Teff (K)",
                   "LOGG_ASPCAP": "ASPCAP log g (dex)", }
@@ -220,7 +225,7 @@ if __name__ == "__main__":
             for d in range(1, D):
                 plotdata[:,d] = data[:,d] - data[:,0]
                 plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
-            metadata_labels = ["RA", "DEC", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
+            metadata_labels = ["RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
             metadata = get_metadata(dfn, metadata_labels, mask)
             plotdata = np.hstack((plotdata, metadata))
             plotdata_labels = plotdata_labels + metadata_labels
