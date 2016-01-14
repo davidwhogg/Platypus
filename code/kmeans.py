@@ -58,34 +58,39 @@ def plot_one_cluster(data, labels, mask, name, dir):
     print("plot_one_cluster(): plotting", name)
     suffix = "png"
     for ly, lx, plotname in [
+        ("MG_H - FE_H", "FE_H", "MgFe"),
         ("NA_H - FE_H", "O_H - FE_H", "NaO"),
         ("C_H - FE_H", "N_H - FE_H", "CN"),
         ("AL_H - FE_H", "MG_H - FE_H", "AlMg"),
         ("S_H - FE_H", "AL_H - FE_H", "SAl"),
+        ("MG_H - FE_H", "K_H - FE_H", "MgK"),
         ("DEC", "RA", "sky"),
         ("DEC", "VHELIO_AVG", "decv"),
         ("LOGG_ASPCAP", "TEFF_ASPCAP", "HR"),
         ]:
-        y = np.where(np.array(labels) == ly)[0][0]
-        x = np.where(np.array(labels) == lx)[0][0]
-        plt.figure(figsize=(4,4))
-        plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
-        plt.clf()
-        kwargs = {"marker": ".", "ls": "none"}
-        if mask is None:
-            plt.plot(data[:,x], data[:,y], c="k", ms=1.0, alpha=0.20, **kwargs)
-        else:        
-            plt.plot(data[:,x], data[:,y], c="0.75", ms=1.0, alpha=0.20, **kwargs)
-            plt.plot(data[mask,x], data[mask,y], c="k", ms=5.0, alpha=0.5, **kwargs)
-        plt.ylim(range_dict[ly])
-        plt.xlim(range_dict[lx])
-        plt.ylabel(label_dict[ly])
-        plt.xlabel(label_dict[lx])
-        [l.set_rotation(45) for l in plt.gca().get_xticklabels()]
-        [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
         fn = "{}/{}_{}.{}".format(dir, name, plotname, suffix)
-        plt.savefig(fn)
-        print("plot_one_cluster(): plotting", fn)
+        if os.path.exists(fn):
+            print("plot_one_cluster(): {} exists already".format(fn))
+        else:
+            y = np.where(np.array(labels) == ly)[0][0]
+            x = np.where(np.array(labels) == lx)[0][0]
+            fig = plt.figure(figsize=(4,4))
+            plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
+            plt.clf()
+            kwargs = {"marker": ".", "ls": "none"}
+            if mask is None:
+                plt.plot(data[:,x], data[:,y], c="k", ms=1.0, alpha=0.20, **kwargs)
+            else:        
+                plt.plot(data[:,x], data[:,y], c="0.75", ms=1.0, alpha=0.20, **kwargs)
+                plt.plot(data[mask,x], data[mask,y], c="k", ms=5.0, alpha=0.5, **kwargs)
+            plt.ylim(range_dict[ly])
+            plt.xlim(range_dict[lx])
+            plt.ylabel(label_dict[ly])
+            plt.xlabel(label_dict[lx])
+            [l.set_rotation(45) for l in plt.gca().get_xticklabels()]
+            [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
+            plt.savefig(fn)
+            print("plot_one_cluster(): plotting", fn)
 
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
@@ -158,7 +163,7 @@ if __name__ == "__main__":
                    "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                    "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
 
-    for K in 2 ** np.arange(8, 10):
+    for K in 2 ** np.arange(7, 10):
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
