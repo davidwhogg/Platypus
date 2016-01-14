@@ -1,0 +1,238 @@
+% This file is part of \tc\   project.
+% Copyright 2015 the authors.
+
+% style notes
+% - \,percent not \%
+
+\documentclass[12pt, preprint]{aastex}
+\usepackage{bm, graphicx, subfigure, amsmath, morefloats}
+
+% words
+\newcommand{\project}[1]{\textsl{#1}}
+\newcommand{\thecannon}{\project{The~Cannon}} 
+\newcommand{\tc}{\project{The~Cannon}} 
+\newcommand{\apogee}{\project{\textsc{apogee}}}
+\newcommand{\apokasc}{\project{\textsc{apokasc}}}
+\newcommand{\aspcap}{\project{\textsc{aspcap}}}
+\newcommand{\corot}{\project{Corot}}
+\newcommand{\kepler}{\project{Kepler}}
+\newcommand{\gaia}{\project{Gaia}}
+\newcommand{\gaiaeso}{\project{Gaia--\textsc{eso}}}
+\newcommand{\galah}{\project{\textsc{galah}}}
+\newcommand{\most}{\project{\textsc{most}}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\documentname}{\textsl{Article}}
+
+\newcommand{\teff}{\mbox{$\rm T_{eff}$}}
+\newcommand{\kms}{\mbox{$\rm kms^{-1}$}}
+\newcommand{\feh}{\mbox{$\rm [Fe/H]$}}
+\newcommand{\xfe}{\mbox{$\rm [X/Fe]$}}
+\newcommand{\alphafe}{\mbox{$\rm [\alpha/Fe]$}}
+\newcommand{\mh}{\mbox{$\rm [M/H]$}}
+\newcommand{\logg}{\mbox{$\rm \log g$}}
+\newcommand{\noise}{\sigma_{n\lambda}}
+\newcommand{\scatter}{s_{\lambda}}
+\newcommand{\pix}{\mathrm{pix}}
+\newcommand{\rfn}{\mathrm{ref}}
+\newcommand{\rgc}{\mbox{$\rm R_{GC}$}}
+\newcommand{\rgal}{\mbox{$\rm R_{GAL}$}}
+\newcommand{\vgal}{\mbox{$\rm V_{GAL}$}}
+
+% math and symbol macros
+\newcommand{\set}[1]{\bm{#1}}
+\newcommand{\starlabel}{\ell}
+\newcommand{\starlabelvec}{\set{\starlabel}}
+\newcommand{\mean}[1]{\overline{#1}}
+\newcommand{\given}{\,|\,}
+
+% math
+\newcommand{\numax}{$\nu_{\max}$}
+\newcommand{\deltanu}{$\Delta\nu$}
+\bibliographystyle{apj}
+
+\begin{document}
+
+
+\title{The Signatures of formation of the Galaxy are in the chemical composition of its stars }
+
+\section{Introduction}\label{sec:Intro}
+
+
+Freeman and Bland-Hawthorn cite Weinberg (1997) in the opening of their 2002 review on `The New Galaxy: Signatures of Formation', with the assertion that while much progress has been made since 1977, the  theory galaxy formation remains a major outstanding problem. However, we are now in a new domain in stellar astronomy; one where it is possible to test the principles of galactic archeology and chemical tagging, precisely as laid out by Freeman and Bland-Hawthorn. Galactic archeology describes the approach of exploring the formation history of the Galaxy via examining the detailed chemical abundances of its stars. Within this realm lies the prospect of chemical tagging, which describes associating now spatially incoherent stellar groups which have built up the Milky Way, via their identical chemical compositions. These prospects rely on the Milky Way's bulge, disk and halo being comprised of numerous small satellite systems, which have built up our galaxy over time and which have formed from the same molecular gas and so are chemically indistinguishable \citep[see][and references therein]{DaSilva2015}. The systems that have formed the Galaxy are expected to no longer be spatially coherent, having been dispersed throughout the galaxy via processes of mixing and radial migration \citep[e.g.][]{Roskar et al., 2009, Quillen2015}. Therefore, the chemical phase space of the stars is the tool we have to reconstruct the building blocks of our galaxy at this snapshot in time.  By exploring the multi chemical abundance information of Milky Way stars (for many elements,  $>$ 15), the hope is that stellar siblings can be identified and that the dimensionality of this space can serve as fingerprints of the stars. 
+
+The prospects to test the principle that the idea that the Milky Way has been built up via multiple small satellite systems that are chemically distinct can now be put to the test with the multitude of data available from high resolution spectroscopic surveys. These surveys are systematically mapping the stellar content of the MIlky Way and its chemical and dynamical phase space. The detailed characterisation of the Milky Way's chemical phase space are the founding principles and goals of the major spectroscopic surveys of the current era, including GALAH \citep{Freeman2013, da Silva 2015}, Gaia-ESO \citep{Gilmore 2012} and APOGEE \citep{Majewsk2015}. These surveys are measuring high resolution (R $=$ 20,000-50,000), high signal to noise spectra (SNR $>$ 100) for hundreds of thousands of stars across a very wide spatial extent of the Milky Way's disk, bulge and halo. With this multitude of large stellar surveys underway, stars are now exceptionally powerful tools that can be used to reconstruct the galaxy's formation and evolution history.  
+
+A major limitation is now not the data quantify or quality, but the current precision on abundance measurements \citep[e.g.][]{Ting2015, Martel2015} and the traditional methodologies employed, which do not exploit the full information content nor dimensionality of the data. Achieving higher precision and exploiting the entire information content of the data is critical if we are to reconstruct the chemical components of the Galaxy and for chemical tagging to succeed. Attempts to date to identify the building blocks of the Milky Way via chemical tagging have relied on current abundance precisions and explored different approaches. These have not successfully identified components of the galaxy's assembly that had distinct formation sites (e.g. Ting et al., 2015, Mitschang. et al. 2013, Blanco-Cuaresma2015). However, they have highlighted  the need for higher precision and new approaches for exploiting the data $<$things that are good things that are bad$>$.  Blanco-Cuaresma et al., 2015 demonstrate that there is a large degree of overlap when exploring the chemical space of known open clusters which challenges chemically tagging and separating them, but also note that there is room for improvement if more elements were included in their analysis and models improved. Ting et al., 2015 presented an algorithm to detect groups of chemically homogeneous stars which they reported as challenging and with a low signal to noise in the APOGEE dataset. Mitschang et al., 2013 propose that  chemical tagging may be able to identify coeval groups of stars but these are not necessarily from a distinct origin of formation.
+
+The by-hand study of solar twins, for a handful of stars, has shown however that the chemical information in some elements offers powerful signatures for chemical tagging (Melendez2014, Jofre2015) and PCA approach of Ting et al., 2014 shows there are many independent dimensions of information contained in the multi abundance phase space being delivered by the large spectroscopic surveys (e.g. Ting et al., 2014 report a dimensionality of 7 for GALAH survey). These approaches are important to establish which elements should be targeted in surveys.
+
+We successfully achieve chemical tagging and we do so because we are working with a higher precision that previously and exploit the full information in the data....\\
+
+With \tc\ we achieve both higher precision and exploit the full information content of the data.....cite Casey et al., 2016 Ness et al., 2016 in prep = do you want me to write things about this..\\
+
+We do this with the APOGEE survey which covers a much wider spatial extent but GALAH will be much more powerful as they will report 29 elemental abundances which carry a larger quantity of nucleosynthetic information... \\
+
+What else should I write ? \\
+
+\end{document}
+
+@ARTICLE{DeSilva2015,
+   author = {{De Silva}, G.~M. and {Freeman}, K.~C. and {Bland-Hawthorn}, J. and 
+	{Martell}, S. and {de Boer}, E.~W. and {Asplund}, M. and {Keller}, S. and 
+	{Sharma}, S. and {Zucker}, D.~B. and {Zwitter}, T. and {Anguiano}, B. and 
+	{Bacigalupo}, C. and {Bayliss}, D. and {Beavis}, M.~A. and {Bergemann}, M. and 
+	{Campbell}, S. and {Cannon}, R. and {Carollo}, D. and {Casagrande}, L. and 
+	{Casey}, A.~R. and {Da Costa}, G. and {D'Orazi}, V. and {Dotter}, A. and 
+	{Duong}, L. and {Heger}, A. and {Ireland}, M.~J. and {Kafle}, P.~R. and 
+	{Kos}, J. and {Lattanzio}, J. and {Lewis}, G.~F. and {Lin}, J. and 
+	{Lind}, K. and {Munari}, U. and {Nataf}, D.~M. and {O'Toole}, S. and 
+	{Parker}, Q. and {Reid}, W. and {Schlesinger}, K.~J. and {Sheinis}, A. and 
+	{Simpson}, J.~D. and {Stello}, D. and {Ting}, Y.-S. and {Traven}, G. and 
+	{Watson}, F. and {Wittenmyer}, R. and {Yong}, D. and {{\v Z}erjal}, M.
+	},
+    title = "{The GALAH survey: scientific motivation}",
+  journal = {\mnras},
+archivePrefix = "arXiv",
+   eprint = {1502.04767},
+ keywords = {Galaxy: stellar content},
+     year = 2015,
+    month = may,
+   volume = 449,
+    pages = {2604-2617},
+      doi = {10.1093/mnras/stv327},
+   adsurl = {http://adsabs.harvard.edu/abs/2015MNRAS.449.2604D},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+@ARTICLE{Freeman2002,
+   author = {{Freeman}, K. and {Bland-Hawthorn}, J.},
+    title = "{The New Galaxy: Signatures of Its Formation}",
+  journal = {\araa},
+   eprint = {astro-ph/0208106},
+ keywords = {osmology, local group, stellar populations, stellar kinematics},
+     year = 2002,
+   volume = 40,
+    pages = {487-537},
+      doi = {10.1146/annurev.astro.40.060401.093840},
+   adsurl = {http://adsabs.harvard.edu/abs/2002ARA%26A..40..487F},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
+@ARTICLE{Hawkins2015,
+   author = {{Hawkins}, K. and {Jofr{\'e}}, P. and {Masseron}, T. and {Gilmore}, G.
+	},
+    title = "{Using chemical tagging to redefine the interface of the Galactic disc and halo}",
+  journal = {\mnras},
+ keywords = {Galaxy: abundances, Galaxy: halo, Galaxy: structure},
+     year = 2015,
+    month = oct,
+   volume = 453,
+    pages = {758-774},
+      doi = {10.1093/mnras/stv1586},
+   adsurl = {http://adsabs.harvard.edu/abs/2015MNRAS.453..758H},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
+@ARTICLE{Ting2015,
+   author = {{Ting}, Y.-S. and {Conroy}, C. and {Rix}, H.-W.},
+    title = "{APOGEE chemical tagging constraint on the maximum star cluster mass in the $\alpha$-enhanced Galactic disk}",
+  journal = {ArXiv e-prints},
+archivePrefix = "arXiv",
+   eprint = {1507.07563},
+ keywords = {Astrophysics - Astrophysics of Galaxies},
+     year = 2015,
+    month = jul,
+   adsurl = {http://adsabs.harvard.edu/abs/2015arXiv150707563T},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
+   author = {BC2015},
+    title = "{Testing the chemical tagging technique with open clusters}",
+  journal = {\aap},
+archivePrefix = "arXiv",
+   eprint = {1503.02082},
+ primaryClass = "astro-ph.SR",
+ keywords = {stars: abundances, techniques: spectroscopic, Galaxy: abundances},
+     year = 2015,
+    month = may,
+   volume = 577,
+      eid = {A47},
+    pages = {A47},
+      doi = {10.1051/0004-6361/201425232},
+   adsurl = {http://adsabs.harvard.edu/abs/2015A%26A...577A..47B},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
+   author = {{M2014,
+  journal = {\mnras},
+archivePrefix = "arXiv",
+   eprint = {1312.1759},
+ keywords = {techniques: miscellaneous, stars: abundances, Galaxy: disc, Galaxy: evolution, open clusters and associations: general},
+     year = 2014,
+    month = mar,
+   volume = 438,
+    pages = {2753-2764},
+      doi = {10.1093/mnras/stt2320},
+   adsurl = {http://adsabs.harvard.edu/abs/2014MNRAS.438.2753M},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
+
+@ARTICLE{Melendez2014,
+   author = {{Mel{\'e}ndez}, J. and {Ram{\'{\i}}rez}, I. and {Karakas}, A.~I. and 
+	{Yong}, D. and {Monroe}, T.~R. and {Bedell}, M. and {Bergemann}, M. and 
+	{Asplund}, M. and {Tucci Maia}, M. and {Bean}, J. and {do Nascimento}, Jr., J.-D. and 
+	{Bazot}, M. and {Alves-Brito}, A. and {Freitas}, F.~C. and {Castro}, M.
+	},
+    title = "{18 Sco: A Solar Twin Rich in Refractory and Neutron-capture Elements. Implications for Chemical Tagging}",
+  journal = {\apj},
+archivePrefix = "arXiv",
+   eprint = {1406.5244},
+ primaryClass = "astro-ph.SR",
+ keywords = {stars: abundances, stars: AGB and post-AGB, stars: fundamental parameters, Sun: abundances},
+     year = 2014,
+    month = aug,
+   volume = 791,
+      eid = {14},
+    pages = {14},
+      doi = {10.1088/0004-637X/791/1/14},
+   adsurl = {http://adsabs.harvard.edu/abs/2014ApJ...791...14M},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
+
+
+
+@ARTICLE{Quillen2015,
+   author = {{Quillen}, A.~C. and {Anguiano}, B. and {De Silva}, G. and {Freeman}, K. and 
+	{Zucker}, D.~B. and {Minchev}, I. and {Bland-Hawthorn}, J.},
+    title = "{The parent populations of six groups identified from chemical tagging in the solar neighbourhood}",
+  journal = {\mnras},
+archivePrefix = "arXiv",
+   eprint = {1503.02887},
+ keywords = {Galaxy: abundances, Galaxy: evolution, Galaxy: kinematics and dynamics, open clusters and associations: general},
+     year = 2015,
+    month = jul,
+   volume = 450,
+    pages = {2354-2366},
+      doi = {10.1093/mnras/stv806},
+   adsurl = {http://adsabs.harvard.edu/abs/2015MNRAS.450.2354Q},
+  adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+}
+
+
+
+
+\section*{Acknowledgments}
+
+Don't acknowledge Ken as we would like him to be a ref.
+
+\end{document}
+
+
