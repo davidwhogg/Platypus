@@ -58,7 +58,7 @@ def plot_one_cluster(data, labels, mask, name, dir):
     print("plot_one_cluster(): plotting", name)
     suffix = "png"
     for ly, lx, plotname in [
-        ("Na_H - FE_H", "O_H - FE_H", "NaO"),
+        ("NA_H - FE_H", "O_H - FE_H", "NaO"),
         ("C_H - FE_H", "N_H - FE_H", "CN"),
         ("AL_H - FE_H", "MG_H - FE_H", "AlMg"),
         ("S_H - FE_H", "AL_H - FE_H", "SAl"),
@@ -94,6 +94,7 @@ if __name__ == "__main__":
         os.mkdir(dir)
     suffix = "png"
     data = None
+    plotdata = None
 
     scale_dict = {"FE_H": 0.0191707168068, # all from AC
                   "AL_H": 0.0549037045265,
@@ -157,7 +158,7 @@ if __name__ == "__main__":
                    "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                    "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
 
-    for K in 2 ** np.arange(3, 11):
+    for K in 2 ** np.arange(8, 10):
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
@@ -207,22 +208,23 @@ if __name__ == "__main__":
         print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
 
-    # make plotting data
-    plotdata = data.copy()
-    plotdata_labels = data_labels.copy()
-    for d in range(1, D):
-        plotdata[:,d] = data[:,d] - data[:,0]
-        plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
-    metadata_labels = ["RA", "DEC", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
-    metadata = get_metadata(dfn, metadata_labels, mask)
-    plotdata = np.hstack((plotdata, metadata))
-    plotdata_labels = plotdata_labels + metadata_labels
+        # make plotting data
+        if plotdata is None:
+            plotdata = data.copy()
+            plotdata_labels = data_labels.copy()
+            for d in range(1, D):
+                plotdata[:,d] = data[:,d] - data[:,0]
+                plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
+            metadata_labels = ["RA", "DEC", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
+            metadata = get_metadata(dfn, metadata_labels, mask)
+            plotdata = np.hstack((plotdata, metadata))
+            plotdata_labels = plotdata_labels + metadata_labels
 
-    # plot clusters from the last K run
-    plotcount = 0
-    for k in (np.argsort(densities))[::-1]:
-        clustername = "cluster_{:04d}_{:04d}".format(K, k)
-        plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
-        plotcount += 1
-        if plotcount == 16:
-            break
+        # plot clusters from the last K run
+        plotcount = 0
+        for k in (np.argsort(densities))[::-1]:
+            clustername = "cluster_{:04d}_{:04d}".format(K, k)
+            plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
+            plotcount += 1
+            if plotcount == 32:
+                break

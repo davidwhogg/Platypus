@@ -4,6 +4,11 @@ It is prepend-only.
 Entry titles should be the date the post is *written*,
 not the date of execution of the work it describes.
 
+## 2016-01-13
+- DWH did major refactoring, all still works.
+- It appears that K=1024 is too far -- clusters break up
+- So we should really "just" do 256 and 512
+
 ## 2016-01-12
 - DWH spoke to DFM yesterday about clustering methods.
 DFM strongly advised k-means.
