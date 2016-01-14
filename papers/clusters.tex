@@ -16,7 +16,9 @@
 
 \newcommand{\acronym}[1]{{\small{#1}}}
 \newcommand{\project}[1]{\textsl{#1}}
-\newcommand{\apogee}{\acronym{\project{APOGEE}}}
+\newcommand{\apogee}{\project{\acronym{APOGEE}}}
+\newcommand{\gaiaeso}{\project{Gaia--\acronym{ESO}}}
+\newcommand{\galah}{\project{\acronym{GALAH}}}
 \newcommand{\thecannon}{\project{The~Cannon}}
 \newcommand{\foreign}[1]{\textsl{#1}}
 \newcommand{\eg}{\foreign{e.\,g.}}
@@ -60,7 +62,7 @@ and plot the associated stars in phase space.
 We use \emph{only} abundance-space information (no positional information) to identify stellar groups.
 % Results:
 We find that clusters in abundance space are indeed clusters in phase space.
-We recover known clusters and stellar streams.
+We recover some known clusters and find other interesting structures.
 This confirms the chemical-tagging hypothesis and verifies the precision of abundances delivered by \thecannon.
 This is the first-ever project to identify phase-space structures by blind search in abundance space;
 the prospects for future data sets are very good.
@@ -80,76 +82,72 @@ the prospects for future data sets are very good.
   stars: abundances
 }
 
-\section{Introduction}
+\section{Introduction}\label{sec:intro}
 
-\section{Introduction}\label{sec:Intro}
+If every star in the Milky Way was born in a molecular cloud that has
+unique chemical-abundance characteristics (as a function of time), and
+if every star preserves its surface abundances (or significant aspects
+of them) over its lifetime, then stars with common birthplaces and
+time ought to be identifiable in their surface abundances.
+That is, it ought to be possible to use stellar abundances to link up
+co-eval stars---even if at the present day they are no longer close to
+one another in phase space---and infer a detailed star-formation and
+dynamical history for the Galaxy.
+This idea has been dubbed ``chemical tagging''.
+It was proposed long ago \citep{Freeman2002} and is one of the
+principal motivations for a number of surveys, most notably
+\apogee\ \citep{apogee}, \gaiaeso\ \citep{gaiaeso} and \galah\ \citep{galah13, galah15}.
+In order to measure chemical tags and infer the Galaxy's dynamical
+properties and formation history, these surveys are each measuring high resolution,
+high signal-to-noise spectra for hundreds of thousands of stars across
+the Galaxy's disk, bulge and halo.
 
-Freeman and Bland-Hawthorn cite Weinberg (1997) in the opening of
-their 2002 review on `The New Galaxy: Signatures of Formation', with
-the assertion that while much progress has been made since 1977, the
-theory galaxy formation remains a major outstanding problem.
-However, we are now in a new domain in stellar astronomy; one where it
-is possible to test the principles of galactic archeology and chemical
-tagging, precisely as laid out by Freeman and Bland-Hawthorn.
-Galactic archeology describes the approach of exploring the formation
-history of the Galaxy via examining the detailed chemical abundances
-of its stars.
-Within this realm lies the prospect of chemical tagging, which
-describes associating now spatially incoherent stellar groups which
-have built up the Milky Way, via their identical chemical
-compositions.
-These prospects rely on the Milky Way's bulge, disk and halo being
-comprised of numerous small satellite systems, which have built up our
-galaxy over time and which have formed from the same molecular gas and
-so are chemically indistinguishable \citep[see][and references
-  therein]{DaSilva2015}.
-The systems that have formed the Galaxy are expected to no longer be
-spatially coherent, having been dispersed throughout the galaxy via
-processes of mixing and radial migration \citep[\eg,][]{Roskar2009, Quillen2015}.
-Therefore, the chemical phase space of the stars is the tool we have
-to reconstruct the building blocks of our galaxy at this snapshot in
-time.
-By exploring the multi chemical abundance information of Milky Way
-stars (for many elements, $>15$), the hope is that stellar siblings
-can be identified and that the dimensionality of this space can serve
-as fingerprints of the stars.
+Chemical tagging holds the promise of revealing not just the
+star-formation history of the Galaxy, but also the accretion history
+(as things that fall in are expected to be chemically distinct from
+those that form in the parent body; \citealt{something}) and
+stellar-orbit diffusion process like radial mixing and radial
+migration (for example, \citealt{Roskar2009, Quillen2015}).  After
+stars are born---or after a star cluster is accreted and
+disrupted---associations or groups will disperse, through either
+coherent orbital evolution or else incoherent diffusion, but the
+chemical-abundance tags can in principle make the former members
+identifiable as co-eval stellar siblings.
 
-The prospects to test the principle that the idea that the Milky Way
-has been built up via multiple small satellite systems that are
-chemically distinct can now be put to the test with the multitude of
-data available from high resolution spectroscopic surveys.
-These surveys are systematically mapping the stellar content of the
-Milky Way and its chemical and dynamical phase space.
-The detailed characterisation of the Milky Way's chemical phase space
-are the founding principles and goals of the major spectroscopic
-surveys of the current era, including GALAH \citep{Freeman2013, da
-  Silva 2015}, Gaia-ESO \citep{Gilmore 2012} and APOGEE
-\citep{Majewsk2015}.
-These surveys are measuring high resolution (R $=$ 20,000-50,000),
-high signal to noise spectra (SNR $>$ 100) for hundreds of thousands
-of stars across a very wide spatial extent of the Milky Way's disk,
-bulge and halo.
-With this multitude of large stellar surveys underway, stars are now
-exceptionally powerful tools that can be used to reconstruct the
-galaxy's formation and evolution history.
+Although undeniably promising---and although it has motivated the
+launch of expensive, large-scale spectroscopic surveys---the
+chemical-tagging idea has yet to yield scientific fruit.
+Part of the reason is that the level of chemical specificity required
+is very high:
+If there are thousands of (relevant) molecular clouds forming stars in
+the recent history of the Milky Way, it will take many abundances,
+each measured accurately, to make a sufficiently unique fingerprint
+that stellar sibling identification will be reliable.
 
-A major limitation is now not the data quantify or quality, but the
-current precision on abundance measurements \citep[\eg,][]{Ting2015,
-  Martel2015} and the traditional methodologies employed, which do not
-exploit the full information content nor dimensionality of the
-data.
-Achieving higher precision and exploiting the entire information
-content of the data is critical if we are to reconstruct the chemical
-components of the Galaxy and for chemical tagging to succeed.
-Attempts to date to identify the building blocks of the Milky Way via
-chemical tagging have relied on current abundance precisions and
-explored different approaches.
+Stellar spectroscopic surveys now have the resolution, signal-to-noise,
+wavelength coverage, and sample sizes to deliver chemical tags.
+The issue at present is measurement precision (and accuracy).
+The current precision on abundance measurements is not high enough
+(for example, \citealt{Ting2015, Martel2015}).
+That said, it is clear that the \emph{data} are precise enough;
+there is enough signal-to-noise at the relevant locations in spectrum
+space to deliver high-precision tags.
+Our view is that the traditional methods for making abundance
+measurements just aren't mature enough:
+There are issues with the physical models, and the data-analysis
+methods do not make use of all of the information in the data sets.
+Improving the models and exploiting the entire information
+content in the data is critical if we are going to deliver useful
+chemical tags.
+
+One note on accuracy and precision:
+
+In principle, the 
+
 These have not successfully identified components of the galaxy's
 assembly that had distinct formation sites (\eg, Ting et al., 2015, Mitschang. et al. 2013,
 Blanco-Cuaresma2015).
-However, they have highlighted the need for higher precision and new
-approaches for exploiting the data $<$things that are good things that
-are bad$>$.
+
 Blanco-Cuaresma et al., 2015 demonstrate that there is a large degree
 of overlap when exploring the chemical space of known open clusters
 which challenges chemically tagging and separating them, but also note
