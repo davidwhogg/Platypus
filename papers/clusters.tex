@@ -7,8 +7,7 @@
 % - write discussion section
 % - put in references
 % - cite codes!
-% - put in acknowledgement
-% - fix all remaining occurrences of ARC, MKN, HWR, or DWH
+% - fix all remaining occurrences of ARC, MKN, HWR, DWH, or CITE
 % - forward to Freeman, others?
 % - submit to journal and arXiv
 
@@ -17,6 +16,7 @@
 % text shit
 \newcommand{\acronym}[1]{{\small{#1}}}
 \newcommand{\project}[1]{\textsl{#1}}
+\newcommand{\sdssiii}{\project{\acronym{SDSS-III}}}
 \newcommand{\apogee}{\project{\acronym{APOGEE}}}
 \newcommand{\aspcap}{\project{\acronym{ASPCAP}}}
 \newcommand{\gaiaeso}{\project{Gaia--\acronym{ESO}}}
@@ -51,8 +51,8 @@
 \author{David~W.~Hogg\altaffilmark{1,2,3,4},
         Andrew~R.~Casey\altaffilmark{5},
         M.~Ness\altaffilmark{4},
-        Hans-Walter~Rix\altaffilmark{4}, \&
-        Daniel~Foreman-Mackey\altaffilmark{6}}
+        Hans-Walter~Rix\altaffilmark{4},
+    and~Daniel~Foreman-Mackey\altaffilmark{6}}
 \altaffiltext{1}{SCDA}
 \altaffiltext{2}{Center for Cosmology and Particle Physics, Department of Phyics,
   New York University, 4 Washington Pl., room 424, New York, NY, 10003, USA}
@@ -83,7 +83,7 @@ We use \emph{only} abundance-space information (no positional information) to id
 We find that clusters in abundance space are indeed clusters in phase space.
 We recover some known clusters and find other interesting structures.
 This confirms the chemical-tagging hypothesis and verifies the precision of abundances delivered by \thecannon.
-This is the first-ever project to identify phase-space structures by blind search in abundance space;
+This is the first-ever project to identify phase-space structures by blind search purely in abundance space;
 the prospects for future data sets are very good.
 \end{abstract}
 
@@ -114,9 +114,9 @@ co-eval stars---even if at the present day they are no longer close to
 one another in phase space---and infer a detailed star-formation and
 dynamical history for the Galaxy.
 This idea has been dubbed ``chemical tagging''.
-It was proposed long ago \citep{Freeman2002} and is one of the
+It was proposed long ago \citep{freeman} and is one of the
 principal motivations for a number of surveys, most notably
-\apogee\ \citep{apogee}, \gaiaeso\ \citep{gaiaeso} and \galah\ \citep{galah13, galah15}.
+\apogee\ \citep{apogee}, \gaiaeso\ \citep{gaiaeso} and \galah\ \citep{galah}.
 In order to measure chemical tags and infer the Galaxy's dynamical
 properties and formation history, these surveys are each measuring high resolution,
 high signal-to-noise spectra for hundreds of thousands of stars across
@@ -127,7 +127,7 @@ star-formation history of the Galaxy, but also the accretion history
 (as things that fall in are expected to be chemically distinct from
 those that form in the parent body; \citealt{something}) and
 stellar-orbit diffusion process like radial mixing and radial
-migration (for example, \citealt{Roskar2009, Quillen2015}).  After
+migration (for example, \citealt{Roskar2009, quillen}).  After
 stars are born---or after a star cluster is accreted and
 disrupted---associations or groups will disperse, through either
 coherent orbital evolution or else incoherent diffusion, but the
@@ -160,7 +160,7 @@ very precisely similar for co-eval stars.
 The second issue for chemical tagging---and the one we address
 here---is measurement precision (and accuracy).
 The current precision on abundance measurements is not high enough
-(for example, \citealt{Ting2015, Martel2015}).
+(for example, \citealt{Ting2015, martel}).
 That said, it is clear that the \emph{data} are precise enough;
 there is enough signal-to-noise at the relevant locations in spectrum
 space to deliver high-precision tags.
@@ -173,7 +173,7 @@ content in the data is critical if we are going to deliver useful
 chemical tags.
 
 Our contribution in this space has been to develop
-\thecannon\ \citep{cannon, ages}, which is a data-driven model for
+\thecannon\ \citep{thecannon, ages}, which is a data-driven model for
 stellar spectra.
 This model can deliver stellar parameters and chemical abundances to
 stars, making use of every pixel of every stellar spectrum (that is,
@@ -210,7 +210,7 @@ have the right dependencies on atmospheric parameters such that the
 wrongness in abundance space is consistent across the H-R diagram.
 That is, we need a substantial amount of accuracy to achieve our goals.
 
-In what follows, we are going to use \apogee\ \acronym{DR12} data, in
+In what follows, we are going to use \apogee\ \acronym{DR12} data \citep{dr12}, in
 which we can measure 15 element abundances (C, N, O, Na, Mg, Al, Si,
 S, K, Ca, Ti, V, Mn, Fe, Ni).
 The \apogee\ data set covers a huge radial extent and---because the
@@ -244,7 +244,7 @@ For the spectroscopic data, we use the \apogee\ \acronym{DR12}
 (\cite{dr12}) spectroscopic data reductions for red-giant stars
 ($\logg < 3.9$) that are not flagged as bad in the
 \apogee\ \aspcap\ (\cite{aspcap}) pipeline reductions.
-There are XXXXX stars that make our $\logg$ and flag cuts.
+There are 98462 [DWH CHECK] stars that make our $\logg$ and flag cuts.
 
 The \apogee\ pipelines deliver stacked (co-added),
 pseudo-continuum-normalized spectra, but we do not use these; we
@@ -260,7 +260,7 @@ identified as continuum in our previous work \citep{thecannon}.
 
 For the training data labels (used to train \thecannon; see below), we
 use the \apogee\ \acronym{DR12} \aspcap\ atmospheric parameters and
-15-element abundances, but only for the subset of XXXXX red-giant
+15-element abundances, but only for the subset of ARC:XXXXX red-giant
 stars that have spectral signal-to-noise ratio measurements greater
 than 200.
 This is a small fraction of the total sample, but these high
@@ -287,33 +287,74 @@ This encourages us to look for over-densities automatically in the
 abundance space and see if anything found that way would be over-dense
 in phase space.
 The simplest method for clustering points in $D$-dimensional space is
-the \emph{k-means} algorithm (DWH CITE).
+the \emph{k-means} algorithm (see CITE for a pedagogical introduction).
+Briefly, the k-means algorithm is to find the points closest (in
+$D$-space) to each of $K$ centers, and then take the mean of those
+points to update the locations of the centers; iterate to convergence.
+The output is the locations of the $K$ centers and the assignments of
+all points to centers.
 This algorithm is fast and performs well in practice in problems of
 this nature.
 
-DWH: Scaling of the data
-DWH: number of clusters
-DWH: restarts for local minima
-DWH: Citation out to numpy and sklearn.
+The k-means algorithm has disadvantages, of course.
+One is that $K$ must be chosen by hand (or heuristically at best).
+Here we are only demonstrating a concept; we don't need to have the
+best possible clustering.
+For this reason we simply choose $K=128$, $K=256$, and $K=512$ and look at all the
+results.
+The algorithm also only performs local optimization.
+At each $K$ we perform 32 restarts with different initializations, and
+preserve the best clustering (best according to the k-means score).
+
+Another issue with k-means is that it effectively uses metric
+distances in the $D$-space; it presumes Euclidean isotropy.
+We choose here to work in the hydrogen-normalized abundance space, the
+space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
+[K/H], [Ca/H], [Ti/H], [V/H], [Mn/H], [Fe/H], [Ni/H].
+But in addition to this, we re-scale these by approximate measurement
+precisions obtained by \thecannon\ before running k-means.
+This makes the space close to isotropic in measurement uncertainty or
+observational precision.
+Importantly we use \emph{only} abundance-space information, and no
+positional or velocity information (nor $\teff$ nor $\logg$ nor any
+targeting or observational meta-data) as input to the clustering
+algorithm.
 
 DWH: Reminder that we don't need the absolute best clustering to
 demonstrate the hypothesis.
 
-DWH: Visualize densest clusters.  Some of them are known clusters.
-Show examples.
+When the k-means results are returned, the $D\times D$ empirical
+variance tensor for the members of each cluster can be constructed,
+and an effective density can be computed as the number of points in
+the cluster divided by the square-root of the determinant of the
+tensor.
+This density was used to rank abundance-space overdensities (from highest
+to lowest) for visual inspection.
+We chose a few interesting cases from many and show them in
+\figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
+\ref{fig:halo}, and \ref{fig:disk}.
+The first three of these are known clusters M13, Pal5, and Sagittarius (MKN, ARC, help!).
+The fourth is a halo structure with high velocity dispersion and possibly accreted.
+The fifth is a thin-disk star-formation feature.
+We will discuss these more below.
 
-DWH: Do we have streams or other structures?
-
-DWH: What have we demonstrated?
+All of the code for the data manipulation, clustering, and
+visualization is built on numpy (CITE), scikit-learn (CITE),
+and matplotlib (CITE).
 
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0253}
-\caption{Whatevsinator.\label{fig:infallcluster}}
+\caption{Whatevsinator.\label{fig:M13}}
 \end{figure}
 
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0034}
-\caption{Whatevsinator.\label{fig:cluster}}
+\caption{Whatevsinator.\label{fig:Pal5}}
+\end{figure}
+
+\begin{figure}[!p]
+\insanefigure{cluster_0256_0177}
+\caption{Whatevsinator.\label{fig:Sgr}}
 \end{figure}
 
 \begin{figure}[!p]
@@ -329,31 +370,76 @@ DWH: What have we demonstrated?
 \clearpage
 \section{Discussion}
 
-DWH: For the first time, we see small-scale informative features in abundance space.
+DWH: What have we demonstrated?
 
-DWH: When we identify the small-scale features in abundance space, they are informative in position space.
+DWH: For the first time/H], [we see small-scale informative features in abundance space.
+
+DWH: When we identify the small-scale features in abundance space,they are informative in position space.
 
 DWH: How do we show that we aren't just getting clusters because \apogee\ has plate-to-plate calibration variations?
 
 DWH: Chemical tagging will work.
 
 \acknowledgements
-DWH: It is a pleasure to thank...
+DWH was partially supported by
+  the NSF (grants IIS-1124794, AST-1517237),
+  NASA (grant NNX12AI50G), and
+  the Moore-Sloan Data Science Environment at NYU.
+This research made use of the NASA \project{Astrophysics Data System}.
 
-DWH: grants and grant numbers.
+This project made use of \sdssiii\ data.
+Funding for \sdssiii\ has been provided by the Alfred P. Sloan
+Foundation, the Participating Institutions, the National Science
+Foundation, and the U.S. Department of Energy Office of Science. The
+\sdssiii\ web site is http://www.sdss3.org/.
 
-DWH: SDSS-III and SDSS-IV.
-
-DWH: NASA ADS
-
-DWH: github repo and hash.
-
-DWH: Be sure to cite software a la the new ApJ guidelines.
+\sdssiii\ is managed by the Astrophysical Research Consortium for the
+Participating Institutions of the \sdssiii\ Collaboration including the
+University of Arizona, the Brazilian Participation Group, Brookhaven
+National Laboratory, Carnegie Mellon University, University of
+Florida, the French Participation Group, the German Participation
+Group, Harvard University, the Instituto de Astrofisica de Canarias,
+the Michigan State/Notre Dame/JINA Participation Group, Johns Hopkins
+University, Lawrence Berkeley National Laboratory, Max Planck
+Institute for Astrophysics, Max Planck Institute for Extraterrestrial
+Physics, New Mexico State University, New York University, Ohio State
+University, Pennsylvania State University, University of Portsmouth,
+Princeton University, the Spanish Participation Group, University of
+Tokyo, University of Utah, Vanderbilt University, University of
+Virginia, University of Washington, and Yale University.
 
 \clearpage
 \begin{thebibliography}{24}\raggedright
-\bibitem[Ness \etal(2016)]{ness16}
-whatev
+\bibitem[Alam \etal(2015)]{dr12}
+Alam,~S., Albareti,~F.~D., Allende~Prieto,~C., \etal, 2015, \apjs, 219, 12
+\bibitem[Blanco-Cuaresma \etal(2015)]{blancocuaresma}
+Blanco-Cuaresma,~S., Soubiran,~C., Heiter,~U., \etal, 2015, \aap, 577, A47
+\bibitem[Bovy(2015)]{bovy}
+Bovy,~J., 2015, arXiv:1510.06745
+\bibitem[Casey \etal(2016)]{casey16}
+Casey,~A.~R., Hogg,~D.~W., Ness,~M., Rix,~H.-W., 2016, in preparation
+\bibitem[De~Silva \etal(2015)]{galah}
+De~Silva,~G.~M., Freeman,~K.~C., Bland-Hawthorn,~J., \etal, 2015, \mnras, 449, 2604
+\bibitem[Freeman \& Bland-Hawthorn(2002)]{freeman}
+Freeman,~K., \& Bland-Hawthorn,~J., 2002, \araa, 40, 487
+\bibitem[Garc{\'{\i}}a~P{\'e}rez \etal(2015)]{aspcap}
+Garc{\'{\i}}a~P{\'e}rez,~A.~E., Allende~Prieto,~C., Holtzman,~J.~A., \etal, 2015, arXiv:1510.07635
+\bibitem[Majewski \etal(2015)]{apogee}
+Majewski,~S.~R., Schiavon,~R.~P., Frinchaboy,~P.~M., \etal, 2015, arXiv:1509.05420
+\bibitem[Melendez \etal(2014)]{melendez}
+Mel{\'e}ndez,~J., Ram{\'{\i}}rez,~I., Karakas,~A.~I., \etal, 2014, \apj, 791, 14
+\bibitem[Mitschang \etal(2014)]{mitschang}
+Mitschang,~A.~W., De~Silva,~G., Zucker,~D.~B., \etal, 2014, \mnras, 438, 2753
+\bibitem[Ness \etal(2015)]{thecannon}
+Ness,~M., Hogg,~D.~W., Rix,~H.-W., Ho,~A.~Y.~Q., Zasowski,~G., 2015, \apj, 808, 16
+\bibitem[Ness \etal(2016a)]{ages}
+Ness,~M., Hogg,~D.~W., Rix,~H.-W., \etal, 2016a, \apj, in press (arXiv:1511.08204)
+\bibitem[Ness \etal(2016b)]{ness16}
+Ness,~M., Hogg,~D.~W., Casey,~A.~R., Rix,~H.-W., 2016b, in preparation
+\bibitem[Quillen \etal(2015)]{quillen}
+Quillen,~A.~C., Anguiano,~B., De~Silva,~G., \etal, 2015, \mnras, 450, 2354
+\bibitem[Ting \etal(2016)]{ting}
+Ting,~Y.-S., Conroy,~C., \& Rix,~H.-W., 2016, \apj, in press (arXiv:1507.07563)
 \end{thebibliography}
 
 \end{document}
