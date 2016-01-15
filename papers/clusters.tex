@@ -26,6 +26,7 @@
 \newcommand{\eg}{\foreign{e.\,g.}}
 \newcommand{\etal}{\foreign{et\,al.}}
 \newcommand{\documentname}{\textsl{Article}}
+\newcommand{\sectionname}{Section}
 
 % math shit
 \newcommand{\teff}{T_{\mathrm{eff}}}
@@ -42,6 +43,9 @@
 \includegraphics[width=0.33\textwidth]{./figs/#1_sky.png}%
 \includegraphics[width=0.33\textwidth]{./figs/#1_decv.png}%
 \includegraphics[width=0.33\textwidth]{./figs/#1_HR.png}}
+
+% results shit
+\newcommand{\totalnumber}{98462} %% DWH CHECK
 
 \begin{document}\sloppy\sloppypar
 
@@ -69,7 +73,7 @@ in its detailed chemical abundances---%
 an informative signature of its molecular-cloud birth location and time.
 This idea has not previously yielded scientific successes, probably because of the
 noise in chemical-abundance measurements.
-However, we have succeeded in improving vastly spectroscopic measurements with \thecannon\ 
+However, we have succeeded in substantially improving spectroscopic measurements with \thecannon\ 
 (now delivering individual abundances with precisions around 0.04-dex).
 % Aims:
 We test the chemical-tagging hypothesis by looking at clusters in abundance space
@@ -160,7 +164,7 @@ very precisely similar for co-eval stars.
 The second issue for chemical tagging---and the one we address
 here---is measurement precision (and accuracy).
 The current precision on abundance measurements is not high enough
-(for example, \citealt{Ting2015, martel}).
+(for example, \citealt{martel, ting}).
 That said, it is clear that the \emph{data} are precise enough;
 there is enough signal-to-noise at the relevant locations in spectrum
 space to deliver high-precision tags.
@@ -234,7 +238,6 @@ found to be close in phase space?
 If the answer to this question is ``yes'' then chemical tagging is
 \emph{on.}
 
-\clearpage
 \section{Sample and abundances}
 
 The details about how we select, reduce, and analyze the \apogee\ data
@@ -244,7 +247,7 @@ For the spectroscopic data, we use the \apogee\ \acronym{DR12}
 (\cite{dr12}) spectroscopic data reductions for red-giant stars
 ($\logg < 3.9$) that are not flagged as bad in the
 \apogee\ \aspcap\ (\cite{aspcap}) pipeline reductions.
-There are 98462 [DWH CHECK] stars that make our $\logg$ and flag cuts.
+There are \totalnumber\ stars that make our $\logg$ and flag cuts.
 
 The \apogee\ pipelines deliver stacked (co-added),
 pseudo-continuum-normalized spectra, but we do not use these; we
@@ -267,27 +270,63 @@ This is a small fraction of the total sample, but these high
 signal-to-noise stars are observed to obtain consistent, low-scatter,
 sensible abundance-space measurements.
 
-DWH!!  How does \thecannon\ work here?
+As described in the original paper \citep{thecannon} and the companion
+papers \citep{casey16, ness16}, \thecannon\ is operated in two stages.
+In the first stage---the traning step---the training set of stars with
+measured spectra and known labels (known parameters and abundances) is
+used to establish a likelihood function for a set of coefficients that
+parameterize a smooth, simple prediction of spectral pixels given
+labels.
+\thecannon\ finds the set of coefficients that optimizes the
+training-step likelihood function.
+In the implementation used in this \documentname, the spectral
+prediction is quadratic in labels (including all cross-terms to second
+order), and there are 17 labels ($\teff$, $\logg$, and 15 abundances
+referenced to H) and 8500 spectral pixels, so there are on the order
+of 1.4 million coefficients set by a convex optimization in the
+training step.
+
+In the second stage---the test step---each unlabeled star is used to
+establish a single-star likelihood function for labels, holding the
+coefficients fixed.
+\thecannon\ finds the labels that minimize the single-star likelihood
+function for each test-set star.
+This optimization is not convex, but it is embarrassingly parallel.
+For the results shown here, the training step takes hours and the test
+step takes less than an hour on a small research cluster in Cambridge.
 
 Six two-dimensional projections of the abundance data, plus some other
 data quantities, are shown in \figurename~\ref{fig:all}.
 
 \begin{figure}[!p]
 \insanefigure{all}
-\caption{Whatevsinator.\label{fig:all}}
+\caption{The full sample of \totalnumber\ stars used in this study.
+  The top six panels show six two-dimensional projections of the
+  empirical abundance space distribution.
+  The clustering algorithm (described in
+  \sectionname~\ref{sec:method}) performs clustering in a full
+  15-dimensional abundance space of elements referenced to H (not Fe),
+  but plots are shown here referenced to Fe for familiarity reasons.
+  The bottom three panels show stellar meta-data not used in the
+  clustering but used to test whether the abundance-space clusters
+  are interesting spatially.\label{fig:all}}
 \end{figure}
 
 \clearpage
-\section{Method and results}
+\section{Method and results}\label{sec:method}
 
 Although only hints of small-scale clustering in the abundance space
 are visible in \figurename~\ref{fig:all}, exploration of the data indicates that
 known clusters do appear in the abundance space as over-densities.
+(In general, the collapse of 15 dimensions down to 2-d projections
+will hide, smooth, or dilute any structure; there is no guarantee that
+a highly featured distribution in 15-d will show features in
+\emph{any} 2-d projection, let alone axis-aligned, human-selected projections.)
 This encourages us to look for over-densities automatically in the
 abundance space and see if anything found that way would be over-dense
 in phase space.
 The simplest method for clustering points in $D$-dimensional space is
-the \emph{k-means} algorithm (see CITE for a pedagogical introduction).
+the \emph{k-means} algorithm (see \citealt{bishop} for a pedagogical introduction).
 Briefly, the k-means algorithm is to find the points closest (in
 $D$-space) to each of $K$ centers, and then take the mean of those
 points to update the locations of the centers; iterate to convergence.
@@ -320,8 +359,17 @@ positional or velocity information (nor $\teff$ nor $\logg$ nor any
 targeting or observational meta-data) as input to the clustering
 algorithm.
 
-DWH: Reminder that we don't need the absolute best clustering to
-demonstrate the hypothesis.
+DWH: EXPLICITLY GIVE THE ABUNDANCE-SPACE SCALES USED.
+
+One note on clustering algorithm decisions is warranted:
+Because this project is just a demonstration of the chemical-tagging
+concept, there is no requirement that we choose the best clustering
+algorithm or the method that reveals the best structures.
+Indeed, it is a feature of this work that even the simplest, most
+generic, least tuned clustering algorithm returns interesting
+structures (as shown below).
+The prospects for Milky Way science only improve as the clustering
+algorithm improves.
 
 When the k-means results are returned, the $D\times D$ empirical
 variance tensor for the members of each cluster can be constructed,
@@ -338,47 +386,120 @@ The fourth is a halo structure with high velocity dispersion and possibly accret
 The fifth is a thin-disk star-formation feature.
 We will discuss these more below.
 
+DWH \& HWR: How do we show that we aren't just getting clusters because \apogee\ has plate-to-plate calibration variations?
+
 All of the code for the data manipulation, clustering, and
-visualization is built on numpy (CITE), scikit-learn (CITE),
-and matplotlib (CITE).
+visualization is built on \project{numpy} \citep{numpy},
+\project{scikit-learn} \citep{sklearn}, and \project{matplotlib}
+\citep{matplotlib}.
+All of the code written specifically for this project is available in
+two open-source code repositories at
+\url{https://github.com/andycasey/AnniesLasso} and
+\url{https://github.com/davidwhogg/Platypus}.
 
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0253}
-\caption{Whatevsinator.\label{fig:M13}}
+\caption{Same as \figurename~\ref{fig:all} except that the entire
+  sample has been made gray and the members of one of the most dense
+  $K=256$ abundance-space clusters has been made black (and prominent).
+  This cluster, which was identified only in abundance space (six
+  projections of which are the top six panels in this \figurename),
+  turns out to be dominated by the halo globular cluster
+  M13.\label{fig:M13}}
 \end{figure}
-
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0034}
-\caption{Whatevsinator.\label{fig:Pal5}}
+\caption{Same as \figurename~\ref{fig:M13} but for another dense
+  abundance-space cluster.
+  This one turns out to be dominated by the disrupting globular
+  cluster Palomar 5.\label{fig:Pal5}}
 \end{figure}
-
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0177}
-\caption{Whatevsinator.\label{fig:Sgr}}
+\caption{Same as \figurename~\ref{fig:M13} but for another dense
+  abundance-space cluster.
+  This one turns out to be dominated by the Sagittarius star
+  cloud.\label{fig:Sgr}}
 \end{figure}
-
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0010}
-\caption{Whatevsinator.\label{fig:halo}}
+\caption{Same as \figurename~\ref{fig:M13} but for another dense
+  abundance-space cluster.
+  This one turns out to be dominated by a high-velocity-dispersion
+  structure in the Galaxy halo.\label{fig:halo}}
 \end{figure}
-
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0141}
-\caption{Whatevsinator.\label{fig:disk}}
+\caption{Same as \figurename~\ref{fig:M13} but for another dense
+  abundance-space cluster.
+  This one turns out to be dominated by a very thin young stellar
+  structure in the Galaxy disk.\label{fig:disk}}
 \end{figure}
 
 \clearpage
 \section{Discussion}
 
-DWH: What have we demonstrated?
+We have demonstrated for the first time that, in a large-scale
+spectroscopic survey of stars, stars that appear similar in
+chemical-abundance properties are often associated physically in
+clusters or other structures.
+The reverse is well established---that is, that stars that are
+associated physically in clusters are similar in chemical-abundance
+properties (with a recent model-free test by \citealt{bovy}).
+MKN: WHAT ELSE TO CITE HERE?
+However, it was not known whether abundance-space information would be
+precise enough, or \emph{measurable} precisely enough to find this
+structure in surveys dominated by a large mix of stars from different
+origins and ages (and there was good reason to be pessimistic;
+\citealt{ting}).
+We have demonstrated with a straightforward (and in no way optimal)
+clustering in chemical-abundance space that it is easy to find co-eval
+stellar structures.
 
-DWH: For the first time/H], [we see small-scale informative features in abundance space.
+What made this possible is substantial improvements in precision
+delivered by \thecannon.
+We don't have an absolute measure of the precision of the measurements,
+but from looking at open and globular clusters, it appears to be on the
+order of or better than 0.04~dex for the median element in the list of 15.
+These improvements are discussed in detail in the companion papers
+\citep{casey16, ness16} about the abundance measurements.
+We believe these improvements come from a combination of factors, not
+limited to (a)~improvements in the determination of pseudo-continuum,
+(b)~the use of more spectral range than just unblended element windows
+\citep{aspcap}, and (c)~accurate spectral predictions
+(\thecannon\ delivers accurate predictions because it is fit to
+observed data).
+Furthermore, because abundance space is high in dimensionality, even
+small improvements in abundance measurement get taken to a significant
+power when thinking about information gains.
 
-DWH: When we identify the small-scale features in abundance space,they are informative in position space.
+There is no sense at all in which \figurename~\ref{fig:M13},
+\ref{fig:Pal5}, \ref{fig:Sgr}, \ref{fig:halo}, and \ref{fig:disk} show
+a representative or complete set of features found in abundance space.
+These features were hand-chosen to be obviously interesting and
+interpetable.
+There are many other things to be found in this data set!
 
-DWH: How do we show that we aren't just getting clusters because \apogee\ has plate-to-plate calibration variations?
+On the particulars of these features, a few comments:
+DWH: Comments about Sag and M13: They appear in multiple clusters.
+MKN: Comments about the young disk feature and what it probably is?
 
-DWH: Chemical tagging will work.
+The \apogee\ project shows great promise for these studies, and with
+the appearance of the companion papers, we will release the
+chemical-abundance measurements we used here for further study.
+The future is even brighter, however: \apogee\ is expanding to 19
+elements, more stars, and all-sky angular coverage with \apogee2, and
+\galah\ is nearly ready to release chemical abundances on a larger set
+of 29 elements.
+The \apogee\ elements employed in this project include alpha
+(Mg, O, Si, Ca, Ti), light proton-capture (C, N, S), odd-Z (Na, Al, K)
+and iron peak (Fe, Ni, V, Mn) elements.
+\galah\ will deliver element abundances from all the major
+nucleosynthetic processes, including light proton capture elements,
+alpha, odd-Z, iron-peak, light and heavy slow neutron capture, and
+rapid neutron capture.
+Chemical tagging capabilities are expected to grow as the
+\emph{product} of the measured nucleosynthetic pathways.
 
 \acknowledgements
 DWH was partially supported by
