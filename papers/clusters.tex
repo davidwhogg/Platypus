@@ -51,8 +51,8 @@
 \author{David~W.~Hogg\altaffilmark{1,2,3,4},
         Andrew~R.~Casey\altaffilmark{5},
         M.~Ness\altaffilmark{4},
-        Hans-Walter~Rix\altaffilmark{4}, \&
-        Daniel~Foreman-Mackey\altaffilmark{6}}
+        Hans-Walter~Rix\altaffilmark{4},
+    and~Daniel~Foreman-Mackey\altaffilmark{6}}
 \altaffiltext{1}{SCDA}
 \altaffiltext{2}{Center for Cosmology and Particle Physics, Department of Phyics,
   New York University, 4 Washington Pl., room 424, New York, NY, 10003, USA}
@@ -83,7 +83,7 @@ We use \emph{only} abundance-space information (no positional information) to id
 We find that clusters in abundance space are indeed clusters in phase space.
 We recover some known clusters and find other interesting structures.
 This confirms the chemical-tagging hypothesis and verifies the precision of abundances delivered by \thecannon.
-This is the first-ever project to identify phase-space structures by blind search in abundance space;
+This is the first-ever project to identify phase-space structures by blind search purely in abundance space;
 the prospects for future data sets are very good.
 \end{abstract}
 
@@ -288,12 +288,36 @@ abundance space and see if anything found that way would be over-dense
 in phase space.
 The simplest method for clustering points in $D$-dimensional space is
 the \emph{k-means} algorithm (DWH CITE).
+Briefly, the k-means algorithm is to find the points closest (in
+$D$-space) to each of $K$ centers, and then take the mean of those
+points to update the locations of the centers; iterate to convergence.
+The output is the locations of the $K$ centers and the assignments of
+all points to centers.
 This algorithm is fast and performs well in practice in problems of
 this nature.
 
-DWH: Scaling of the data
-DWH: number of clusters
-DWH: restarts for local minima
+The k-means algorithm has disadvantages, of course.
+One is that $K$ must be chosen by hand (or heuristically at best).
+Here we are only demonstrating a concept; we don't need to have the
+best possible clustering.
+For this reason we simply choose $K=128, 256, 512$ and look at all the
+results.
+The algorithm also only performs local optimization.
+At each $K$ we perform 32 restarts with different initializations, and
+preserve the best clustering (best according to the k-means score).
+
+Another issue with k-means is that it effectively uses metric
+distances in the $D$-space; it presumes Euclidean isotropy.
+We choose here to work in the hydrogen-normalized abundance space, the
+space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
+[K/H], [Ca/H], [Ti/H], [V/H], [Mn/H], [Fe/H], [Ni/H].
+But in addition to this, we re-scale these by approximate measurement
+precisions obtained by \thecannon\ before running k-means.
+This makes the space close to isotropic in measurment uncertainty or
+observational precision.
+
+When the k-means results are returned, we construct the $D\times D$ empirical variance tensor for the DWH THIS IS WRONG!
+
 DWH: Citation out to numpy and sklearn.
 
 DWH: Reminder that we don't need the absolute best clustering to
@@ -313,7 +337,12 @@ DWH: What have we demonstrated?
 
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0034}
-\caption{Whatevsinator.\label{fig:cluster}}
+\caption{Whatevsinator.\label{fig:Pal5}}
+\end{figure}
+
+\begin{figure}[!p]
+\insanefigure{cluster_0256_0177}
+\caption{Whatevsinator.\label{fig:Sgr}}
 \end{figure}
 
 \begin{figure}[!p]
@@ -329,9 +358,9 @@ DWH: What have we demonstrated?
 \clearpage
 \section{Discussion}
 
-DWH: For the first time, we see small-scale informative features in abundance space.
+DWH: For the first time/H], [we see small-scale informative features in abundance space.
 
-DWH: When we identify the small-scale features in abundance space, they are informative in position space.
+DWH: When we identify the small-scale features in abundance space,they are informative in position space.
 
 DWH: How do we show that we aren't just getting clusters because \apogee\ has plate-to-plate calibration variations?
 
