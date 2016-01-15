@@ -61,7 +61,7 @@ def plot_one_cluster(data, labels, mask, name, dir):
         ("MG_H - FE_H", "FE_H", "MgFe"),
         ("NA_H - FE_H", "O_H - FE_H", "NaO"),
         ("C_H - FE_H", "N_H - FE_H", "CN"),
-        ("AL_H - FE_H", "MG_H - FE_H", "AlMg"),
+        ("MG_H - FE_H", "AL_H - FE_H", "AlMg"), # wrong name for file!!
         ("S_H - FE_H", "AL_H - FE_H", "SAl"),
         ("MG_H - FE_H", "K_H - FE_H", "MgK"),
         ("DEC", "RA", "sky"),
@@ -80,9 +80,9 @@ def plot_one_cluster(data, labels, mask, name, dir):
             plt.clf()
             kwargs = {"marker": ".", "ls": "none"}
             if mask is None:
-                plt.plot(data[:,x], data[:,y], c="k", ms=1.0, alpha=0.20, **kwargs)
+                plt.plot(data[:,x], data[:,y], c="k", ms=0.5, alpha=0.20, **kwargs)
             else:        
-                plt.plot(data[:,x], data[:,y], c="0.75", ms=1.0, alpha=0.20, **kwargs)
+                plt.plot(data[:,x], data[:,y], c="0.75", ms=0.5, alpha=0.20, **kwargs)
                 plt.plot(data[mask,x], data[mask,y], c="k", ms=5.0, alpha=0.5, **kwargs)
             plt.ylim(range_dict[ly])
             plt.xlim(range_dict[lx])
@@ -238,3 +238,5 @@ if __name__ == "__main__":
             plotcount += 1
             if plotcount == 32:
                 break
+
+    plot_one_cluster(plotdata, plotdata_labels, None, "all", dir)
