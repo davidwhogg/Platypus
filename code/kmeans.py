@@ -65,9 +65,10 @@ def plot_one_cluster(data, labels, mask, name, dir):
         ("S_H - FE_H", "AL_H - FE_H", "SAl"),
         ("MG_H - FE_H", "K_H - FE_H", "MgK"),
         ("DEC", "RA", "sky"),
-        ("GLAT", "GLON", "gal"),
+        # ("GLAT", "GLON", "gal"),
         ("DEC", "VHELIO_AVG", "decv"),
         ("LOGG_ASPCAP", "TEFF_ASPCAP", "HR"),
+        # ("DEC", "AL_H - FE_H", "DecAl")
         ]:
         fn = "{}/{}_{}.{}".format(dir, name, plotname, suffix)
         if os.path.exists(fn):
@@ -168,7 +169,7 @@ if __name__ == "__main__":
                    "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                    "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
 
-    for K in 2 ** np.arange(7, 10):
+    for K in [256, 512]:
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
@@ -206,7 +207,7 @@ if __name__ == "__main__":
         for k in range(K):
             I = (clusters == k)
             sizes[k] = np.sum(I)
-            subdata = data[I]
+            subdata = data[I,:] - (np.mean(data[I], axis=0))[None, :]
             if sizes[k] > (D + 1):
                 variance = np.sum(subdata[:,:,None] * subdata[:,None,:], axis=0)
                 s, logdets[k] = np.linalg.slogdet(variance)
@@ -227,6 +228,7 @@ if __name__ == "__main__":
                 plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
             metadata_labels = ["RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
             metadata = get_metadata(dfn, metadata_labels, mask)
+            fields =   get_metadata(dfn, ["FIELD", ], mask)
             plotdata = np.hstack((plotdata, metadata))
             plotdata_labels = plotdata_labels + metadata_labels
 
@@ -234,6 +236,7 @@ if __name__ == "__main__":
         plotcount = 0
         for k in (np.argsort(densities))[::-1]:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
+            print(clustername, fields[(clusters == k)].T)
             plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
             plotcount += 1
             if plotcount == 32:
