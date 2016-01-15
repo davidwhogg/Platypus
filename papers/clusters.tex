@@ -313,22 +313,33 @@ space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
 [K/H], [Ca/H], [Ti/H], [V/H], [Mn/H], [Fe/H], [Ni/H].
 But in addition to this, we re-scale these by approximate measurement
 precisions obtained by \thecannon\ before running k-means.
-This makes the space close to isotropic in measurment uncertainty or
+This makes the space close to isotropic in measurement uncertainty or
 observational precision.
-
-When the k-means results are returned, we construct the $D\times D$ empirical variance tensor for the DWH THIS IS WRONG!
-
-DWH: Citation out to numpy and sklearn.
+Importantly we use \emph{only} abundance-space information, and no
+positional or velocity information (nor $\teff$ nor $\logg$ nor any
+targeting or observational meta-data) as input to the clustering
+algorithm.
 
 DWH: Reminder that we don't need the absolute best clustering to
 demonstrate the hypothesis.
 
-DWH: Visualize densest clusters.  Some of them are known clusters.
-Show examples.
+When the k-means results are returned, the $D\times D$ empirical
+variance tensor for the members of each cluster can be constructed,
+and an effective density can be computed as the number of points in
+the cluster divided by the square-root of the determinant of the
+tensor.
+This density was used to rank abundance-space overdensities (from highest
+to lowest) for visual inspection.
+We chose a few interesting cases from many and show them in
+\figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
+\ref{fig:halo}, and \ref{fig:disk}.
+The first three of these are known clusters M13, Pal5, and Sagittarius (MKN, ARC, help!).
+The fourth is a halo structure with high velocity dispersion and possibly accreted.
+The fifth is a thin-disk star-formation feature.
+We will discuss these more below.
 
-DWH: Do we have streams or other structures?
-
-DWH: What have we demonstrated?
+All of the code for the clustering and visualization is built on numpy
+(DWH CITE), scikit-learn (DWH CITE), and matplotlib (DWH CITE).
 
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0253}
@@ -357,6 +368,8 @@ DWH: What have we demonstrated?
 
 \clearpage
 \section{Discussion}
+
+DWH: What have we demonstrated?
 
 DWH: For the first time/H], [we see small-scale informative features in abundance space.
 
