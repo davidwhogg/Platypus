@@ -65,8 +65,9 @@ def plot_one_cluster(data, labels, mask, name, dir):
         ("S_H - FE_H", "AL_H - FE_H", "SAl"),
         ("MG_H - FE_H", "K_H - FE_H", "MgK"),
         ("DEC", "RA", "sky"),
-        # ("GLAT", "GLON", "gal"),
+        ("GLAT", "GLON", "gal"),
         ("DEC", "VHELIO_AVG", "decv"),
+        ("VHELIO_AVG", "GLON", "vlon"),
         ("LOGG_ASPCAP", "TEFF_ASPCAP", "HR"),
         # ("DEC", "AL_H - FE_H", "DecAl")
         ]:
@@ -76,8 +77,12 @@ def plot_one_cluster(data, labels, mask, name, dir):
         else:
             y = np.where(np.array(labels) == ly)[0][0]
             x = np.where(np.array(labels) == lx)[0][0]
-            fig = plt.figure(figsize=(4,4))
-            plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
+            if plotname == "sky" or plotname == "gal" or plotname == "vlon":
+                fig = plt.figure(figsize=(8,4))
+                plt.subplots_adjust(left=0.1, right=0.98, bottom=0.2, top=0.96)
+            else:
+                fig = plt.figure(figsize=(4,4))
+                plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
             plt.clf()
             kwargs = {"marker": ".", "ls": "none"}
             if mask is None:
@@ -134,10 +139,10 @@ if __name__ == "__main__":
                   "S_H - FE_H": (-0.4, 0.9),
                   "TI_H - FE_H": (-0.6, 0.5),
                   "V_H - FE_H": (-0.9, 0.8),
-                  "RA": (360., 0.),
-                  "DEC": (-35., 90.),
-                  "GLON": (60., 0.),
-                  "GLAT": (-30., 30.),
+                  "RA":   (360., 0.),
+                  "DEC":  (-60., 90.),
+                  "GLON": (360., 0.),
+                  "GLAT": (-65., 85.),
                   "VHELIO_AVG": (-275., 275.),
                   "TEFF_ASPCAP": (5500., 3500.),
                   "LOGG_ASPCAP": (3.9, 0.0), }
@@ -226,9 +231,10 @@ if __name__ == "__main__":
             for d in range(1, D):
                 plotdata[:,d] = data[:,d] - data[:,0]
                 plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
-            metadata_labels = ["RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP"]
+            metadata_labels = ["RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP", "FIELD"]
             metadata = get_metadata(dfn, metadata_labels, mask)
-            fields =   get_metadata(dfn, ["FIELD", ], mask)
+            fields =   metadata[:, -1]
+            metadata = metadata[:, 0:-1].astype(float)
             plotdata = np.hstack((plotdata, metadata))
             plotdata_labels = plotdata_labels + metadata_labels
 
@@ -236,7 +242,7 @@ if __name__ == "__main__":
         plotcount = 0
         for k in (np.argsort(densities))[::-1]:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
-            print(clustername, fields[(clusters == k)].T)
+            print(clustername, sizes[k], logdets[k], densities[k], fields[(clusters == k)].T)
             plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
             plotcount += 1
             if plotcount == 32:
