@@ -2,14 +2,16 @@
 % Copyright 2016 the authors.
 
 % to-do
-% - write data and cannon section
-% - write method and results section
-% - write discussion section
+% - write discussion section w MKN input
+% - expand kmeans discussion
 % - put in references
 % - cite codes!
 % - fix all remaining occurrences of ARC, MKN, HWR, DWH, or CITE
 % - forward to Freeman, others?
 % - submit to journal and arXiv
+
+% style notes
+% - never use \cite{}, always \citep{} or \citealt{}.
 
 \documentclass[12pt, letterpaper, preprint]{aastex}
 
@@ -110,16 +112,25 @@ the prospects for future data sets are very good.
 \section{Introduction}\label{sec:intro}
 
 Ensembles of stars in the Milky Way are born in molecular clouds,
-which are presumed to be near-homogeneous in their chemical element composition.
-However, most stars are born in unbound associations, or are born in star clusters that disperse rapidly: they will eventually end up in very different parts of phase space, on differing orbits.
-Yet, if every star preserved its photospheric element abundances over its lifetime (at least for most elements), then stars of common birth origin ought to be identifiable through their detailed photospheric abundances, long after any spatial or phase-space proximity has vanished.
+which are presumed to be near-homogeneous in their chemical element
+composition.
+However, most stars are born in unbound associations, or are born in
+star clusters that disperse rapidly; they will eventually end up in
+very different parts of phase space, on differing orbits.
+Yet, if every star preserved its photospheric element abundances over
+its lifetime (at least for most elements), then stars of common birth
+origin ought to be identifiable through their detailed photospheric
+abundances, long after any spatial or phase-space proximity has
+vanished.
 
-This idea, dubbed ``chemical tagging'', was proposed long ago \citep{freeman} and is one of the
-principal motivations for a number of surveys, most notably
-\apogee\ \citep{apogee}, \gaiaeso\ \citep{gaiaeso} and \galah\ \citep{galah}.
-In order to determine the precise abundance labels for chemical tagging,  these surveys are each measuring high resolution,
-high signal-to-noise spectra for hundreds of thousands of stars across
-the Galaxy's disk, bulge and halo.
+This idea, dubbed ``chemical tagging'', was proposed long ago
+\citep{freeman} and is one of the principal motivations for a number
+of surveys, most notably \apogee\ \citep{apogee},
+\gaiaeso\ \citep{gaiaeso} and \galah\ \citep{galah}.
+In order to determine the precise abundance labels for chemical
+tagging, these surveys are each measuring high resolution, high
+signal-to-noise spectra for hundreds of thousands of stars across the
+Galaxy's disk, bulge and halo.
 
 Chemical tagging holds the promise of revealing not just the
 star-formation history of the Galaxy, but also the accretion history
@@ -132,13 +143,19 @@ disrupted---associations or groups will disperse, through either
 internal two-body processes or external tidal forces.
 
 Although undeniably promising---and motivating the 
-launch of costly large-scale spectroscopic surveys---
-chemical-tagging as a search technique has yet to be proven in practice: identifying stars of common birth origin {\it purely} on the basis of their near-identical abundances patterns, without any consideration of position or velocity.
+launch of costly large-scale spectroscopic surveys---%
+chemical-tagging as a search technique has yet to be proven in
+practice: identifying stars of common birth origin {\it purely} on the
+basis of their near-identical abundances patterns, without any
+consideration of position or velocity.
 
 Part of the reason is that the level of abundance specificity required
 is very high:
 If there are thousands of (relevant) molecular clouds forming stars in
-the recent history of the Milky Way, clumps of stars can only stand out in a high-dimensional abundance space: therefore accurate, or at least precise, measurements of many different abundances are needed for stellar sibling to have sufficiently unique fingerprints.
+the recent history of the Milky Way, clumps of stars can only stand
+out in a high-dimensional abundance space: therefore accurate, or at
+least precise, measurements of many different abundances are needed
+for stellar sibling to have sufficiently unique fingerprints.
 Stellar spectroscopic surveys now have the resolution, signal-to-noise,
 wavelength coverage, and sample sizes to deliver many different chemical tags for each star.
 
@@ -223,26 +240,37 @@ chemical-abundance space.
 Does this work the other way around? I.e. can chemical tagging identify small subsets of stars, among a vastly greater background sample, that have a common birth origin. If we find stars purely by their clustering in abundance space and subsequently show that they are part of a still spatially coherent cluster, then chemical tagging is
 \emph{on.}
 
-\section{Data: \apogee\  giants with [X/H] re-derived from \thecannon }
+\section{Data: \apogee\ giants with abundances from \thecannon}\label{sec:data}
 
-Our analysis draws on the spectra of \totalnumber\ giant stars ($\logg < 3.9$) from \apogee\ \acronym{DR12} (\cite{dr12}), alll those not flagged as bad in the \apogee\ \aspcap\ (\cite{aspcap}) pipeline reductions. We re-analyze these
-\emph{spectra} using \thecannon\ , because this deliver stellar abundance labels of higher precision, especially for stars of SNR$\le 150$.
-
-The details about how we select, reduce, and analyze the \apogee\ data are given in full detail in the companion papers \citep{casey16, ness16}, and we only summarize briefly here.
+Our analysis draws on the spectra of \totalnumber\ giant stars ($\logg
+< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, alll those not
+flagged as bad in the \apogee\ \aspcap\ \citep{aspcap} pipeline
+reductions.
+We re-analyze these \emph{spectra} using \thecannon, because this
+deliver stellar abundance labels of higher precision, especially for
+stars of SNR$\le 150$.
+The details about how we select, reduce, and analyze the \apogee\ data
+are given in full detail in the companion papers \citep{casey16,
+  ness16}, and we only summarize briefly here.
 We re-derived 17 labels ($\teff$, $\logg$, and 15 abundances
 referenced to H) form the \apogee\ \acronym{DR12} spectra. 
-In the \thecannon 's  training step we trained on the
-ARC:XXXXX red-giant stars that have spectral SNR$\ge 200$.
-For this small fraction of the sample with the highest SNR objects the labels provided by \aspcap provide consistent, low-scatter,
-sensible abundance-space measurements. The training step fixes a spectral model that predics the normalized spectrum as a quadratic function of all labels. In the second stage---the test step---each unlabeled star is used to establish a single-star likelihood function for its labels, holding the model
-coefficients fixed.
+For the training step of \thecannon, 
+ARC:XXXXX red-giant stars with spectral SNR$\ge 200$ were used.
+For this small fraction of the sample with the highest SNR objects the
+labels provided by \aspcap provide consistent, relatively low-scatter, sensible
+abundance-space measurements.
+The training step fixes a spectral model
+that predics the normalized spectrum as a quadratic function of all
+labels. In the second stage---the test step---each unlabeled star is
+used to establish a single-star likelihood function for its labels,
+holding the model coefficients fixed.
 \thecannon\ finds the labels that minimize the single-star likelihood
 function for each test-set star.
 This optimization is not convex, but it is embarrassingly parallel,
 and therefore fast. The test
 step takes less than an hour on a small research cluster in Cambridge.
 
-
+% HWR commented this (below) out
 
 % We start by performing our own continuum normalization on individual-exposure spectra and co-add them ourselves.
 % This is required, because the performance of \thecannon\ depends
@@ -286,7 +314,6 @@ step takes less than an hour on a small research cluster in Cambridge.
 % For the results shown here, the training step takes hours and the test
 % step takes less than an hour on a small research cluster in Cambridge.
 
-
 Six two-dimensional projections of the abundance data, plus some other
 data quantities, are shown in \figurename~\ref{fig:all}.
 
@@ -305,7 +332,7 @@ data quantities, are shown in \figurename~\ref{fig:all}.
 \end{figure}
 
 \clearpage
-\section{Method and results}\label{sec:method}
+\section{Clustering method and results}\label{sec:method}
 
 Although only hints of small-scale clustering in the abundance space
 are visible in \figurename~\ref{fig:all}, exploration of the data indicates that
