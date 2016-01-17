@@ -28,6 +28,7 @@
 \newcommand{\documentname}{\textsl{Article}}
 \newcommand{\sectionname}{Section}
 
+
 % math shit
 \newcommand{\teff}{T_{\mathrm{eff}}}
 \newcommand{\logg}{\log g}
@@ -49,7 +50,7 @@
 
 \begin{document}\sloppy\sloppypar
 
-\title{Chemical tagging: \\
+\title{Chemical tagging can work: \\
        Identification of stellar phase-space structures \\
        purely by chemical-abundance similarity}
 \author{David~W.~Hogg\altaffilmark{1,2,3,4},
@@ -108,21 +109,15 @@ the prospects for future data sets are very good.
 \clearpage
 \section{Introduction}\label{sec:intro}
 
-If every star in the Milky Way was born in a molecular cloud that has
-unique chemical-abundance characteristics (as a function of time), and
-if every star preserves its surface abundances (or significant aspects
-of them) over its lifetime, then stars with common birthplaces and
-time ought to be identifiable in their surface abundances.
-That is, it ought to be possible to use stellar abundances to link up
-co-eval stars---even if at the present day they are no longer close to
-one another in phase space---and infer a detailed star-formation and
-dynamical history for the Galaxy.
-This idea has been dubbed ``chemical tagging''.
-It was proposed long ago \citep{freeman} and is one of the
+Ensembles of stars in the Milky Way are born in molecular clouds,
+which are presumed to be near-homogeneous in their chemical element composition.
+However, most stars are born in unbound associations, or are born in star clusters that disperse rapidly: they will eventually end up in very different parts of phase space, on differing orbits.
+Yet, if every star preserved its photospheric element abundances over its lifetime (at least for most elements), then stars of common birth origin ought to be identifiable through their detailed photospheric abundances, long after any spatial or phase-space proximity has vanished.
+
+This idea, dubbed ``chemical tagging'', was proposed long ago \citep{freeman} and is one of the
 principal motivations for a number of surveys, most notably
 \apogee\ \citep{apogee}, \gaiaeso\ \citep{gaiaeso} and \galah\ \citep{galah}.
-In order to measure chemical tags and infer the Galaxy's dynamical
-properties and formation history, these surveys are each measuring high resolution,
+In order to determine the precise abundance labels for chemical tagging,  these surveys are each measuring high resolution,
 high signal-to-noise spectra for hundreds of thousands of stars across
 the Galaxy's disk, bulge and halo.
 
@@ -134,22 +129,19 @@ stellar-orbit diffusion process like radial mixing and radial
 migration (for example, \citealt{Roskar2009, quillen}).  After
 stars are born---or after a star cluster is accreted and
 disrupted---associations or groups will disperse, through either
-coherent orbital evolution or else incoherent diffusion, but the
-chemical-abundance tags can in principle make the former members
-identifiable as co-eval stellar siblings.
+internal two-body processes or external tidal forces.
 
-Although undeniably promising---and although it has motivated the
-launch of expensive, large-scale spectroscopic surveys---the
-chemical-tagging idea has yet to yield scientific fruit.
-Part of the reason is that the level of chemical specificity required
+Although undeniably promising---and motivating the 
+launch of costly large-scale spectroscopic surveys---
+chemical-tagging as a search technique has yet to be proven in practice: identifying stars of common birth origin {\it purely} on the basis of their near-identical abundances patterns, without any consideration of position or velocity.
+
+Part of the reason is that the level of abundance specificity required
 is very high:
 If there are thousands of (relevant) molecular clouds forming stars in
-the recent history of the Milky Way, it will take many abundances,
-each measured accurately, to make a sufficiently unique fingerprint
-that stellar sibling identification will be reliable.
-
+the recent history of the Milky Way, clumps of stars can only stand out in a high-dimensional abundance space: therefore accurate, or at least precise, measurements of many different abundances are needed for stellar sibling to have sufficiently unique fingerprints.
 Stellar spectroscopic surveys now have the resolution, signal-to-noise,
-wavelength coverage, and sample sizes to deliver chemical tags.
+wavelength coverage, and sample sizes to deliver many different chemical tags for each star.
+
 There are, however, two big issues.
 The first is that the physical assumptions behind the idea may require
 refinement:
@@ -163,20 +155,17 @@ very precisely similar for co-eval stars.
 
 The second issue for chemical tagging---and the one we address
 here---is measurement precision (and accuracy).
-The current precision on abundance measurements is not high enough
-(for example, \citealt{martel, ting}).
-That said, it is clear that the \emph{data} are precise enough;
-there is enough signal-to-noise at the relevant locations in spectrum
-space to deliver high-precision tags.
-Our view is that the traditional methods for making abundance
-measurements just aren't mature enough:
-There are issues with the physical models, and the data-analysis
-methods do not make use of all of the information in the data sets.
+The current precision on abundance measurements in the published survey catalogs is not high enough (for example, \citealt{martel, ting}).
+However, our recent work \citep{thecannon} suggests that \emph{data} are precise enough: there is enough signal-to-noise at the relevant 
+locations in spectrum space to deliver high-precision tags.
+The existence of very large data sets, homogeneous in data/spectrum space, suggest that one can use data-driven approaches to determining stellar abundances, which can considerably outperform traditional methods.
+These traditional approaches are based on ab-initio physical models
+that have shortcomings that become apparent in this age of high-quality spectra; and the data-analysis methods do not make use of all of the information in the data sets.
 Improving the models and exploiting the entire information
 content in the data is critical if we are going to deliver useful
 chemical tags.
 
-Our contribution in this space has been to develop
+Our specific contribution in this space has been to develop
 \thecannon\ \citep{thecannon, ages}, which is a data-driven model for
 stellar spectra.
 This model can deliver stellar parameters and chemical abundances to
@@ -215,8 +204,8 @@ wrongness in abundance space is consistent across the H-R diagram.
 That is, we need a substantial amount of accuracy to achieve our goals.
 
 In what follows, we are going to use \apogee\ \acronym{DR12} data \citep{dr12}, in
-which we can measure 15 element abundances (C, N, O, Na, Mg, Al, Si,
-S, K, Ca, Ti, V, Mn, Fe, Ni).
+which we can re-derive 15 element abundances (C, N, O, Na, Mg, Al, Si,
+S, K, Ca, Ti, V, Mn, Fe, Ni), using \thecannon\ \citep{thecannon}.
 The \apogee\ data set covers a huge radial extent and---because the
 data are taken in the infrared---explores the thin disk.
 However, it has the disadvantage that it's spatial coverage is swiss
@@ -226,74 +215,77 @@ In many ways, \galah\ will deliver improvements, both because it will
 have more abundances (possibly 29) and contiguous sky coverage.
 
 One final note:
-We think of this \documentname\ as performing a hypothesis test.
+we think of this \documentname\ as performing a proof of concept.
 We know that the stellar members of open and globular clusters---stars
 that are identified by being close in phase space---contain highly
 informative abundance information that identifies them also in
 chemical-abundance space.
-Does this work the other way around?
-Are groups of stars that are identified as being close in abundance
-space---collections of stars with near-identical chemical tags---also
-found to be close in phase space?
-If the answer to this question is ``yes'' then chemical tagging is
+Does this work the other way around? I.e. can chemical tagging identify small subsets of stars, among a vastly greater background sample, that have a common birth origin. If we find stars purely by their clustering in abundance space and subsequently show that they are part of a still spatially coherent cluster, then chemical tagging is
 \emph{on.}
 
-\section{Sample and abundances}
+\section{Data: \apogee\  giants with [X/H] re-derived from \thecannon }
 
-The details about how we select, reduce, and analyze the \apogee\ data
-are given in full detail in the companion papers \citep{casey16, ness16}.
-We summarize briefly here.
-For the spectroscopic data, we use the \apogee\ \acronym{DR12}
-(\cite{dr12}) spectroscopic data reductions for red-giant stars
-($\logg < 3.9$) that are not flagged as bad in the
-\apogee\ \aspcap\ (\cite{aspcap}) pipeline reductions.
-There are \totalnumber\ stars that make our $\logg$ and flag cuts.
+Our analysis draws on the spectra of \totalnumber\ giant stars ($\logg < 3.9$) from \apogee\ \acronym{DR12} (\cite{dr12}), alll those not flagged as bad in the \apogee\ \aspcap\ (\cite{aspcap}) pipeline reductions. We re-analyze these
+\emph{spectra} using \thecannon\ , because this deliver stellar abundance labels of higher precision, especially for stars of SNR$\le 150$.
 
-The \apogee\ pipelines deliver stacked (co-added),
-pseudo-continuum-normalized spectra, but we do not use these; we
-perform our own continuum normalization on individual-exposure data
-and co-add it ourselves.
-This is required, because the performance of \thecannon\ depends
-critically on the methods used for spectral normalization.  It does
-not require accurate continuum estimation, but it requires that the
-normalization vector be obtained by a \emph{linear operation on the
-  data}.
-The linear operation we use is a smooth-function fit to pixels
-identified as continuum in our previous work \citep{thecannon}.
-
-For the training data labels (used to train \thecannon; see below), we
-use the \apogee\ \acronym{DR12} \aspcap\ atmospheric parameters and
-15-element abundances, but only for the subset of ARC:XXXXX red-giant
-stars that have spectral signal-to-noise ratio measurements greater
-than 200.
-This is a small fraction of the total sample, but these high
-signal-to-noise stars are observed to obtain consistent, low-scatter,
-sensible abundance-space measurements.
-
-As described in the original paper \citep{thecannon} and the companion
-papers \citep{casey16, ness16}, \thecannon\ is operated in two stages.
-In the first stage---the traning step---the training set of stars with
-measured spectra and known labels (known parameters and abundances) is
-used to establish a likelihood function for a set of coefficients that
-parameterize a smooth, simple prediction of spectral pixels given
-labels.
-\thecannon\ finds the set of coefficients that optimizes the
-training-step likelihood function.
-In the implementation used in this \documentname, the spectral
-prediction is quadratic in labels (including all cross-terms to second
-order), and there are 17 labels ($\teff$, $\logg$, and 15 abundances
-referenced to H) and 8500 spectral pixels, so there are on the order
-of 1.4 million coefficients set by a convex optimization in the
-training step.
-
-In the second stage---the test step---each unlabeled star is used to
-establish a single-star likelihood function for labels, holding the
+The details about how we select, reduce, and analyze the \apogee\ data are given in full detail in the companion papers \citep{casey16, ness16}, and we only summarize briefly here.
+We re-derived 17 labels ($\teff$, $\logg$, and 15 abundances
+referenced to H) form the \apogee\ \acronym{DR12} spectra. 
+In the \thecannon 's  training step we trained on the
+ARC:XXXXX red-giant stars that have spectral SNR$\ge 200$.
+For this small fraction of the sample with the highest SNR objects the labels provided by \aspcap provide consistent, low-scatter,
+sensible abundance-space measurements. The training step fixes a spectral model that predics the normalized spectrum as a quadratic function of all labels. In the second stage---the test step---each unlabeled star is used to establish a single-star likelihood function for its labels, holding the model
 coefficients fixed.
 \thecannon\ finds the labels that minimize the single-star likelihood
 function for each test-set star.
-This optimization is not convex, but it is embarrassingly parallel.
-For the results shown here, the training step takes hours and the test
+This optimization is not convex, but it is embarrassingly parallel,
+and therefore fast. The test
 step takes less than an hour on a small research cluster in Cambridge.
+
+
+
+% We start by performing our own continuum normalization on individual-exposure spectra and co-add them ourselves.
+% This is required, because the performance of \thecannon\ depends
+% critically on the methods used for spectral normalization.  It does
+% not require accurate continuum estimation, but it requires that the
+% normalization vector be obtained by a \emph{linear operation on the
+%   data}. The linear operation we use is a smooth-function fit to pixels
+% identified as continuum in our previous work \citep{thecannon}.
+
+% For the training data labels (used to train \thecannon; see below), we
+% use the \apogee\ \acronym{DR12} \aspcap\ atmospheric parameters and
+% 15-element abundances, but only for the subset of ARC:XXXXX red-giant
+% stars that have spectral signal-to-noise ratio measurements greater
+% than 200.
+% This is a small fraction of the total sample, but these highest
+% signal-to-noise stars are observed to obtain consistent, low-scatter,
+% sensible abundance-space measurements.
+
+% As described in the original paper \citep{thecannon} and the companion
+% papers \citep{casey16, ness16}, \thecannon\ is operated in two stages.
+% In the first stage---the training step---the training set of stars with
+% measured spectra and known labels (known parameters and abundances) is
+% used to establish a likelihood function for a set of coefficients that
+% parameterize a smooth, simple prediction of spectral pixels given
+% labels.
+% \thecannon\ finds the set of coefficients that optimizes the
+% training-step likelihood function.
+% In the implementation used in this \documentname, the spectral
+% prediction is quadratic in labels (including all cross-terms to second
+% order), and there are 17 labels ($\teff$, $\logg$, and 15 abundances
+% referenced to H) and 8500 spectral pixels, so there are on the order
+% of 1.4 million coefficients set by a convex optimization in the
+% training step.
+
+% In the second stage---the test step---each unlabeled star is used to
+% establish a single-star likelihood function for labels, holding the
+% coefficients fixed.
+% \thecannon\ finds the labels that minimize the single-star likelihood
+% function for each test-set star.
+% This optimization is not convex, but it is embarrassingly parallel.
+% For the results shown here, the training step takes hours and the test
+% step takes less than an hour on a small research cluster in Cambridge.
+
 
 Six two-dimensional projections of the abundance data, plus some other
 data quantities, are shown in \figurename~\ref{fig:all}.
