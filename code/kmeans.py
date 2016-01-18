@@ -86,7 +86,7 @@ def plot_one_cluster(data, labels, mask, name, dir):
             plt.clf()
             kwargs = {"ls": "none", "marker": "."}
             if mask is None:
-                plt.plot(data[:,x], data[:,y], c="k", mec="none", ms=0.5, alpha=0.20, **kwargs)
+                plt.plot(data[:,x], data[:,y], c="k",    mec="none", ms=0.5, alpha=0.20, **kwargs)
             else:        
                 plt.plot(data[:,x], data[:,y], c="0.75", mec="none", ms=0.5, alpha=0.20, **kwargs)
                 angle = 0.
