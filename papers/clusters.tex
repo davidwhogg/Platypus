@@ -3,7 +3,6 @@
 
 % to-do
 % - write discussion section w MKN input
-% - expand kmeans discussion
 % - fix all remaining occurrences of ARC, MKN, HWR, DWH, or CITE
 % - submit to journal and arXiv
 % - forward to Freeman, Bovy, others?
@@ -355,8 +354,8 @@ famously demonstrate correlations in these elements, thereby making
 them suitable projections for us to show in verifying and examining
 any substructure identified by k-means (or any other algorithm).
 
-% ARC asks DWH: Why aren't we showing The Cannon Teff/logg in these
-% 				figures? Even if they aren't used for clustering..
+ARC asks DWH: Why aren't we showing The Cannon Teff/logg in these
+				figures? Even if they aren't used for clustering..
 
 
 \begin{figure}[!p]
@@ -413,7 +412,7 @@ distances in the $D$-space; it presumes Euclidean isotropy.
 We choose here to work in the hydrogen-normalized abundance space, the
 space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
 [K/H], [Ca/H], [Ti/H], [V/H], [Mn/H], [Fe/H], [Ni/H].
-But in addition to this, we re-scale these by approximate measurement
+But in addition to this, we re-scale these by approximate typical measurement
 precisions obtained by \thecannon\ before running k-means.
 This makes the space close to isotropic in measurement uncertainty or
 observational precision.
@@ -441,17 +440,44 @@ the cluster divided by the square-root of the determinant of the
 tensor.
 This density was used to rank abundance-space overdensities (from highest
 to lowest) for visual inspection.
-We chose a few interesting cases from many and show them in
+In \figurename~\ref{fig:densities} we show the distribution of cluster membership
+and density for the $K=256$ run of k-means.
+
+We chose a few interesting cases from the high-density clusters in the $K=256$ run and show them in
 \figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
 \ref{fig:halo}, and \ref{fig:disk}.
-The first three of these are known clusters M13, Pal5, and Sagittarius (MKN, ARC, help!).
-The fourth is a halo structure with high velocity dispersion and possibly accreted.
+The first three of these are dominated by stars in the known clusters M13, Pal5, and Sagittarius.
+The fourth is a halo structure with high velocitay dispersion and possibly accreted.
 The fifth is a thin-disk star-formation feature.
 We will discuss these more below.
 
-DWH \& HWR: How do we show that we aren't just getting clusters because \apogee\ has plate-to-plate calibration variations?
+DWH: The clusters shown in \figurename~\ref{fig:M13}, \ref{fig:Pal5},
+and \ref{fig:Sgr} might not look dense in abundance space, but they
+are very dense in the 15-dimensional space.  Indeed,
+\figurename~\ref{fig:M13} is the densest cluster found in the 15-d
+space \emph{by far} (see \figurename~\ref{fig:densities}).
 
+DWH: The figures show results only from the $K=256$ run, why?
 
+DWH: Even if $K$ was chosen very carefully, it would still break up
+real clusters into many clusters, why?  Abundance spreads!
+
+DWH: The algorithm sees many different clusters; the figures show only
+a few.  Do we see all clusters we \emph{should} see?  That question is
+beyond the scope of this \documentname.
+
+DWH: Each cluster figure and the disk figure shows stars that are part
+of the structure and some that are not.  Every cluster will have
+background contamination, why?
+
+\begin{figure}[!p]
+\includegraphics[width=2\figurewidth]{./figs/clusters_0256.pdf}
+\caption{The distribution of membership and density for the 256
+  abundance-space clusters returned by the k-means algorithm at
+  $K=256$.  The densest cluster---which is shown in
+  \figurename~\ref{fig:M13}---is far more dense than the second
+  densest.\label{fig:densities}}
+\end{figure}
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0253}
 \caption{Same as \figurename~\ref{fig:all} except that the entire
