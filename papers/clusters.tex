@@ -278,15 +278,15 @@ flagged as bad in the \apogee\ \aspcap\ \citep{aspcap} pipeline
 reductions.
 We re-analyze these \emph{spectra} using \thecannon, because this
 deliver stellar abundance labels of higher precision, especially for
-stars of SNR$\le 150$.
+stars of $S/N \le 150$.
 The details about how we select, reduce, and analyze the \apogee\ data
 are given in full detail in the companion papers \citep{casey16,
   ness16}, and we only summarize briefly here.
 We re-derived 17 labels ($\teff$, $\logg$, and 15 abundances
 referenced to H) form the \apogee\ \acronym{DR12} spectra. 
 For the training step of \thecannon, 
-12,681 red-giant stars with spectral SNR$\ge 200$ were used.
-For this small fraction of the sample with the highest SNR objects the
+12,681 red-giant stars with spectral $S/N \ge 200$ were used.
+For this small fraction of the sample with the highest $S/N$ objects the
 labels provided by \aspcap\ provide consistent, relatively low-scatter, sensible
 abundance-space measurements.
 The training step fixes a spectral model
@@ -454,14 +454,6 @@ We will discuss these more below.
 
 DWH \& HWR: How do we show that we aren't just getting clusters because \apogee\ has plate-to-plate calibration variations?
 
-All of the code for the data manipulation, clustering, and
-visualization is built on \project{numpy} \citep{numpy},
-\project{scikit-learn} \citep{sklearn}, and \project{matplotlib}
-\citep{matplotlib}.
-All of the code written specifically for this project is available in
-two open-source code repositories at
-\url{https://github.com/andycasey/AnniesLasso} and
-\url{https://github.com/davidwhogg/Platypus}.
 
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0253}
@@ -601,6 +593,15 @@ University, Pennsylvania State University, University of Portsmouth,
 Princeton University, the Spanish Participation Group, University of
 Tokyo, University of Utah, Vanderbilt University, University of
 Virginia, University of Washington, and Yale University.
+
+All of the code for the data manipulation, clustering, and
+visualization is built on \project{numpy} \citep{numpy},
+\project{scikit-learn} \citep{sklearn}, and \project{matplotlib}
+\citep{matplotlib}.
+All of the code written specifically for this project is available in
+two open-source code repositories at
+\url{https://github.com/andycasey/AnniesLasso} and
+\url{https://github.com/davidwhogg/Platypus}.
 
 \clearpage
 \begin{thebibliography}{24}\raggedright
