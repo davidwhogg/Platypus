@@ -84,12 +84,19 @@ def plot_one_cluster(data, labels, mask, name, dir):
                 fig = plt.figure(figsize=(4,4))
                 plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
             plt.clf()
-            kwargs = {"marker": ".", "ls": "none"}
+            kwargs = {"ls": "none", "marker": "."}
             if mask is None:
-                plt.plot(data[:,x], data[:,y], c="k", ms=0.5, alpha=0.20, **kwargs)
+                plt.plot(data[:,x], data[:,y], c="k", mec="none", ms=0.5, alpha=0.20, **kwargs)
             else:        
-                plt.plot(data[:,x], data[:,y], c="0.75", ms=0.5, alpha=0.20, **kwargs)
-                plt.plot(data[mask,x], data[mask,y], c="k", ms=5.0, alpha=0.5, **kwargs)
+                plt.plot(data[:,x], data[:,y], c="0.75", mec="none", ms=0.5, alpha=0.20, **kwargs)
+                angle = 0.
+                thisb = 0.025 # magic
+                cc = plt.get_cmap('brg')
+                for i in np.arange(len(data))[mask]:
+                    plt.plot([data[i,x], ], [data[i,y], ], c=cc(thisb), alpha=0.75,
+                             marker=(3, 1, angle), ms=7.0, ls="none")
+                    angle = (angle + 55.) % 360. # magic
+                    thisb = (thisb + 0.05) % 1.0 # magic
             plt.ylim(range_dict[ly])
             plt.xlim(range_dict[lx])
             plt.ylabel(label_dict[ly])
@@ -97,7 +104,27 @@ def plot_one_cluster(data, labels, mask, name, dir):
             [l.set_rotation(45) for l in plt.gca().get_xticklabels()]
             [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
             plt.savefig(fn)
-            print("plot_one_cluster(): plotting", fn)
+            print("plot_one_cluster(): saving", fn)
+
+def plot_cluster_stats(sizes, densities, dir):
+    K = len(sizes)
+    print("plot_one_cluster(): plotting", K)
+    suffix = "png"
+    fn = "{}/clusters_{:04d}.{}".format(dir, K, suffix)
+    if os.path.exists(fn):
+        print("plot_one_cluster(): {} exists already".format(fn))
+        return None
+    assert len(densities) == K
+    fig = plt.figure(figsize=(4,4))
+    plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
+    plt.clf()
+    kwargs = {"marker": ".", "ls": "none"}
+    plt.plot(sizes, densities, c="k", ms=5.0, alpha=0.5, **kwargs)
+    plt.ylabel("cluster density")
+    plt.xlabel("number of stars in cluster")
+    plt.semilogy()
+    plt.savefig(fn)
+    print("plot_cluster_stats(): saving", fn)
 
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
@@ -223,8 +250,9 @@ if __name__ == "__main__":
         print(K, "size range:", np.min(sizes), np.median(sizes), np.max(sizes))
         print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
+        plot_cluster_stats(sizes, densities, dir)
 
-        # make plotting data
+    # make plotting data
         if plotdata is None:
             plotdata = data.copy()
             plotdata_labels = data_labels.copy()
@@ -248,4 +276,5 @@ if __name__ == "__main__":
             if plotcount == 32:
                 break
 
+    # summary plots
     plot_one_cluster(plotdata, plotdata_labels, None, "all", dir)
