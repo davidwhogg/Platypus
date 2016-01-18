@@ -278,20 +278,21 @@ are given in full detail in the companion papers \citep{casey16,
 We re-derived 17 labels ($\teff$, $\logg$, and 15 abundances
 referenced to H) form the \apogee\ \acronym{DR12} spectra. 
 For the training step of \thecannon, 
-ARC:XXXXX red-giant stars with spectral SNR$\ge 200$ were used.
+12,681 red-giant stars with spectral SNR$\ge 200$ were used.
 For this small fraction of the sample with the highest SNR objects the
 labels provided by \aspcap\ provide consistent, relatively low-scatter, sensible
 abundance-space measurements.
 The training step fixes a spectral model
-that predics the normalized spectrum as a quadratic function of all
-labels. In the second stage---the test step---each unlabeled star is
+that predicts the normalized spectrum as a quadratic function of all
+labels. In the second stage---the test step---each unlabelled star is
 used to establish a single-star likelihood function for its labels,
 holding the model coefficients fixed.
 \thecannon\ finds the labels that minimize the single-star likelihood
 function for each test-set star.
 This optimization is not convex, but it is embarrassingly parallel,
 and therefore fast. The test
-step takes less than an hour on a small research cluster in Cambridge.
+step for 150,000 spectra takes less than 30~minutes on a small 
+research cluster in Cambridge.
 
 % HWR commented this (below) out
 
