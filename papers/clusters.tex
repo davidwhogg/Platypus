@@ -150,19 +150,18 @@ Part of the reason that chemical tagging still remains unrealized
 is because the level of abundance specificity required
 is very high.
 If there are thousands of (relevant) molecular clouds forming stars in
-the recent history of the Milky Way, clumps of stars can only stand
-out in a high-dimensional abundance space: therefore accurate, or at
-least precise, measurements of many different abundances are needed
+the recent history of the Milky Way, clumps of stars can only be
+identified in abundance space if abundance space is high in dimensionality.
+(In principle, it needs to be high in dimensionality both in terms
+of the number of measured abundances \emph{and} in terms of the number of
+neucleosynthetic pathways or the dimensionality of the true abundance
+space.)
+Therefore accurate---or at
+least precise---measurements of many different abundances are needed
 for stellar sibling to have sufficiently unique fingerprints.
-Stellar spectroscopic surveys now have the resolution, signal-to-noise,
-wavelength coverage, and sample sizes to deliver many different chemical tags for each star.
-
-% ARC to DWH:   "stand out in a high-dimensional abundance space" -->
-%		 	    They'll only stand out in a high-dimensional abundance
-% 				space, or a low-dimensional abundance space where those
-% 				dimensions are all very orthogonal (e.g., different
-% 				nucleosynthetic pathways). Should we add anything to that
-%				effect?
+Stellar spectroscopic surveys now have the resolution,
+signal-to-noise, wavelength coverage, and sample sizes to deliver many
+different chemical tags for each star.
 
 There are, however, two big issues.
 The first is that the physical assumptions behind the idea may require
@@ -354,10 +353,6 @@ famously demonstrate correlations in these elements, thereby making
 them suitable projections for us to show in verifying and examining
 any substructure identified by k-means (or any other algorithm).
 
-ARC asks DWH: Why aren't we showing The Cannon Teff/logg in these
-				figures? Even if they aren't used for clustering..
-
-
 \begin{figure}[!p]
 \insanefigure{all}
 \caption{The full sample of \totalnumber\ stars used in this study.
@@ -404,8 +399,9 @@ results.
 The algorithm also only performs local optimization.
 At each $K$ we perform 32 restarts with different initializations, and
 preserve the best clustering (best according to the k-means score).
-
-% ARC asks: how did you chose the initializations?
+Each of the 32 initializations was performed with the
+\project{scikit-learn} standard k-means initialization procedure
+\citep{sklearn}.
 
 Another issue with k-means is that it effectively uses metric
 distances in the $D$-space; it presumes Euclidean isotropy.
@@ -420,8 +416,6 @@ Importantly we use \emph{only} abundance-space information, and no
 positional or velocity information (nor $\teff$ nor $\logg$ nor any
 targeting or observational meta-data) as input to the clustering
 algorithm.
-
-DWH: EXPLICITLY GIVE THE ABUNDANCE-SPACE SCALES USED.
 
 One note on clustering algorithm decisions is warranted:
 Because this project is just a demonstration of the chemical-tagging
@@ -442,33 +436,72 @@ This density was used to rank abundance-space overdensities (from highest
 to lowest) for visual inspection.
 In \figurename~\ref{fig:densities} we show the distribution of cluster membership
 and density for the $K=256$ run of k-means.
+The densest clusters tend to have fewer members, presumably because
+the bulk of the population is not extremely strongly clustered, or not
+in ways to which k-means is sensitive.
 
-We chose a few interesting cases from the high-density clusters in the $K=256$ run and show them in
+Importantly, the k-means algorithm assigns \emph{every} star to at
+least one cluster.
+For this reason, there is no sense in which each ``cluster'' returned
+by k-means is in any sense an overdensity in abundance space.
+In what follows, we only consider high-density clusters---clusters
+that are much more dense than average; these ought to represent true
+over-densities in abundance space.
+
+We chose a few interesting cases from the high-density clusters
+in the $K=256$ run and show them in
 \figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
 \ref{fig:halo}, and \ref{fig:disk}.
-The first three of these are dominated by stars in the known clusters M13, Pal5, and Sagittarius.
-The fourth is a halo structure with high velocitay dispersion and possibly accreted.
+The first three of these are dominated by stars in the known clusters
+M13, Pal5, and Sagittarius.
+The fourth is a halo structure with high velocity dispersion and
+possibly accreted.
 The fifth is a thin-disk star-formation feature.
-We will discuss these more below.
+We will discuss the astrophysical implications of these results in
+\sectionname~\ref{sec:discussion}.
 
-DWH: The clusters shown in \figurename~\ref{fig:M13}, \ref{fig:Pal5},
-and \ref{fig:Sgr} might not look dense in abundance space, but they
+The abundance-space clusters shown in the \figurename s
+might not look dense in abundance space, but they
 are very dense in the 15-dimensional space.  Indeed,
 \figurename~\ref{fig:M13} is the densest cluster found in the 15-d
 space \emph{by far} (see \figurename~\ref{fig:densities}).
+The challenge of this work is to find structure in the high
+dimensionality space that is not visible in any 2-d projection.
+Although we have by no means any model of the 15-d space, we do know
+that the structures shown in the figures are very high in 15-d
+density.
 
-DWH: The figures show results only from the $K=256$ run, why?
+We have only shown results from the $K=256$ run of k-means.
+This run was chosen because its densest abundance-space clusters map
+well onto known stellar clusters.
+At $K=128$ the densest abundance-space clusters tended to combine
+multiple known stellar clusters into single, large abundance-space
+groupings.
+At $K=512$ k-means tended to split even mono-abundance groups into
+smaller sub-groups.
+This is a reminder that k-means has been chosen just for simplicity
+and reliability here; it is by no means matched to the discovery of
+stellar structures.
+An important follow-up project is to build a model of abundance space
+that captures the features expected from stellar populations.
+Even if we were able to tune k-means in some sense ``perfectly'', it
+would still break up many stellar clusters, since they often show
+multiple stellar populations.
+It is also the case that each of the abundance-space clusters we
+\emph{do} show in the \figurename s includes both star-cluster members
+and some background contamination, and also is missing some true
+star-cluster members.
 
-DWH: Even if $K$ was chosen very carefully, it would still break up
-real clusters into many clusters, why?  Abundance spreads!
-
-DWH: The algorithm sees many different clusters; the figures show only
-a few.  Do we see all clusters we \emph{should} see?  That question is
-beyond the scope of this \documentname.
-
-DWH: Each cluster figure and the disk figure shows stars that are part
-of the structure and some that are not.  Every cluster will have
-background contamination, why?
+Although we show only three stellar clusters in
+\figurename~\ref{fig:M13}, \ref{fig:Pal5}, and \ref{fig:Sgr}, many
+other clusters are visible among our densest abundance-space k-means
+clusters.
+These include M15, M92, and M107, among others.
+We haven't asked yet whether we detect---as abundance-space
+overdensities---all of the stellar clusters we expect to find.
+This \documentname\ is simply a demonstration of the chemical-tagging
+concept; an investigation of whether we can construct complete
+catalogs of stellar clusters is beyond the scope.
 
 \begin{figure}[!p]
 \includegraphics[width=2\figwidth]{./figs/clusters_0256.png}
