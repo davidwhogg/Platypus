@@ -306,7 +306,7 @@ research cluster in Cambridge.
 
 % For the training data labels (used to train \thecannon; see below), we
 % use the \apogee\ \acronym{DR12} \aspcap\ atmospheric parameters and
-% 15-element abundances, but only for the subset of ARC:XXXXX red-giant
+% 15-element abundances, but only for the subset of 12,681 red-giant
 % stars that have spectral signal-to-noise ratio measurements greater
 % than 200.
 % This is a small fraction of the total sample, but these highest
@@ -336,7 +336,8 @@ research cluster in Cambridge.
 % function for each test-set star.
 % This optimization is not convex, but it is embarrassingly parallel.
 % For the results shown here, the training step takes hours and the test
-% step takes less than an hour on a small research cluster in Cambridge.
+%step for 150,000 spectra takes less than 30~minutes on a small 
+%research cluster in Cambridge.
 
 Six two-dimensional projections of the abundance data, plus some other
 data quantities, are shown in \figurename~\ref{fig:all}.
@@ -388,6 +389,8 @@ The algorithm also only performs local optimization.
 At each $K$ we perform 32 restarts with different initializations, and
 preserve the best clustering (best according to the k-means score).
 
+% ARC asks: how did you chose the initializations?
+
 Another issue with k-means is that it effectively uses metric
 distances in the $D$-space; it presumes Euclidean isotropy.
 We choose here to work in the hydrogen-normalized abundance space, the
@@ -409,7 +412,7 @@ Because this project is just a demonstration of the chemical-tagging
 concept, there is no requirement that we choose the best clustering
 algorithm or the method that reveals the best structures.
 Indeed, it is a feature of this work that even the simplest, most
-generic, least tuned clustering algorithm returns interesting
+generic, least-tuned clustering algorithm returns interesting
 structures (as shown below).
 The prospects for Milky Way science only improve as the clustering
 algorithm improves.
