@@ -155,13 +155,13 @@ the recent history of the Milky Way, clumps of stars can only be
 identified in abundance space if abundance space is high in dimensionality.
 (In principle, it needs to be high in dimensionality both in terms
 of the number of measured abundances \emph{and} in terms of the number of
-neucleosynthetic pathways or the dimensionality of the true abundance
+nucleosynthetic pathways or the dimensionality of the true abundance
 space.)
 Therefore accurate---or at
 least precise---measurements of many different abundances are needed
 for stellar sibling to have sufficiently unique fingerprints.
 Stellar spectroscopic surveys now have the resolution,
-signal-to-noise, wavelength coverage, and sample sizes to deliver many
+$S/N$, wavelength coverage, and sample sizes to deliver many
 different chemical tags for each star.
 
 There are, however, two big issues.
@@ -181,7 +181,7 @@ The current precision on abundance measurements in the published
 survey catalogs is not high enough (for example, \citealt{martell,
   ting}).
 However, our recent work \citep{thecannon} suggests that \emph{data}
-are precise enough: there is enough signal-to-noise at the relevant
+are precise enough: there is enough $S/N$ at the relevant
 locations in spectrum space to deliver high-precision tags.
 The existence of very large data sets, homogeneous in data/spectrum
 space, suggest that one can use data-driven approaches to determining
@@ -235,7 +235,7 @@ physical models are inaccurate, yet they too strive to improve precision
 in the face of knowingly inaccurate models.  Incomplete atomic data, 
 simplifications of photospheric structure, presumptions about convective
 motion, and inconsistencies resulting from assumptions of the local thermal
-equilibrium, all contribute to produce knowingly inaccurate abundances.
+equilibrium all contribute to produce knowingly inaccurate abundances.
 \thecannon\ stands out because it demonstrably improves the precision on
 chemical abundances, whereas the accuracy of those labels is limited only
 by the training set employed.
@@ -268,8 +268,10 @@ in truly unravelling the formation of the Milky Way.
 
 \section{Data: \apogee\ giants with abundances from \thecannon}\label{sec:data}
 
+% ARC asks: "not flagged as bad" --> what exactly do we mean here? ASPCAPFLAG = 0?
+
 Our analysis draws on the spectra of \totalnumber\ giant stars ($\logg
-< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, alll those not
+< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, all those not
 flagged as bad in the \apogee\ \aspcap\ \citep{aspcap} pipeline
 reductions.
 We re-analyze these \emph{spectra} using \thecannon, because this
