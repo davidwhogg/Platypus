@@ -376,10 +376,10 @@ any substructure identified by k-means (or any other algorithm).
 Although only hints of small-scale clustering in the abundance space
 are visible in \figurename~\ref{fig:all}, exploration of the data indicates that
 known clusters do appear in the abundance space as over-densities.
-(In general, the collapse of 15 dimensions down to 2-d projections
+In general, the collapse of 15 dimensions down to 2-d projections
 will hide, smooth, or dilute any structure; there is no guarantee that
 a highly featured distribution in 15-d will show features in
-\emph{any} 2-d projection, let alone axis-aligned, human-selected projections.)
+\emph{any} 2-d projection, let alone axis-aligned, human-selected projections.
 This encourages us to look for over-densities automatically in the
 abundance space and see if anything found that way would be over-dense
 in phase space.
@@ -453,6 +453,8 @@ In what follows, we only consider high-density clusters---clusters
 that are much more dense than average; these ought to represent true
 over-densities in abundance space.
 
+
+% ARC TO DO: Make claim of the fourth being M53.
 We chose a few interesting cases from the high-density clusters
 in the $K=256$ run and show them in
 \figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
@@ -471,7 +473,7 @@ are very dense in the 15-dimensional space.  Indeed,
 \figurename~\ref{fig:M13} is the densest cluster found in the 15-d
 space \emph{by far} (see \figurename~\ref{fig:densities}).
 The challenge of this work is to find structure in the high
-dimensionality space that is not visible in any 2-d projection.
+dimensionality space that is not obviously visible in any 2-d projection.
 Although we have by no means any model of the 15-d space, we do know
 that the structures shown in the figures are very high in 15-d
 density.
@@ -491,7 +493,7 @@ An important follow-up project is to build a model of abundance space
 that captures the features expected from stellar populations.
 Even if we were able to tune k-means in some sense ``perfectly'', it
 would still break up many stellar clusters, since they often show
-multiple stellar populations.
+multiple stellar populations and non-linear correlations between elemental abundances.
 It is also the case that each of the abundance-space clusters we
 \emph{do} show in the \figurename s includes both star-cluster members
 and some background contamination, and also is missing some true
@@ -503,10 +505,16 @@ other clusters are visible among our densest abundance-space k-means
 clusters.
 These include M15, M92, and M107, among others.
 We haven't asked yet whether we detect---as abundance-space
-overdensities---all of the stellar clusters we expect to find.
+overdensities---all of the stellar clusters we expect to find. (Many
+clusters within the \apogee\ data set only contain a few plausible 
+members, thereby  complicating any inferences we wish to make about 
+detection completeness using simple k-means.) 
 This \documentname\ is simply a demonstration of the chemical-tagging
 concept; an investigation of whether we can construct complete
 catalogs of stellar clusters is beyond the scope.
+
+
+% ARC to DWH: Are the colors of broken glass indicative of anything?
 
 \begin{figure}[!bp]
 \includegraphics[width=1.5\figwidth]{./figs/clusters_0256.png}
