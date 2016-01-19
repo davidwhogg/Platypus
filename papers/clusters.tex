@@ -598,31 +598,39 @@ limited to (a)~improvements in the determination of pseudo-continuum,
 (b)~the use of more spectral range than just unblended element windows
 \citep{aspcap}, and (c)~accurate spectral predictions
 (\thecannon\ delivers accurate predictions because it is fit to
-observed data).
+observed data). 
 Furthermore, because abundance space is high in dimensionality, even
 small improvements in abundance measurement get taken to a significant
 power when thinking about information gains.
 
-ARC: In addition to the increased precision, it is very important to
-	mention the fact that we report an "abundance" for *everything*.
-	Gaps in abundance data from classical spectroscopy are rampant,
-	and pose a serious problem even if you want to perform Real World(tm)
-	tests of chemical tagging. \thecannon\ has solved this entire
-	subset of astronomy.  DWH say: I agree; moved this point earlier.
-
-%ARC: Which known clusters were detected? Which comparably-sized clusters
-%	were not detected? Why not? (Why not M 15?)  DWH say: M15 WAS detected, as the paper now notes above; I say drop this issue entirely.
+The abundances we find for clusters identified in k-space are consistent
+with detailed studies in the literature. 
 	
 ARC: How do the abundances that we find in these known clusters compare
 	with the literature?
 
-ARC: Expand on why these particular abundance projections, with
-	comparisons to the literature.
+% Overall abundances (mean [fE/h])
+% individual abundances
+% anti-correlations
+% ARC: Expand on why these particular abundance projections, with
+%	comparisons to the literature.
 
-ARC: We should note that the anti-correlations known to exist in GCs
-	actually make this a *HARDER* task, since the abundances are
-	somewhat arbitrarily structured (rather than normally concentrated)
-	in a multi-dimensional space.
+There are a few points to highlight about the abundance anti-correlations
+found in globular clusters. First, the detection of these signatures gives
+confirmation to our analysis: The training set was not purposefully selected
+to contain members of any globular or open cluster. However amongst the test
+set, we recover globular cluster members and their anti-correlations 
+in chemical abundances. That is to
+say we recover peculiar chemical abundances that are not dominant in our
+training set, but are expected from previous studies. Secondly, the very
+presence of complex abundance correlations makes the detection of clusters
+(by k-means) substantially more difficult. Briefly, the k-means algorithm
+is most effective for near-normally distributed clusters in high-dimensional space.
+While globular clusters often show distributions of this kind in a few dimensions, they also demonstrate non-linear correlations which would be
+sub-optimally selected by k-means. For these reasons the fact that (a)~\thecannon\
+reports these abundance correlations and (b)~k-means--as a simple algorithm without information about expectations in abundance space--does not appear to be
+severely impacted by these correlations, provides high promise for more sophisticated approaches.
+
 
 ARC: What can be said about the M 53 stars? Since we find GCs which are
 	mostly spatially concentrated (e.g., very few sitting elsewhere),
