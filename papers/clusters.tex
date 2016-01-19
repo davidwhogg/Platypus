@@ -13,7 +13,7 @@
 
 \documentclass[12pt, letterpaper, preprint]{aastex}
 
-% text shit
+% text
 \newcommand{\acronym}[1]{{\small{#1}}}
 \newcommand{\project}[1]{\textsl{#1}}
 \newcommand{\sdssiii}{\project{\acronym{SDSS-III}}}
@@ -27,11 +27,11 @@
 \newcommand{\documentname}{\textsl{Article}}
 \newcommand{\sectionname}{Section}
 
-% math shit
+% math
 \newcommand{\teff}{T_{\mathrm{eff}}}
 \newcommand{\logg}{\log g}
 
-% figure shit
+% figure 
 \newlength{\figwidth}\setlength{\figwidth}{0.3\textwidth}
 \newcommand{\insanefigure}[1]{%
 \includegraphics[width=\figwidth]{./figs/#1_MgFe.png}%
@@ -45,7 +45,7 @@
 \includegraphics[width=2\figwidth]{./figs/#1_vlon.png}%
 \includegraphics[width=\figwidth]{./figs/#1_context.png}}
 
-% results shit
+% results
 \newcommand{\totalnumber}{98462}
 
 \begin{document}\sloppy\sloppypar
@@ -55,11 +55,11 @@
        purely by chemical-abundance similarity}
 \author{David~W.~Hogg\altaffilmark{1,2,3,4},
         Andrew~R.~Casey\altaffilmark{5},
-        Melissa~Ness\altaffilmark{4}, % typeset as per MKN-DWH email conversation 2016-01-18
+        Melissa~Ness\altaffilmark{4},
         Hans-Walter~Rix\altaffilmark{4},
     and~Daniel~Foreman-Mackey\altaffilmark{6,7}}
 \altaffiltext{1}{Simons Center for Data Analysis, 160 Fifth Avenue, 7th Floor, New York, NY 10010, USA}
-\altaffiltext{2}{Center for Cosmology and Particle Physics, Department of Phyics,
+\altaffiltext{2}{Center for Cosmology and Particle Physics, Department of Physics,
   New York University, 4 Washington Pl., room 424, New York, NY, 10003, USA}
 \altaffiltext{3}{Center for Data Science, New York University, 726 Broadway, 7th Floor, New York, NY 10003, USA}
 \altaffiltext{4}{Max-Planck-Institut f\"ur Astronomie, K\"onigstuhl 17, D-69117 Heidelberg, Germany}
@@ -76,7 +76,7 @@ an informative signature of its molecular-cloud birth location and time.
 This idea has not previously yielded scientific successes, probably because of the
 noise and incompleteness in chemical-abundance measurements.
 However, we have succeeded in substantially improving spectroscopic measurements with \thecannon\ 
-(now delivering individual abundances with precisions around 0.04~dex).
+(now delivering $\geq$15 individual abundances for $\sim10^5$ stars with precisions around 0.04~dex).
 % Aims:
 We test the chemical-tagging hypothesis by looking at clusters in abundance space
 and confirming that they are clustered in phase space.
@@ -156,13 +156,13 @@ the recent history of the Milky Way, clumps of stars can only be
 identified in abundance space if abundance space is high in dimensionality.
 (In principle, it needs to be high in dimensionality both in terms
 of the number of measured abundances \emph{and} in terms of the number of
-neucleosynthetic pathways or the dimensionality of the true abundance
+nucleosynthetic pathways or the dimensionality of the true abundance
 space.)
 Therefore accurate---or at
 least precise---measurements of many different abundances are needed
 for stellar sibling to have sufficiently unique fingerprints.
 Stellar spectroscopic surveys now have the resolution,
-signal-to-noise, wavelength coverage, and sample sizes to deliver many
+$S/N$, wavelength coverage, and sample sizes to deliver many
 different chemical tags for each star.
 
 There are, however, two big issues.
@@ -182,7 +182,7 @@ The current precision on abundance measurements in the published
 survey catalogs is not high enough (for example, \citealt{martell,
   ting}).
 However, our recent work \citep{thecannon} suggests that \emph{data}
-are precise enough: there is enough signal-to-noise at the relevant
+are precise enough: there is enough $S/N$ at the relevant
 locations in spectrum space to deliver high-precision tags.
 The existence of very large data sets, homogeneous in data/spectrum
 space, suggest that one can use data-driven approaches to determining
@@ -236,7 +236,7 @@ physical models are inaccurate, yet they too strive to improve precision
 in the face of knowingly inaccurate models.  Incomplete atomic data, 
 simplifications of photospheric structure, presumptions about convective
 motion, and inconsistencies resulting from assumptions of the local thermal
-equilibrium, all contribute to produce knowingly inaccurate abundances.
+equilibrium all contribute to produce knowingly inaccurate abundances.
 \thecannon\ stands out because it demonstrably improves the precision on
 chemical abundances, whereas the accuracy of those labels is limited only
 by the training set employed.
@@ -269,8 +269,10 @@ in truly unravelling the formation of the Milky Way.
 
 \section{Data: \apogee\ giants with abundances from \thecannon}\label{sec:data}
 
+% ARC asks: "not flagged as bad" --> what exactly do we mean here? ASPCAPFLAG = 0?
+
 Our analysis draws on the spectra of \totalnumber\ giant stars ($\logg
-< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, alll those not
+< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, all those not
 flagged as bad in the \apogee\ \aspcap\ \citep{aspcap} pipeline
 reductions.
 We re-analyze these \emph{spectra} using \thecannon, because this
@@ -375,10 +377,10 @@ any substructure identified by k-means (or any other algorithm).
 Although only hints of small-scale clustering in the abundance space
 are visible in \figurename~\ref{fig:all}, exploration of the data indicates that
 known clusters do appear in the abundance space as over-densities.
-(In general, the collapse of 15 dimensions down to 2-d projections
+In general, the collapse of 15 dimensions down to 2-d projections
 will hide, smooth, or dilute any structure; there is no guarantee that
 a highly featured distribution in 15-d will show features in
-\emph{any} 2-d projection, let alone axis-aligned, human-selected projections.)
+\emph{any} 2-d projection, let alone axis-aligned, human-selected projections.
 This encourages us to look for over-densities automatically in the
 abundance space and see if anything found that way would be over-dense
 in phase space.
@@ -452,6 +454,8 @@ In what follows, we only consider high-density clusters---clusters
 that are much more dense than average; these ought to represent true
 over-densities in abundance space.
 
+
+% ARC TO DO: Make claim of the fourth being M53.
 We chose a few interesting cases from the high-density clusters
 in the $K=256$ run and show them in
 \figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
@@ -470,7 +474,7 @@ are very dense in the 15-dimensional space.  Indeed,
 \figurename~\ref{fig:M13} is the densest cluster found in the 15-d
 space \emph{by far} (see \figurename~\ref{fig:densities}).
 The challenge of this work is to find structure in the high
-dimensionality space that is not visible in any 2-d projection.
+dimensionality space that is not obviously visible in any 2-d projection.
 Although we have by no means any model of the 15-d space, we do know
 that the structures shown in the figures are very high in 15-d
 density.
@@ -490,7 +494,7 @@ An important follow-up project is to build a model of abundance space
 that captures the features expected from stellar populations.
 Even if we were able to tune k-means in some sense ``perfectly'', it
 would still break up many stellar clusters, since they often show
-multiple stellar populations.
+multiple stellar populations and non-linear correlations between elemental abundances.
 It is also the case that each of the abundance-space clusters we
 \emph{do} show in the \figurename s includes both star-cluster members
 and some background contamination, and also is missing some true
@@ -502,10 +506,16 @@ other clusters are visible among our densest abundance-space k-means
 clusters.
 These include M15, M92, and M107, among others.
 We haven't asked yet whether we detect---as abundance-space
-overdensities---all of the stellar clusters we expect to find.
+overdensities---all of the stellar clusters we expect to find. (Many
+clusters within the \apogee\ data set only contain a few plausible 
+members, thereby  complicating any inferences we wish to make about 
+detection completeness using simple k-means.) 
 This \documentname\ is simply a demonstration of the chemical-tagging
 concept; an investigation of whether we can construct complete
 catalogs of stellar clusters is beyond the scope.
+
+
+% ARC to DWH: Are the colors of broken glass indicative of anything?
 
 \begin{figure}[!bp]
 \includegraphics[width=1.5\figwidth]{./figs/clusters_0256.png}
@@ -590,31 +600,39 @@ limited to (a)~improvements in the determination of pseudo-continuum,
 (b)~the use of more spectral range than just unblended element windows
 \citep{aspcap}, and (c)~accurate spectral predictions
 (\thecannon\ delivers accurate predictions because it is fit to
-observed data).
+observed data). 
 Furthermore, because abundance space is high in dimensionality, even
 small improvements in abundance measurement get taken to a significant
 power when thinking about information gains.
 
-ARC: In addition to the increased precision, it is very important to
-	mention the fact that we report an "abundance" for *everything*.
-	Gaps in abundance data from classical spectroscopy are rampant,
-	and pose a serious problem even if you want to perform Real World(tm)
-	tests of chemical tagging. \thecannon\ has solved this entire
-	subset of astronomy.  DWH say: I agree; moved this point earlier.
-
-%ARC: Which known clusters were detected? Which comparably-sized clusters
-%	were not detected? Why not? (Why not M 15?)  DWH say: M15 WAS detected, as the paper now notes above; I say drop this issue entirely.
+The abundances we find for clusters identified in k-space are consistent
+with detailed studies in the literature. 
 	
 ARC: How do the abundances that we find in these known clusters compare
 	with the literature?
 
-ARC: Expand on why these particular abundance projections, with
-	comparisons to the literature.
+% Overall abundances (mean [fE/h])
+% individual abundances
+% anti-correlations
+% ARC: Expand on why these particular abundance projections, with
+%	comparisons to the literature.
 
-ARC: We should note that the anti-correlations known to exist in GCs
-	actually make this a *HARDER* task, since the abundances are
-	somewhat arbitrarily structured (rather than normally concentrated)
-	in a multi-dimensional space.
+There are a few points to highlight about the abundance anti-correlations
+found in globular clusters. First, the detection of these signatures gives
+confirmation to our analysis: The training set was not purposefully selected
+to contain members of any globular or open cluster. However amongst the test
+set, we recover globular cluster members and their anti-correlations 
+in chemical abundances. That is to
+say we recover peculiar chemical abundances that are not dominant in our
+training set, but are expected from previous studies. Secondly, the very
+presence of complex abundance correlations makes the detection of clusters
+(by k-means) substantially more difficult. Briefly, the k-means algorithm
+is most effective for near-normally distributed clusters in high-dimensional space.
+While globular clusters often show distributions of this kind in a few dimensions, they also demonstrate non-linear correlations which would be
+sub-optimally selected by k-means. For these reasons the fact that (a)~\thecannon\
+reports these abundance correlations and (b)~k-means--as a simple algorithm without information about expectations in abundance space--does not appear to be
+severely impacted by these correlations, provides high promise for more sophisticated approaches.
+
 
 ARC: What can be said about the M 53 stars? Since we find GCs which are
 	mostly spatially concentrated (e.g., very few sitting elsewhere),
