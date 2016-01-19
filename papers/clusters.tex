@@ -2,7 +2,6 @@
 % Copyright 2016 the authors.
 
 % to-do
-% - fix all remaining occurrences of ARC, MKN, HWR, DWH, or CITE
 % - submit to arXiv
 % - forward to Freeman, Bovy, others?
 % - submit to journal
@@ -268,11 +267,9 @@ in truly unravelling the formation of the Milky Way.
 
 \section{Data: \apogee\ giants with abundances from \thecannon}\label{sec:data}
 
-% ARC asks: "not flagged as bad" --> what exactly do we mean here? ASPCAPFLAG = 0?
-
 Our analysis draws on the spectra of \totalnumber\ giant stars ($\logg
-< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, all those not
-flagged as bad in the \apogee\ \aspcap\ \citep{aspcap} pipeline
+< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, with no warning flags
+set in the \apogee\ \aspcap\ \citep{aspcap} pipeline
 reductions.
 We re-analyze these \emph{spectra} using \thecannon, because this
 deliver stellar abundance labels of higher precision, especially for
@@ -298,51 +295,6 @@ This optimization is not convex, but it is embarrassingly parallel,
 and therefore fast. The test
 step for 150,000 spectra takes less than 30~minutes on a small 
 research cluster in Cambridge.
-
-% HWR commented this (below) out
-
-% We start by performing our own continuum normalization on individual-exposure spectra and co-add them ourselves.
-% This is required, because the performance of \thecannon\ depends
-% critically on the methods used for spectral normalization.  It does
-% not require accurate continuum estimation, but it requires that the
-% normalization vector be obtained by a \emph{linear operation on the
-%   data}. The linear operation we use is a smooth-function fit to pixels
-% identified as continuum in our previous work \citep{thecannon}.
-
-% For the training data labels (used to train \thecannon; see below), we
-% use the \apogee\ \acronym{DR12} \aspcap\ atmospheric parameters and
-% 15-element abundances, but only for the subset of 12,681 red-giant
-% stars that have spectral signal-to-noise ratio measurements greater
-% than 200.
-% This is a small fraction of the total sample, but these highest
-% signal-to-noise stars are observed to obtain consistent, low-scatter,
-% sensible abundance-space measurements.
-
-% As described in the original paper \citep{thecannon} and the companion
-% papers \citep{casey16, ness16}, \thecannon\ is operated in two stages.
-% In the first stage---the training step---the training set of stars with
-% measured spectra and known labels (known parameters and abundances) is
-% used to establish a likelihood function for a set of coefficients that
-% parameterize a smooth, simple prediction of spectral pixels given
-% labels.
-% \thecannon\ finds the set of coefficients that optimizes the
-% training-step likelihood function.
-% In the implementation used in this \documentname, the spectral
-% prediction is quadratic in labels (including all cross-terms to second
-% order), and there are 17 labels ($\teff$, $\logg$, and 15 abundances
-% referenced to H) and 8500 spectral pixels, so there are on the order
-% of 1.4 million coefficients set by a convex optimization in the
-% training step.
-
-% In the second stage---the test step---each unlabeled star is used to
-% establish a single-star likelihood function for labels, holding the
-% coefficients fixed.
-% \thecannon\ finds the labels that minimize the single-star likelihood
-% function for each test-set star.
-% This optimization is not convex, but it is embarrassingly parallel.
-% For the results shown here, the training step takes hours and the test
-%step for 150,000 spectra takes less than 30~minutes on a small 
-%research cluster in Cambridge.
 
 Six two-dimensional projections of the abundance data, plus some other
 data quantities, are shown in \figurename~\ref{fig:all}.  Throughout
@@ -388,15 +340,16 @@ the \emph{k-means} algorithm (see \citealt{bishop} for a pedagogical
 introduction and references to the original literature).
 
 Briefly, the k-means algorithm is the following:
-$\bullet$~Starting at some guess for $K$ $D$-space cluster centers ($K$
-locations in the $D$-dimensional space), assign each point in the
+$\bullet$~Start at some inital guess for the locations of $K$ $D$-space cluster centers ($K$
+locations in the $D$-dimensional space).
+$\bullet$~Assign each point in the
 space (each star in our case) to the closest of the $K$ centers.
-$\bullet$~Given that assignment of stars to centers, update each center (each of
+$\bullet$~Given this assignment of stars to centers, update each center (each of
 the $K$ $D$-space positions) by taking the mean of the locations of
 the stars assigned to that center.
-Iterate the assignment and mean steps to convergence.
-The output is the locations of the $K$ centers and the assignments of
-all points to centers.
+$\bullet$~Iterate these steps (assignment of points, followed by taking of means) to convergence.
+The output of this algorithm is the converged locations of the $K$ centers and the assignments of
+all points to those centers.
 This algorithm is fast and performs well in practice in problems of
 this nature; also we are not the first to use the k-means algorithm in
 abundance space \citep{gratton}.
@@ -420,7 +373,23 @@ We choose here to work in the hydrogen-normalized abundance space, the
 space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
 [K/H], [Ca/H], [Ti/H], [V/H], [Mn/H], [Fe/H], [Ni/H].
 But in addition to this, we re-scale these by approximate typical measurement
-precisions obtained by \thecannon\ before running k-means.\footnote{The scalings were DWH DWH.}
+precisions obtained by \thecannon\ before running k-means.\footnote{%
+  The scalings were
+  [C/H]/[0.041],
+  [N/H]/[0.044],
+  [O/H]/[0.037],
+  [Na/H]/[0.111],
+  [Mg/H]/[0.032],
+  [Al/H]/[0.055],
+  [Si/H]/[0.041],
+  [S/H]/[0.054],
+  [K/H]/[0.069],
+  [Ca/H]/[0.043],
+  [Ti/H]/[0.072],
+  [V/H]/[0.146],
+  [Mn/H]/[0.041],
+  [Fe/H]/[0.019], and
+  [Ni/H]/[0.034].}
 This makes the space close to isotropic in measurement uncertainty or
 observational precision.
 Importantly we use \emph{only} abundance-space information, and no
@@ -458,8 +427,6 @@ In what follows, we only consider high-density clusters---clusters
 that are much more dense than average; these ought to represent true
 over-densities in abundance space.
 
-
-% ARC TO DO: Make claim of the fourth being M53.
 We chose a few interesting cases from the high-density clusters
 in the $K=256$ run and show them in
 \figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
@@ -555,7 +522,7 @@ catalogs of stellar clusters is beyond the scope.
 \insanefigure{cluster_0256_0010}
 \caption{Same as \figurename~\ref{fig:M13} but for another dense
   abundance-space cluster.
-  This one turns out to be dominated by a high-velocity-dispersion
+  This one turns out to be dominated by a hitherto unrecognized high-velocity-dispersion
   structure in the Galaxy halo.\label{fig:halo}}
 \end{figure}
 \begin{figure}[!p]
@@ -563,7 +530,7 @@ catalogs of stellar clusters is beyond the scope.
 \caption{Same as \figurename~\ref{fig:M13} but for another dense
   abundance-space cluster.
   This one turns out to be dominated by a very thin young stellar
-  structure in the Galaxy disk.\label{fig:disk}}
+  structure in the Galaxy disk, probably one that has been discovered previously \citep{wegg}.\label{fig:disk}}
 \end{figure}
 
 \clearpage
@@ -606,7 +573,6 @@ Furthermore, because abundance space is high in dimensionality, even
 small improvements in abundance measurement get taken to a significant
 power when thinking about information gains.
 
-
 There are a few points to highlight about the abundance anti-correlations
 found in globular clusters. First, the detection of these signatures gives
 confirmation to our analysis: The training set was not purposefully selected
@@ -623,15 +589,14 @@ sub-optimally selected by k-means. For these reasons the fact that (a)~\thecanno
 reports these abundance correlations and (b)~k-means--as a simple algorithm without information about expectations in abundance space--does not appear to be
 severely impacted by these correlations, provides high promise for more sophisticated approaches.
 
-
 The abundances of known clusters that we identify by k-means are in
-excellent agreement with the literature. For the group shown in Figure \ref{fig:M13},
-which we later attribute to M13, we find a mean of [Fe/H]$ = -1.55$ (DWH CHECK).
+excellent agreement with the literature. For the group shown in \figurename~\ref{fig:M13},
+which we later attribute to M13, we find a mean of [Fe/H]$ = -1.55$.
 The mean and spread agree well with other work on this cluster
 \citep{Kraft_1992,Cohen_Melendez_2005,Johnson_Pilachowski_2012}, and compiled catalogs of
 globular cluster properties \citep[][accessed 2016]{Harris_1996}. The detailed abundances are also
 consistent: we find a correlation in [C/Fe] and [N/Fe] abundances \citep{Smith_2005}, and their
-projection in Figure \ref{fig:M13} show a spread that reflects deep mixing
+projection in \figurename~\ref{fig:M13} show a spread that reflects deep mixing
 along the red giant branch \citep{Briley_2004}. We find that the light element
 abundances (most notably Mg--Al) for this cluster are anti-correlated, as
 expected from other studies \citep[for example,][]{gratton}. However we find a
@@ -642,10 +607,9 @@ in high-dimensional space, and the first stars that would be `discarded' from
 this group would be those with the most extreme abundances: low [O/Fe] and
 high [Na/Fe].
 
-
 There are scant abundance measurements reported for Palomar 5, for which
-most stars in the cluster in Figure \ref{fig:Pal5} belong. We find a mean
-metallicity of [Fe/H]$ = -1.3$ (DWH CHECK), which lies between the only
+most stars in the cluster in \figurename~\ref{fig:Pal5} belong. We find a mean
+metallicity of [Fe/H]$ = -1.3$, which lies between the only
 photometric \citep{Geisler_1997} and spectroscopic \citep{Smith_1985,Smith_2002} abundance
 measurements for this cluster.  The anti-correlation in C--N and Na--O abundance
 have been seen elsewhere \citep[][respectively]{Smith_1985,Smith_2002}, although
@@ -654,13 +618,7 @@ Indeed, this work contains the largest number of abundances for Palomar 5,
 permitting a thorough search of tidally disrupted members \citep[for example,][]{Kuzma_2015} 
 that have retained the unique cluster abundance signature.
 
-
-
-
-% Sagittarius
-
-
-The high-velocity-dispersion structure seen in Figure \ref{halo} stands
+The high-velocity-dispersion structure seen in \figurename~\ref{fig:halo} stands
 in stark contrast to the rest of the clusters we have identified. In
 addition to being highly clustered in 15-dimensions, it is visibly
 clustered in our 2-d projections. Indeed, it is more clustered in our
@@ -671,12 +629,11 @@ here is the lack of co-spatial stars. 12 stars within this cluster are
 marked as `M53' candidates by \apogee, but the remaining 145 stars
 are spread amongst fields throughout the halo.  
 
-% The high-velocity-dispersion structure in the Galaxy halo.
 We freely admit that k-means is by no means optimal, and other clusters
 we identify are accompanied by a few stars that are not currently co-spatial.
 Those stars may be unassociated interlopers that have been misclassified,
 or they may be true cluster members that are now unbound. However in the
-case of the high-velocity-dispersion structure in Figure \ref{fig:halo},
+case of the high-velocity-dispersion structure in \figurename~\ref{fig:halo},
 the situation is far more extreme. We identify a group of stars with
 highly similar abundances in 15 dimensions that are now spread throughout
 the Galaxy. Because some stars are candidates of the massive globular
@@ -686,7 +643,6 @@ these stars have been accreted onto the halo by a single globular
 cluster early in the Milky Way's formation. While speculative (and we
 make no consideration to whether this is indeed the true scenario),
 this example demonstrates the ultimate goal of chemical tagging. 
-
 
 The abundance-space group of stars in the disk structure shown in
 \figurename~\ref{fig:disk} may be associated with a very thin
@@ -785,7 +741,7 @@ Blanco-Cuaresma,~S., Soubiran,~C., Heiter,~U., \etal, 2015, \aap, 577, A47
 Bovy,~J., 2015, arXiv:1510.06745
  \bibitem[Briley \etal(2004)]{Briley_2004}
 Briley, M.~M., Cohen, J.~G., Stetson, P.~B., 2004, \aj, 127, 1579 
-\bibitem[Casey \etal(2016)]{ycasey16}
+\bibitem[Casey \etal(2016)]{casey16}
 Casey,~A.~R., Hogg,~D.~W., Ness,~M., Rix,~H.-W., 2016, in preparation
 \bibitem[Cohen \& Mel{\'e}ndez(2005)]{Cohen_Melendez_2005}
 Cohen, J.~G.,  Mel{\'e}ndez, J., 2005, \aj, 129, 303 
