@@ -252,7 +252,7 @@ if __name__ == "__main__":
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
         plot_cluster_stats(sizes, densities, dir)
 
-    # make plotting data
+        # make plotting data
         if plotdata is None:
             plotdata = data.copy()
             plotdata_labels = data_labels.copy()
@@ -266,7 +266,7 @@ if __name__ == "__main__":
             plotdata = np.hstack((plotdata, metadata))
             plotdata_labels = plotdata_labels + metadata_labels
 
-        # plot clusters from the last K run
+        # plot clusters from this K
         plotcount = 0
         for k in (np.argsort(densities))[::-1]:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
@@ -275,6 +275,14 @@ if __name__ == "__main__":
             plotcount += 1
             if plotcount == 32:
                 break
+
+        # plot some non-clusters for Ness
+        kmed = (np.argsort(densities))[K/2]
+        klow = (np.argsort(densities))[0]
+        for k in (kmed, klow):
+            clustername = "noncluster_{:04d}_{:04d}".format(K, k)
+            print(clustername, sizes[k], logdets[k], densities[k], fields[(clusters == k)].T)
+            plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
 
     # summary plots
     plot_one_cluster(plotdata, plotdata_labels, None, "all", dir)

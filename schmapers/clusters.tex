@@ -8,6 +8,19 @@
 \newcommand{\apogee}{\acronym{\project{APOGEE}}}
 \newcommand{\thecannon}{\project{The~Cannon}}
 
+% figure shit
+\newlength{\figwidth}\setlength{\figwidth}{0.3\textwidth}
+\newcommand{\insanefigure}[1]{%
+\includegraphics[width=\figwidth]{./figs/#1_MgFe.png}%
+\includegraphics[width=\figwidth]{./figs/#1_MgK.png}%
+\includegraphics[width=\figwidth]{./figs/#1_AlMg.png}\\
+\includegraphics[width=\figwidth]{./figs/#1_NaO.png}%
+\includegraphics[width=\figwidth]{./figs/#1_CN.png}%
+\includegraphics[width=\figwidth]{./figs/#1_SAl.png}\\
+\includegraphics[width=2\figwidth]{./figs/#1_gal.png}%
+\includegraphics[width=\figwidth]{./figs/#1_HR.png}\\
+\includegraphics[width=2\figwidth]{./figs/#1_vlon.png}}
+
 \begin{document}
 
 \title{Identifying stellar clusters in chemical-abundance space}
@@ -78,5 +91,14 @@ DWH: It is a pleasure to thank...
 DWH: github repo and hash.
 
 DWH: Be sure to cite software a la the new ApJ guidelines.
+
+\begin{figure}[!p]
+\insanefigure{noncluster_0256_0080}
+\caption{The median-density $K=256$ cluster.\label{fig:median}}
+\end{figure}
+\begin{figure}[!p]
+\insanefigure{noncluster_0256_0196}
+\caption{The lowest density $K=256$ cluster.\label{fig:lowest}}
+\end{figure}
 
 \end{document}
