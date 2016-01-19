@@ -123,8 +123,8 @@ def plot_cluster_context(sizes, densities, k, name, dir, suffix="png"):
     plt.plot(sizes, densities, marker=".", c="k", ms=5.0, alpha=0.5, ls="none")
     plt.plot(sizes[k], densities[k], marker="o", c="k", mfc="none", ms=7.0, mew=2., alpha=1., ls="none")
     _clusterlims(sizes, densities)
-    plt.ylabel("cluster density")
-    plt.xlabel("number of stars in cluster")
+    plt.ylabel("cluster abundance-space density")
+    plt.xlabel("number in abundance-space cluster")
     plt.loglog()
     [l.set_rotation(45) for l in plt.gca().get_xticklabels()]
     [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
@@ -143,10 +143,10 @@ def plot_cluster_stats(sizes, densities, dir, suffix="png"):
     plt.subplots_adjust(left=0.15, right=0.97, bottom=0.15, top=0.97)
     plt.clf()
     kwargs = {"marker": ".", "ls": "none"}
-    plt.plot(sizes, densities, c="k", ms=5.0, alpha=0.5, **kwargs)
+    plt.plot(sizes, densities, c="k", ms=7.5, alpha=0.5, **kwargs)
     _clusterlims(sizes, densities)
-    plt.ylabel("cluster density")
-    plt.xlabel("number of stars in cluster")
+    plt.ylabel("cluster abundance-space density")
+    plt.xlabel("number of stars in abundance-space cluster")
     plt.loglog()
     plt.savefig(fn)
     print("plot_cluster_stats(): wrote", fn)
