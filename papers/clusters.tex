@@ -9,6 +9,7 @@
 
 % style notes
 % - never use \cite{}, always \citep{} or \citealt{}.
+% - never use et al., always use \etal
 
 \documentclass[12pt, letterpaper, preprint]{aastex}
 
@@ -381,14 +382,16 @@ This encourages us to look for over-densities automatically in the
 abundance space and see if anything found that way would be over-dense
 in phase space.
 The simplest method for clustering points in $D$-dimensional space is
-the \emph{k-means} algorithm (see \citealt{bishop} for a pedagogical introduction).
+the \emph{k-means} algorithm (see \citealt{bishop} for a pedagogical
+introduction and references to the original literature).
 Briefly, the k-means algorithm is to find the points closest (in
 $D$-space) to each of $K$ centers, and then take the mean of those
 points to update the locations of the centers; iterate to convergence.
 The output is the locations of the $K$ centers and the assignments of
 all points to centers.
 This algorithm is fast and performs well in practice in problems of
-this nature.
+this nature; also we are not the first to use the k-means algorithm in
+abundance space \citep{gratton}.
 
 The k-means algorithm has disadvantages, of course.
 One is that $K$ must be chosen by hand (or heuristically at best).
@@ -551,7 +554,7 @@ catalogs of stellar clusters is beyond the scope.
 \end{figure}
 
 \clearpage
-\section{Discussion}
+\section{Discussion}\label{sec:discussion}
 
 We have demonstrated for the first time that, in a large-scale
 spectroscopic survey of stars, stars that appear similar in
@@ -559,10 +562,13 @@ chemical-abundance properties are often associated physically in
 clusters or other structures.
 The reverse is well established---that is, that stars that are
 associated physically in clusters are similar in chemical-abundance
-properties (with a recent model-free test by \citealt{bovy}).
-MKN: WHAT ELSE TO CITE HERE?
-However, it was not known whether abundance-space information would be
-precise enough, or \emph{measurable} precisely enough to find this
+properties.
+That is, although they often show chemical diversity, that chemical
+diversity is small, and follows well-defined trends or a subspace in
+abundance space (for example, \citealt{gratton, meszaros, bovy},
+and references within those).
+However, it was not known---prior to this work---whether abundance-space information would be
+informative enough, or \emph{measurable} precisely enough to find this
 structure in surveys dominated by a large mix of stars from different
 origins and ages (and there was good reason to be pessimistic;
 \citealt{ting}).
@@ -587,8 +593,15 @@ Furthermore, because abundance space is high in dimensionality, even
 small improvements in abundance measurement get taken to a significant
 power when thinking about information gains.
 
-ARC: Which known clusters were detected? Which comparably-sized clusters
-	were not detected? Why not? (Why not M 15?)
+ARC: In addition to the increased precision, it is very important to
+	mention the fact that we report an "abundance" for *everything*.
+	Gaps in abundance data from classical spectroscopy are rampant,
+	and pose a serious problem even if you want to perform Real World(tm)
+	tests of chemical tagging. \thecannon\ has solved this entire
+	subset of astronomy.  DWH say: I agree; moved this point earlier.
+
+%ARC: Which known clusters were detected? Which comparably-sized clusters
+%	were not detected? Why not? (Why not M 15?)  DWH say: M15 WAS detected, as the paper now notes above; I say drop this issue entirely.
 	
 ARC: How do the abundances that we find in these known clusters compare
 	with the literature?
@@ -603,27 +616,33 @@ ARC: We should note that the anti-correlations known to exist in GCs
 
 ARC: What can be said about the M 53 stars? Since we find GCs which are
 	mostly spatially concentrated (e.g., very few sitting elsewhere),
-	and then we find M53 "co-cluster" stars all over the halo, does this
+	and then we find M53 ``co-cluster'' stars all over the halo, does this
 	directly speak for evidence of accretion by proto-stellar clusters
-	in the high-redshift analogues of the Milky Way?
-	
-ARC: In addition to the increased precision, it is very important to
-	mention the fact that we report an "abundance" for *everything*.
-	Gaps in abundance data from classical spectroscopy are rampant,
-	and pose a serious problem even if you want to perform Real World(tm)
-	tests of chemical tagging. \thecannon\ has solved this entire
-	subset of astronomy.
+	in the high-redshift analogues of the Milky Way?  DWH say: If you use the name ``M53'' then define it or say where you see it.
 
+The abundance-space group of stars in the disk structure shown in
+\figurename~\ref{fig:disk} may be associated with a very thin
+Milky-Way bar component reported previously \citep{wegg}, which is
+found to exist predominantly toward the end of the bar (at $l$
+$\approx$ 30$^\circ$).
+The stars in this structure are metal-rich and have a low
+[C/N] ratio and are therefore likely young (following the [C/N]--mass
+relationship; \citealt{martig}).
+It is possible that this structure has very low scale height because
+it is very young and hasn't experienced dynamical heating or radial
+migration.
+
+It is worth reiterating here what is written above:
 There is no sense at all in which \figurename~\ref{fig:M13},
 \ref{fig:Pal5}, \ref{fig:Sgr}, \ref{fig:halo}, and \ref{fig:disk} show
 a representative or complete set of features found in abundance space.
 These features were hand-chosen to be obviously interesting and
 interpetable.
-There are many other things to be found in this data set!
-
-On the particulars of these features, a few comments:
-DWH: Comments about Sag and M13: They appear in multiple clusters.
-MKN: Comments about the young disk feature and what it probably is?
+There are many other things to be found in this data set, and much
+more effective models to be built of abundance-space structure.
+The only strong conclusion of this investigation is that chemical
+tagging \emph{can} work; the abundance measurements with \thecannon\ are
+precise enough and the chemical-abundance space is informative enough.
 
 The \apogee\ project shows great promise for these studies, and with
 the appearance of the companion papers, we will release the
@@ -708,6 +727,8 @@ Freeman,~K., Bland-Hawthorn,~J., 2002, \araa, 40, 487
 Garc{\'{\i}}a~P{\'e}rez,~A.~E., Allende~Prieto,~C., Holtzman,~J.~A., \etal, 2015, arXiv:1510.07635
 \bibitem[Gilmore \etal(2012)]{gaiaeso}
 Gilmore,~G., Randich,~S., Asplund,~M., \etal, 2012, The Messenger, 147, 25 
+\bibitem[Gratton \etal(2012)]{gratton}
+Gratton,~R.~G., Carretta,~E., Bragaglia,~A., 2012, \aapr, 20, 50
 \bibitem[Hunter(2007)]{matplotlib}
 Hunter,~J.~D., 2007, Computing in Science \& Engineering, 9, 90
 \bibitem[Jofr{\'e} \etal(2015)]{jofre}
@@ -716,8 +737,12 @@ Jofr{\'e},~P., M{\"a}dler,~T., Gilmore,~G., \etal, 2015, \mnras, 453, 1428
 Majewski,~S.~R., Schiavon,~R.~P., Frinchaboy,~P.~M., \etal, 2015, arXiv:1509.05420
 \bibitem[Martell(2015)]{martell}
 Martell,~S.~L., 2015, arXiv:1507.00079
+\bibitem[Martig \etal(2016)]{martig}
+Martig,~M., Fouesneau,~M., Rix,~H.-W., \etal, 2016, \mnras, 456, 3655
 \bibitem[Melendez \etal(2014)]{melendez}
 Mel{\'e}ndez,~J., Ram{\'{\i}}rez,~I., Karakas,~A.~I., \etal, 2014, \apj, 791, 14
+\bibitem[M{\'e}sz{\'a}ros \etal(2015)]{meszaros}
+M{\'e}sz{\'a}ros,~S., Martell,~S.~L., Shetrone,~M., \etal, 2015, \aj, 149, 153
 \bibitem[Mitschang \etal(2014)]{mitschang}
 Mitschang,~A.~W., De~Silva,~G., Zucker,~D.~B., \etal, 2014, \mnras, 438, 2753
 \bibitem[Ness \etal(2015)]{thecannon}
@@ -736,5 +761,7 @@ Ro{\v s}kar,~R., Debattista,~V.~P., Quinn,~T.~R., Stinson,~G.~S., Wadsley,~J., 2
 Ting,~Y.-S., Conroy,~C., Rix,~H.-W., 2016, \apj, in press (arXiv:1507.07563)
 \bibitem[van~der~Walt \etal(2011)]{numpy}
 van~der~Walt,~S., Colbert,~S.~C., Varoquaux,~G., 2011, Computing in Science \& Engineering, 13, 22
+\bibitem[Wegg \etal(2015)]{wegg}
+Wegg,~C., Gerhard,~O., Portail,~M., 2015, \mnras, 450, 4050
 \end{thebibliography}
 \end{document}
