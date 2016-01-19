@@ -1,11 +1,6 @@
 % This file is part of the Platypus project.
 % Copyright 2016 the authors.
 
-% to-do
-% - submit to arXiv
-% - forward to Freeman, Bovy, others?
-% - submit to journal
-
 % style notes
 % - never use \cite{}, always \citep{} or \citealt{}.
 % - never use et al., always use \etal
@@ -66,7 +61,6 @@
 \altaffiltext{6}{Sagan Fellow}
 \altaffiltext{7}{Department of Astronomy, University of Washington, Box 351580, Seattle, WA 98195-1580}
 \email{david.hogg@nyu.edu}
-
 
 \begin{abstract}
 % Context:
@@ -245,7 +239,7 @@ S, K, Ca, Ti, V, Mn, Fe, Ni), using \thecannon\ \citep{thecannon}.
 The \apogee\ data set covers a huge radial extent and---because the
 data are taken in the infrared---explores the thin disk.
 However, it has the disadvantage that it's spatial coverage is incomplete
-(i.e., limited pointings produce a \foreign{`swiss cheese'}-like structure),
+(that is, limited pointings produce a fractured sky map),
 which makes it hard to see, within the data set, linear or
 extended stellar structures.
 In many ways, \galah\ will deliver improvements, both because it will
@@ -373,8 +367,8 @@ We choose here to work in the hydrogen-normalized abundance space, the
 space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
 [K/H], [Ca/H], [Ti/H], [V/H], [Mn/H], [Fe/H], [Ni/H].
 But in addition to this, we re-scale these by approximate typical measurement
-precisions obtained by \thecannon\ before running k-means.\footnote{%
-  The scalings were
+precisions obtained by \thecannon\ before running k-means.
+These scalings were
   [C/H]/[0.041],
   [N/H]/[0.044],
   [O/H]/[0.037],
@@ -389,8 +383,8 @@ precisions obtained by \thecannon\ before running k-means.\footnote{%
   [V/H]/[0.146],
   [Mn/H]/[0.041],
   [Fe/H]/[0.019], and
-  [Ni/H]/[0.034].}
-This makes the space close to isotropic in measurement uncertainty or
+  [Ni/H]/[0.034].
+This scaling makes the space close to isotropic in measurement uncertainty or
 observational precision.
 Importantly we use \emph{only} abundance-space information, and no
 positional or velocity information (nor $\teff$ nor $\logg$ nor any
