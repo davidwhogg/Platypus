@@ -71,6 +71,8 @@ def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
         if os.path.exists(fn):
             print("plot_one_cluster(): {} exists already".format(fn))
         else:
+            logg = np.where(np.array(labels) == "LOGG_ASPCAP")[0][0]
+            rv = np.where(np.array(labels) == "VHELIO_AVG")[0][0]
             y = np.where(np.array(labels) == ly)[0][0]
             x = np.where(np.array(labels) == lx)[0][0]
             if plotname == "sky" or plotname == "gal" or plotname == "vlon":
@@ -83,16 +85,15 @@ def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
             kwargs = {"ls": "none", "marker": "."}
             if mask is None:
                 plt.plot(data[:,x], data[:,y], c="k",    mec="none", ms=0.5, alpha=0.20, **kwargs)
-            else:        
+            else:
                 plt.plot(data[:,x], data[:,y], c="0.75", mec="none", ms=0.5, alpha=0.20, **kwargs)
-                angle = 0.
-                thisb = 0.025 # magic
-                cc = plt.get_cmap('brg')
-                for i in np.arange(len(data))[mask]:
-                    plt.plot([data[i,x], ], [data[i,y], ], c=cc(thisb), alpha=0.75,
-                             marker=(3, 1, angle), ms=7.0, ls="none")
-                    angle = (angle + 55.) % 360. # magic
-                    thisb = (thisb + 0.05) % 1.0 # magic
+                cc = plt.get_cmap('viridis')
+                M = len(data[mask])
+                angles = (120. / M) * (data[mask, logg].argsort().argsort())
+                colors = [cc(q) for q in (1. / M) * (data[mask, rv].argsort().argsort())]
+                for j, i in enumerate(np.arange(len(data))[mask]):
+                    plt.plot([data[i,x], ], [data[i,y], ], c=colors[j], alpha=0.75,
+                             marker=(3, 1, angles[j]), ms=7.0, ls="none")
             plt.ylim(range_dict[ly])
             plt.xlim(range_dict[lx])
             plt.ylabel(label_dict[ly])
@@ -101,6 +102,10 @@ def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
             [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
             plt.savefig(fn)
             print("plot_one_cluster(): wrote", fn)
+
+def _clusterlims(sizes, densities):
+    plt.ylim(np.min(densities) / 5., np.max(densities) * 5.)
+    plt.xlim(np.min(sizes) / 1.4, np.max(sizes) * 1.4)
 
 def plot_cluster_context(sizes, densities, k, name, dir, suffix="png"):
     print("plot_cluster_context(): plotting", name)
@@ -116,10 +121,13 @@ def plot_cluster_context(sizes, densities, k, name, dir, suffix="png"):
         print("plot_cluster_context(): wrote", fn)
         return
     plt.plot(sizes, densities, marker=".", c="k", ms=5.0, alpha=0.5, ls="none")
-    plt.plot(sizes[k], densities[k], marker="o", c="k", mfc="none", ms=5.0, alpha=1., ls="none")
+    plt.plot(sizes[k], densities[k], marker="o", c="k", mfc="none", ms=7.0, mew=2., alpha=1., ls="none")
+    _clusterlims(sizes, densities)
     plt.ylabel("cluster density")
     plt.xlabel("number of stars in cluster")
     plt.loglog()
+    [l.set_rotation(45) for l in plt.gca().get_xticklabels()]
+    [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
     plt.savefig(fn)
     print("plot_cluster_context(): wrote", fn)
 
@@ -136,6 +144,7 @@ def plot_cluster_stats(sizes, densities, dir, suffix="png"):
     plt.clf()
     kwargs = {"marker": ".", "ls": "none"}
     plt.plot(sizes, densities, c="k", ms=5.0, alpha=0.5, **kwargs)
+    _clusterlims(sizes, densities)
     plt.ylabel("cluster density")
     plt.xlabel("number of stars in cluster")
     plt.loglog()
