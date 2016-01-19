@@ -1,9 +1,6 @@
 """
 This project is part of the Platypus project.
 Copyright 2016 David W. Hogg (NYU).
-
-## bugs:
-- needs better labels on corner
 """
 import os
 import pickle as cp
@@ -54,9 +51,8 @@ def get_metadata(fn, labels, mask):
     print("get_metadata()", dfn, metadata.shape)
     return metadata
 
-def plot_one_cluster(data, labels, mask, name, dir):
+def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
     print("plot_one_cluster(): plotting", name)
-    suffix = "png"
     for ly, lx, plotname in [
         ("MG_H - FE_H", "FE_H", "MgFe"),
         ("NA_H - FE_H", "O_H - FE_H", "NaO"),
@@ -104,15 +100,35 @@ def plot_one_cluster(data, labels, mask, name, dir):
             [l.set_rotation(45) for l in plt.gca().get_xticklabels()]
             [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
             plt.savefig(fn)
-            print("plot_one_cluster(): saving", fn)
+            print("plot_one_cluster(): wrote", fn)
 
-def plot_cluster_stats(sizes, densities, dir):
+def plot_cluster_context(sizes, densities, k, name, dir, suffix="png"):
+    print("plot_cluster_context(): plotting", name)
+    fn = "{}/{}_context.{}".format(dir, name, suffix)
+    if os.path.exists(fn):
+        print("plot_cluster_context(): {} exists already".format(fn))
+        return
+    fig = plt.figure(figsize=(4,4))
+    plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
+    plt.clf()
+    if k is None:
+        plt.savefig(fn)
+        print("plot_cluster_context(): wrote", fn)
+        return
+    plt.plot(sizes, densities, marker=".", c="k", ms=5.0, alpha=0.5, ls="none")
+    plt.plot(sizes[k], densities[k], marker="o", c="k", mfc="none", ms=5.0, alpha=1., ls="none")
+    plt.ylabel("cluster density")
+    plt.xlabel("number of stars in cluster")
+    plt.loglog()
+    plt.savefig(fn)
+    print("plot_cluster_context(): wrote", fn)
+
+def plot_cluster_stats(sizes, densities, dir, suffix="png"):
     K = len(sizes)
-    print("plot_one_cluster(): plotting", K)
-    suffix = "png"
+    print("plot_cluster_stats(): plotting", K)
     fn = "{}/clusters_{:04d}.{}".format(dir, K, suffix)
     if os.path.exists(fn):
-        print("plot_one_cluster(): {} exists already".format(fn))
+        print("plot_cluster_stats(): {} exists already".format(fn))
         return None
     assert len(densities) == K
     fig = plt.figure(figsize=(6,6))
@@ -122,9 +138,9 @@ def plot_cluster_stats(sizes, densities, dir):
     plt.plot(sizes, densities, c="k", ms=5.0, alpha=0.5, **kwargs)
     plt.ylabel("cluster density")
     plt.xlabel("number of stars in cluster")
-    plt.semilogy()
+    plt.loglog()
     plt.savefig(fn)
-    print("plot_cluster_stats(): saving", fn)
+    print("plot_cluster_stats(): wrote", fn)
 
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
@@ -201,7 +217,7 @@ if __name__ == "__main__":
                    "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                    "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
 
-    for K in [256, 512]:
+    for K in [256,]: # just do the winner
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
@@ -271,6 +287,7 @@ if __name__ == "__main__":
         for k in (np.argsort(densities))[::-1]:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
             print(clustername, sizes[k], logdets[k], densities[k], fields[(clusters == k)].T)
+            plot_cluster_context(sizes, densities, k, clustername, dir)
             plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
             plotcount += 1
             if plotcount == 32:
@@ -282,7 +299,9 @@ if __name__ == "__main__":
         for k in (kmed, klow):
             clustername = "noncluster_{:04d}_{:04d}".format(K, k)
             print(clustername, sizes[k], logdets[k], densities[k], fields[(clusters == k)].T)
+            plot_cluster_context(sizes, densities, k, clustername, dir)
             plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
 
     # summary plots
+    plot_cluster_context(sizes, densities, None, "all", dir)
     plot_one_cluster(plotdata, plotdata_labels, None, "all", dir)
