@@ -371,11 +371,11 @@ any substructure identified by k-means (or any other algorithm).
 \end{figure}
 
 \clearpage
-\section{Clustering method and results}\label{sec:method}
+\section{Identifying abundance-space clusters}\label{sec:method}
 
 Although only hints of small-scale clustering in the abundance space
-are visible in \figurename~\ref{fig:all}, exploration of the data indicates that
-known clusters do appear in the abundance space as over-densities.
+are visible in \figurename~\ref{fig:all}, exploration of the data by hand indicates that
+known clusters do appear in the high-dimensional abundance space as over-densities.
 In general, the collapse of 15 dimensions down to 2-d projections
 will hide, smooth, or dilute any structure; there is no guarantee that
 a highly featured distribution in 15-d will show features in
@@ -386,22 +386,28 @@ in phase space.
 The simplest method for clustering points in $D$-dimensional space is
 the \emph{k-means} algorithm (see \citealt{bishop} for a pedagogical
 introduction and references to the original literature).
-Briefly, the k-means algorithm is to find the points closest (in
-$D$-space) to each of $K$ centers, and then take the mean of those
-points to update the locations of the centers; iterate to convergence.
+
+Briefly, the k-means algorithm is the following:
+$\bullet$~Starting at some guess for $K$ $D$-space cluster centers ($K$
+locations in the $D$-dimensional space), assign each point in the
+space (each star in our case) to the closest of the $K$ centers.
+$\bullet$~Given that assignment of stars to centers, update each center (each of
+the $K$ $D$-space positions) by taking the mean of the locations of
+the stars assigned to that center.
+Iterate the assignment and mean steps to convergence.
 The output is the locations of the $K$ centers and the assignments of
 all points to centers.
 This algorithm is fast and performs well in practice in problems of
 this nature; also we are not the first to use the k-means algorithm in
 abundance space \citep{gratton}.
 
-The k-means algorithm has disadvantages, of course.
+The k-means algorithm has a number of limitations:
 One is that $K$ must be chosen by hand (or heuristically at best).
 Here we are only demonstrating a concept; we don't need to have the
 best possible clustering.
 For this reason we simply choose $K=128$, $K=256$, and $K=512$ and look at all the
 results.
-The algorithm also only performs local optimization.
+Also, the k-means algorithm only performs local optimization.
 At each $K$ we perform 32 restarts with different initializations, and
 preserve the best clustering (best according to the k-means score).
 Each of the 32 initializations was performed with the
@@ -414,7 +420,7 @@ We choose here to work in the hydrogen-normalized abundance space, the
 space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
 [K/H], [Ca/H], [Ti/H], [V/H], [Mn/H], [Fe/H], [Ni/H].
 But in addition to this, we re-scale these by approximate typical measurement
-precisions obtained by \thecannon\ before running k-means.
+precisions obtained by \thecannon\ before running k-means.\footnote{The scalings were DWH DWH.}
 This makes the space close to isotropic in measurement uncertainty or
 observational precision.
 Importantly we use \emph{only} abundance-space information, and no
@@ -422,21 +428,20 @@ positional or velocity information (nor $\teff$ nor $\logg$ nor any
 targeting or observational meta-data) as input to the clustering
 algorithm.
 
-One note on clustering algorithm decisions is warranted:
-Because this project is just a demonstration of the chemical-tagging
-concept, there is no requirement that we choose the best clustering
+Nothing about this algorithm or our choices are particularly
+tuned or optimized; this is in no sense the
 algorithm or the method that reveals the best structures.
 Indeed, it is a feature of this work that even the simplest, most
-generic, least-tuned clustering algorithm returns interesting
+generic clustering algorithm returns interesting
 structures (as shown below).
 The prospects for Milky Way science only improve as the clustering
 algorithm improves.
 
 When the k-means results are returned, the $D\times D$ empirical
-variance tensor for the members of each cluster can be constructed,
-and an effective density can be computed as the number of points in
-the cluster divided by the square-root of the determinant of the
-tensor.
+variance tensor for the members of each cluster can be constructed.
+From this, an effective density in the abundance space can be computed
+as the number of points in the cluster divided by the square-root of
+the determinant of the tensor.
 This density was used to rank abundance-space overdensities (from highest
 to lowest) for visual inspection.
 In \figurename~\ref{fig:densities} we show the distribution of cluster membership
