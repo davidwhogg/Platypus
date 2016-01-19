@@ -115,8 +115,8 @@ def plot_cluster_stats(sizes, densities, dir):
         print("plot_one_cluster(): {} exists already".format(fn))
         return None
     assert len(densities) == K
-    fig = plt.figure(figsize=(4,4))
-    plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
+    fig = plt.figure(figsize=(6,6))
+    plt.subplots_adjust(left=0.15, right=0.97, bottom=0.15, top=0.97)
     plt.clf()
     kwargs = {"marker": ".", "ls": "none"}
     plt.plot(sizes, densities, c="k", ms=5.0, alpha=0.5, **kwargs)
