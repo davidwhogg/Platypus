@@ -40,7 +40,7 @@
 \includegraphics[width=\figwidth]{./figs/#1_context.png}}
 
 % results
-\newcommand{\totalnumber}{98462}
+\newcommand{\totalnumber}{98,462}
 
 \begin{document}\sloppy\sloppypar
 
@@ -64,8 +64,7 @@
 
 \begin{abstract}
 % Context:
-Chemical tagging promises to use surface chemical abundance measurements to find sets of stars
-that were born together but which are now in spatially extended distributions.
+Chemical tagging promises to use detailed abundance measurements to find sets of stars that were born together but are now in spatially extended distributions.
 This idea has not previously yielded scientific successes, probably because of the
 noise and incompleteness in chemical-abundance measurements.
 However, we have succeeded in substantially improving spectroscopic measurements with \thecannon,
@@ -141,7 +140,7 @@ practice: identifying stars of common birth origin {\it purely} on the
 basis of their near-identical abundances patterns, without any
 consideration of position or velocity.
 
-Part of the reason that chemical tagging still remains unrealized
+Part of the reason that chemical tagging remains unrealized
 is because the level of abundance specificity required
 is very high.
 If there are thousands of (relevant) molecular clouds forming stars in
@@ -273,15 +272,15 @@ The details about how we select, reduce, and analyze the \apogee\ data
 are given in full detail in the companion papers \citep{casey16,
   ness16}, and we only summarize briefly here.
 We re-derived 17 labels ($\teff$, $\logg$, and 15 abundances
-referenced to H) form the \apogee\ \acronym{DR12} spectra. 
+referenced to H) from the \apogee\ \acronym{DR12} spectra. 
 For the training step of \thecannon, 
 12,681 red-giant stars with spectral $S/N \ge 200$ were used.
-For this small fraction of the sample with the highest $S/N$ objects the
+For this small fraction of the sample with the highest $S/N$, the
 labels provided by \aspcap\ provide consistent, relatively low-scatter, sensible
 abundance-space measurements.
 The training step fixes a spectral model
 that predicts the normalized spectrum as a quadratic function of all
-labels. In the second stage---the test step---each unlabelled star is
+labels ($\sim 1.5\times10^6$ model coefficients). In the second stage---the test step---each unlabelled star is
 used to establish a single-star likelihood function for its labels,
 holding the model coefficients fixed.
 \thecannon\ finds the labels that minimize the single-star likelihood
@@ -370,21 +369,21 @@ space of [C/H], [N/H], [O/H], [Na/H], [Mg/H], [Al/H], [Si/H], [S/H],
 But in addition to this, we re-scale these by approximate typical measurement
 precisions obtained by \thecannon\ before running k-means.
 These scalings were
-  [C/H]/[0.041],
-  [N/H]/[0.044],
-  [O/H]/[0.037],
-  [Na/H]/[0.111],
-  [Mg/H]/[0.032],
-  [Al/H]/[0.055],
-  [Si/H]/[0.041],
-  [S/H]/[0.054],
-  [K/H]/[0.069],
-  [Ca/H]/[0.043],
-  [Ti/H]/[0.072],
-  [V/H]/[0.146],
-  [Mn/H]/[0.041],
-  [Fe/H]/[0.019], and
-  [Ni/H]/[0.034].
+  [C/H]/0.041,
+  [N/H]/0.044,
+  [O/H]/0.037,
+  [Na/H]/0.111,
+  [Mg/H]/0.032,
+  [Al/H]/0.055,
+  [Si/H]/0.041,
+  [S/H]/0.054,
+  [K/H]/0.069,
+  [Ca/H]/0.043,
+  [Ti/H]/0.072,
+  [V/H]/0.146,
+  [Mn/H]/0.041,
+  [Fe/H]/0.019, and
+  [Ni/H]/0.034.
 This scaling makes the space close to isotropic in measurement uncertainty or
 observational precision.
 Importantly we use \emph{only} abundance-space information, and no
@@ -637,7 +636,7 @@ or they may be true cluster members that are now unbound. However in the
 case of the high-velocity-dispersion structure in \figurename~\ref{fig:halo},
 the situation is far more extreme. We identify a group of stars with
 highly similar abundances in 15 dimensions that are now spread throughout
-the Galaxy. Because some stars are candidate members of the massive globular
+the Galaxy. Because some stars ($<8\%$) are candidate members of the massive globular
 cluster M53, it provides tantalizing possibility that these stars may
 indeed be all members of the same co-natal gas cloud, implying that 
 these stars have been accreted onto the halo by a single globular
