@@ -152,7 +152,7 @@ nucleosynthetic pathways or the dimensionality of the true abundance
 space.)
 Therefore accurate---or at
 least precise---measurements of many different abundances are needed
-for stellar sibling to have sufficiently unique fingerprints.
+for stellar siblings to have sufficiently unique fingerprints.
 Stellar spectroscopic surveys now have the resolution,
 $S/N$, wavelength coverage, and sample sizes to deliver many
 different chemical tags for each star.
@@ -161,12 +161,12 @@ There are, however, two big issues.
 The first is that the physical assumptions behind the idea may require
 refinement:
 There may be chemical-abundance overlaps among open clusters
-\citep{blancocuaresma}; coeval groups of stars may have similar tags
+\citep{blancocuaresma}, coeval groups of stars may have similar tags
 but different birth places \citep{mitschang}, and the
 chemical-abundance space might be low in dimensionality.
 On the other hand, precise studies of stellar twins \citep{melendez, jofre}
-and open clusters \citep{bovy} indicates that chemical abundances ought to be
-very precisely similar for co-eval stars.
+and open clusters \citep{bovy} indicate that chemical abundances ought to be
+very similar for co-eval stars.
 
 The second issue for chemical tagging---and the one we address
 here---is measurement precision (and accuracy).
@@ -195,11 +195,11 @@ This model can deliver stellar parameters and chemical abundances for
 stars, making use of every pixel of every stellar spectrum (that is,
 all the information in the data) but making no use at all of physical
 models of stars.
-It relies only on there being training data---\emph{some} stars for
+It relies only on there being training data---\emph{some} reference stars for
 which parameters and abundances are known and believed.
 In companion papers \citep{casey16, ness16} we show that
 \thecannon\ can deliver 15 to 19 abundances for stars in the
-\apogee\ survey, at precisions higher than even the training data on
+\apogee\ survey, at precisions higher than even the training (reference) data on
 which the model is trained.
 We say more about this below.
 We will show here that \thecannon\ improves chemical abundance measurements
@@ -231,14 +231,14 @@ motion, and inconsistencies resulting from assumptions of the local thermal
 equilibrium all contribute to produce knowingly inaccurate abundances.
 \thecannon\ stands out because it demonstrably improves the precision on
 chemical abundances, whereas the accuracy of those labels is limited only
-by the training set employed.
+by the training (reference) set employed.
 
 In what follows, we are going to use \apogee\ \acronym{DR12} data \citep{dr12}, in
 which we can re-derive 15 element abundances (C, N, O, Na, Mg, Al, Si,
 S, K, Ca, Ti, V, Mn, Fe, Ni), using \thecannon\ \citep{thecannon}.
 The \apogee\ data set covers a huge radial extent and---because the
 data are taken in the infrared---explores the thin disk.
-However, it has the disadvantage that it's spatial coverage is incomplete
+However, it has the disadvantage that its spatial coverage is incomplete
 (that is, limited pointings produce a fractured sky map),
 which makes it hard to see, within the data set, linear or
 extended stellar structures.
@@ -256,8 +256,8 @@ greater background sample, that have a common birth origin? If we
 find stars purely by their clustering in abundance space and subsequently
 show that they are part of a still spatially coherent cluster, then
 we will have resolved all practical outstanding issues plaguing 
-chemical tagging, thereby coming closer to the tantalizing potential 
-in truly unravelling the formation of the Milky Way.
+chemical tagging, thereby bringing us much closer to
+unravelling the formation of the Milky Way.
 
 \section{Data: \apogee\ giants with abundances from \thecannon}\label{sec:data}
 
@@ -312,8 +312,7 @@ any substructure identified by k-means (or any other algorithm).
   15-dimensional abundance space of elements referenced to H (not Fe),
   but plots are shown here referenced to Fe for familiarity reasons.
   The bottom three panels show stellar meta-data not used in the
-  clustering but used to test whether the abundance-space clusters
-  are interesting spatially.\label{fig:all}}
+  clustering described below.\label{fig:all}}
 \end{figure}
 
 \clearpage
@@ -334,7 +333,7 @@ the \emph{k-means} algorithm (see \citealt{bishop} for a pedagogical
 introduction and references to the original literature).
 
 Briefly, the k-means algorithm is the following:
-$\bullet$~Start at some inital guess for the locations of $K$ $D$-space cluster centers ($K$
+$\bullet$~Start at some initial guess for the locations of $K$ $D$-space cluster centers ($K$
 locations in the $D$-dimensional space).
 $\bullet$~Assign each point in the
 space (each star in our case) to the closest of the $K$ centers.
@@ -415,8 +414,8 @@ in ways to which k-means is sensitive.
 
 Importantly, the k-means algorithm assigns \emph{every} star to at
 least one cluster.
-For this reason, there is no sense in which each ``cluster'' returned
-by k-means is in any sense an overdensity in abundance space.
+For this reason, there is no sense in which \emph{every} ``cluster'' returned
+by k-means is a distinct overdensity in abundance space.
 In what follows, we only consider high-density clusters---clusters
 that are much more dense than average; these ought to represent true
 over-densities in abundance space.
@@ -476,8 +475,8 @@ clusters within the \apogee\ data set only contain a few plausible
 members, thereby  complicating any inferences we wish to make about 
 detection completeness using simple k-means.) 
 This \documentname\ is simply a demonstration of the chemical-tagging
-concept; an investigation of whether we can construct complete
-catalogs of stellar clusters is beyond the scope.
+concept; a full investigation of whether we can construct complete
+catalogs of stellar clusters is beyond our present scope.
 
 \begin{figure}[!bp]
 \includegraphics[width=1.5\figwidth]{./figs/clusters_0256.png}
@@ -575,7 +574,7 @@ power when thinking about information gains.
 
 There are a few points to highlight about the abundance anti-correlations
 found in globular clusters. First, the detection of these signatures gives
-confirmation to our analysis: The training set was not purposefully selected
+confirmation to our analysis: The training (reference) set was not purposefully selected
 to contain members of any globular or open cluster. However amongst the test
 set, we recover globular cluster members and their anti-correlations 
 in chemical abundances. That is to
@@ -686,8 +685,10 @@ Chemical tagging capabilities are expected to grow as the
 
 \acknowledgements
 It is a pleasure to thank
-  Jeremy Magland (\acronym{SCDA})
-for valuable discussions.
+  Anna~Y.~Q.~Ho (Caltech),
+  Jeremy~Magland (\acronym{SCDA}), and
+  the Blanton--Hogg group meeting
+for valuable comments and discussions.
 This project was funded in part by
   the \acronym{NSF} (grants \acronym{IIS-1124794}, \acronym{AST-1517237}),
   \acronym{NASA} (grant \acronym{NNX12AI50G}),
