@@ -160,8 +160,7 @@ if __name__ == "__main__":
     plotdata = None
     # Ks = 2 ** np.arange(3, 10) # do everything
     Ks = [256, ] # just do the winner
-    plot_everything = True # set to true only for MKN atlas
-    # plot_everything = False
+    plot_everything = False # set to true only for MKN atlas
 
     scale_dict = {"FE_H": 0.0191707168068, # all from AC
                   "AL_H": 0.0549037045265,
