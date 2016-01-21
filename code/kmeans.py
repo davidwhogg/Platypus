@@ -102,6 +102,7 @@ def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
             [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
             plt.savefig(fn)
             print("plot_one_cluster(): wrote", fn)
+    plt.close("all")
 
 def _clusterlims(sizes, densities):
     plt.ylim(np.min(densities) / 5., np.max(densities) * 5.)
