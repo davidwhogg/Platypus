@@ -154,11 +154,13 @@ def plot_cluster_stats(sizes, densities, dir, suffix="png"):
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
     dir = "./kmeans_figs"
-    if not os.path.exists(dir):
-        os.mkdir(dir)
     suffix = "png"
     data = None
     plotdata = None
+    # Ks = 2 ** np.arange(3, 10) # do everything
+    Ks = [256, ] # just do the winner
+    plot_everything = True # set to true only for MKN atlas
+    # plot_everything = False
 
     scale_dict = {"FE_H": 0.0191707168068, # all from AC
                   "AL_H": 0.0549037045265,
@@ -226,7 +228,12 @@ if __name__ == "__main__":
                    "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                    "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
 
-    for K in [256,]: # just do the winner
+    # get ready...
+    if not os.path.exists(dir):
+        os.mkdir(dir)
+
+    # go!!
+    for K in Ks:
         pfn = "data/kmeans_{:04d}.pkl".format(K)
         try:
             print("attempting to read pickle", pfn)
@@ -299,7 +306,7 @@ if __name__ == "__main__":
             plot_cluster_context(sizes, densities, k, clustername, dir)
             plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
             plotcount += 1
-            if plotcount == 32:
+            if not plot_everything and plotcount >= 32:
                 break
 
         # plot some non-clusters for Ness
