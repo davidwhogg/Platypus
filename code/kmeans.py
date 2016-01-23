@@ -159,9 +159,9 @@ if __name__ == "__main__":
     data = None
     plotdata = None
     Ks = 2 ** np.arange(8, 12) # do everything
-    Ks = [256, ] # just do the winner
+    # Ks = [256, ] # just do the winner
     plot_everything = False # set to true only for MKN atlas
-    only_high_Z = True
+    only_high_Z = True # set to true to only plot things in the metallicity bulk
 
     scale_dict = {"FE_H": 0.0191707168068, # all from AC
                   "AL_H": 0.0549037045265,
