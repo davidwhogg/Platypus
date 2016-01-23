@@ -314,15 +314,6 @@ if __name__ == "__main__":
                 if (not plot_everything) and (plotcount >= 32):
                     break
 
-        # plot some non-clusters for Ness
-        kmed = (np.argsort(densities))[K/2]
-        klow = (np.argsort(densities))[0]
-        for k in (kmed, klow):
-            clustername = "noncluster_{:04d}_{:04d}".format(K, k)
-            print(clustername, sizes[k], logdets[k], densities[k], fields[(clusters == k)].T)
-            plot_cluster_context(sizes, densities, k, clustername, dir)
-            plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
-
     # summary plots
     plot_cluster_context(sizes, densities, None, "all", dir)
     plot_one_cluster(plotdata, plotdata_labels, None, "all", dir)
