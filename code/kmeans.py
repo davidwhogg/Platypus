@@ -313,7 +313,7 @@ if __name__ == "__main__":
                 plot_cluster_context(sizes, densities, dir, k=k, name=clustername)
                 plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
                 plotcount += 1
-                if (not plot_everything) and (plotcount >= 32):
+                if (not plot_everything) and (plotcount >= 64):
                     break
 
     # summary plots
