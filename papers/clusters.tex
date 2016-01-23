@@ -288,7 +288,7 @@ used to establish a single-star likelihood function for its labels,
 holding the spectral model coefficients (the parameters of the model) fixed.
 \thecannon\ finds the labels that minimize the single-star likelihood
 function for each test-set star.
-This optimization is not convex, but it is embarrassingly parallel,
+This optimization is not convex, but it is trivially parallel,
 and therefore fast. The test
 step for 150,000 spectra takes less than 30~minutes on a small 
 research cluster in Cambridge.
