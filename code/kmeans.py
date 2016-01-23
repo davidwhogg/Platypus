@@ -105,24 +105,46 @@ def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
     plt.close("all")
 
 def _clusterlims(sizes, densities):
-    plt.ylim(np.min(densities) / 5., np.max(densities) * 5.)
+    plt.ylim(np.min(densities) / 5., np.max(densities[np.isfinite(densities)]) * 5.)
     plt.xlim(np.min(sizes) / 1.4, np.max(sizes) * 1.4)
 
-def plot_cluster_context(sizes, densities, k, name, dir, suffix="png"):
+def _clusterplot(xs, ys, k, ms=5.0):
+    finite = np.isfinite(ys)
+    infinite = np.logical_not(finite)
+    ybig = 2. * np.max(ys[finite])
+    thisys = np.clip(ys, 0., ybig)
+    plt.plot(xs[finite], thisys[finite], marker=".", c="k",  ms=ms, alpha=0.5, ls="none")
+    plt.plot(xs[infinite], thisys[infinite], marker="^", c="k", ms=0.5*ms, alpha=0.5, ls="none")
+    if k is not None:
+        plt.plot(xs[k], thisys[k], marker="o", c="k", mfc="none", ms=1.5*ms, mew=2., alpha=1., ls="none")
+
+def plot_cluster_context(sizes, densities, dir, name=None, k=None, suffix="png"):
+    """
+    so many conditionals!
+    """
     print("plot_cluster_context(): plotting", name)
-    fn = "{}/{}_context.{}".format(dir, name, suffix)
+    if name is None:
+        K = len(sizes)
+        fn = "{}/clusters_{:04d}.{}".format(dir, K, suffix)
+    else:
+        fn = "{}/{}_context.{}".format(dir, name, suffix)
     if os.path.exists(fn):
         print("plot_cluster_context(): {} exists already".format(fn))
         return
-    fig = plt.figure(figsize=(4,4))
-    plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
-    plt.clf()
     if k is None:
+        fig = plt.figure(figsize=(6,6))
+        plt.subplots_adjust(left=0.15, right=0.97, bottom=0.15, top=0.97)
+        ms = 7.5
+    else:
+        fig = plt.figure(figsize=(4,4))
+        plt.subplots_adjust(left=0.2, right=0.96, bottom=0.2, top=0.96)
+        ms = 5.0
+    plt.clf()
+    if name is not None and k is None:
         plt.savefig(fn)
         print("plot_cluster_context(): wrote", fn)
         return
-    plt.plot(sizes, densities, marker=".", c="k", ms=5.0, alpha=0.5, ls="none")
-    plt.plot(sizes[k], densities[k], marker="o", c="k", mfc="none", ms=7.0, mew=2., alpha=1., ls="none")
+    _clusterplot(sizes, densities, k, ms=ms)
     _clusterlims(sizes, densities)
     plt.ylabel("cluster abundance-space density")
     plt.xlabel("number in abundance-space cluster")
@@ -131,26 +153,6 @@ def plot_cluster_context(sizes, densities, k, name, dir, suffix="png"):
     [l.set_rotation(45) for l in plt.gca().get_yticklabels()]
     plt.savefig(fn)
     print("plot_cluster_context(): wrote", fn)
-
-def plot_cluster_stats(sizes, densities, dir, suffix="png"):
-    K = len(sizes)
-    print("plot_cluster_stats(): plotting", K)
-    fn = "{}/clusters_{:04d}.{}".format(dir, K, suffix)
-    if os.path.exists(fn):
-        print("plot_cluster_stats(): {} exists already".format(fn))
-        return None
-    assert len(densities) == K
-    fig = plt.figure(figsize=(6,6))
-    plt.subplots_adjust(left=0.15, right=0.97, bottom=0.15, top=0.97)
-    plt.clf()
-    kwargs = {"marker": ".", "ls": "none"}
-    plt.plot(sizes, densities, c="k", ms=7.5, alpha=0.5, **kwargs)
-    _clusterlims(sizes, densities)
-    plt.ylabel("cluster abundance-space density")
-    plt.xlabel("number of stars in abundance-space cluster")
-    plt.loglog()
-    plt.savefig(fn)
-    print("plot_cluster_stats(): wrote", fn)
 
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
@@ -286,7 +288,7 @@ if __name__ == "__main__":
         print(K, "[Fe/H] range", np.min(fehs), np.median(fehs), np.max(fehs))
         print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
-        plot_cluster_stats(sizes, densities, dir)
+        plot_cluster_context(sizes, densities, dir)
 
         # make plotting data
         if plotdata is None:
@@ -308,12 +310,12 @@ if __name__ == "__main__":
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
             if (not only_high_Z) or (fehs[k] > -0.5 and fehs[k] < 0.3):
                 print(clustername, sizes[k], logdets[k], densities[k], fehs[k])
-                plot_cluster_context(sizes, densities, k, clustername, dir)
+                plot_cluster_context(sizes, densities, dir, k=k, name=clustername)
                 plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
                 plotcount += 1
                 if (not plot_everything) and (plotcount >= 32):
                     break
 
     # summary plots
-    plot_cluster_context(sizes, densities, None, "all", dir)
+    plot_cluster_context(sizes, densities, dir, k=None, name="all")
     plot_one_cluster(plotdata, plotdata_labels, None, "all", dir)
