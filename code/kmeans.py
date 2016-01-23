@@ -162,6 +162,7 @@ if __name__ == "__main__":
     plotdata = None
     Ks = 2 ** np.arange(8, 12) # do everything
     # Ks = [256, ] # just do the winner
+    Ks = [2048, ] # just do the craziest
     plot_everything = False # set to true only for MKN atlas
     only_high_Z = True # set to true to only plot things in the metallicity bulk
 
@@ -313,7 +314,7 @@ if __name__ == "__main__":
                 plot_cluster_context(sizes, densities, dir, k=k, name=clustername)
                 plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
                 plotcount += 1
-                if (not plot_everything) and (plotcount >= 64):
+                if (not plot_everything) and (plotcount >= 128):
                     break
 
     # summary plots
