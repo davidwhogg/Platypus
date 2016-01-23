@@ -158,9 +158,10 @@ if __name__ == "__main__":
     suffix = "png"
     data = None
     plotdata = None
-    # Ks = 2 ** np.arange(3, 10) # do everything
+    Ks = 2 ** np.arange(8, 12) # do everything
     Ks = [256, ] # just do the winner
     plot_everything = False # set to true only for MKN atlas
+    only_high_Z = True
 
     scale_dict = {"FE_H": 0.0191707168068, # all from AC
                   "AL_H": 0.0549037045265,
@@ -268,18 +269,21 @@ if __name__ == "__main__":
         N, D = data.shape
         sizes = np.zeros(K).astype(int)
         logdets = np.zeros(K)
+        fehs = np.zeros(K)
         for k in range(K):
             I = (clusters == k)
             sizes[k] = np.sum(I)
             subdata = data[I,:] - (np.mean(data[I], axis=0))[None, :]
             if sizes[k] > (D + 1):
-                variance = np.sum(subdata[:,:,None] * subdata[:,None,:], axis=0)
+                variance = np.sum(subdata[:,:,None] * subdata[:,None,:], axis=0) / (sizes[k] - 1.)
                 s, logdets[k] = np.linalg.slogdet(variance)
                 assert s > 0
             else:
                 logdets[k] = -np.Inf
+            fehs[k] = np.mean(data[I, 0])
         densities = sizes * np.exp(-0.5 * logdets)
         print(K, "size range:", np.min(sizes), np.median(sizes), np.max(sizes))
+        print(K, "[Fe/H] range", np.min(fehs), np.median(fehs), np.max(fehs))
         print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
         plot_cluster_stats(sizes, densities, dir)
@@ -302,12 +306,13 @@ if __name__ == "__main__":
         plotcount = 0
         for k in (np.argsort(densities))[::-1]:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
-            print(clustername, sizes[k], logdets[k], densities[k], fields[(clusters == k)].T)
-            plot_cluster_context(sizes, densities, k, clustername, dir)
-            plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
-            plotcount += 1
-            if not plot_everything and plotcount >= 32:
-                break
+            print(clustername, sizes[k], logdets[k], densities[k], fehs[k])
+            if (not only_high_Z) or (fehs[k] > 0.5 and fehs[k] < 0.3):
+                plot_cluster_context(sizes, densities, k, clustername, dir)
+                plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
+                plotcount += 1
+                if (not plot_everything) and (plotcount >= 32):
+                    break
 
         # plot some non-clusters for Ness
         kmed = (np.argsort(densities))[K/2]
