@@ -306,8 +306,8 @@ if __name__ == "__main__":
         plotcount = 0
         for k in (np.argsort(densities))[::-1]:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
-            print(clustername, sizes[k], logdets[k], densities[k], fehs[k])
-            if (not only_high_Z) or (fehs[k] > 0.5 and fehs[k] < 0.3):
+            if (not only_high_Z) or (fehs[k] > -0.5 and fehs[k] < 0.3):
+                print(clustername, sizes[k], logdets[k], densities[k], fehs[k])
                 plot_cluster_context(sizes, densities, k, clustername, dir)
                 plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
                 plotcount += 1
