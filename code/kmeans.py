@@ -161,8 +161,8 @@ if __name__ == "__main__":
     data = None
     plotdata = None
     Ks = 2 ** np.arange(8, 12) # do everything
-    # Ks = [256, ] # just do the winner
-    Ks = [2048, ] # just do the craziest
+    Ks = [256, ] # just do the winner
+    # Ks = [2048, ] # just do the craziest
     plot_everything = False # set to true only for MKN atlas
     only_high_Z = True # set to true to only plot things in the metallicity bulk
 
@@ -232,6 +232,36 @@ if __name__ == "__main__":
                    "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
                    "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
 
+    NGC6819_names = ["2M19403684+4015172",
+                     "2M19405601+4013395",
+                     "2M19405797+4008174",
+                     "2M19410203+4006280",
+                     "2M19410622+4010532",
+                     "2M19410858+4013299",
+                     "2M19410926+4014436",
+                     "2M19410994+4009056",
+                     "2M19411355+4012205",
+                     "2M19411476+4011008",
+                     "2M19411631+4005508",
+                     "2M19412147+4013573",
+                     "2M19412386+4021444",
+                     "2M19412953+4012210",
+                     "2M19413027+4015218",
+                     "2M19413444+4008462",
+                     "2M19415064+4016010",
+                     "2M19404803+4008085",
+                     "2M19404965+4014313",
+                     "2M19411319+4014567",
+                     "2M19411367+4003382",
+                     "2M19411705+4010517",
+                     "2M19412176+4012111",
+                     "2M19412222+4016442",
+                     "2M19412707+4012283",
+                     "2M19413031+4009005",
+                     "2M19413330+4012349",
+                     "2M19413439+4017482",
+                     "2M19414427+4005527"]
+
     # get ready...
     if not os.path.exists(dir):
         os.mkdir(dir)
@@ -298,12 +328,19 @@ if __name__ == "__main__":
             for d in range(1, D):
                 plotdata[:,d] = data[:,d] - data[:,0]
                 plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
-            metadata_labels = ["RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP", "FIELD"]
+            metadata_labels = ["RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP", "FIELD", "APOGEE_ID"]
             metadata = get_metadata(dfn, metadata_labels, mask)
-            fields =   metadata[:, -1]
-            metadata = metadata[:, 0:-1].astype(float)
+            fields =   metadata[:, -2]
+            names  =   metadata[:, -1]
+            metadata = metadata[:, 0:-2].astype(float)
+            plotdata_labels = plotdata_labels + metadata_labels[0:-2]
             plotdata = np.hstack((plotdata, metadata))
-            plotdata_labels = plotdata_labels + metadata_labels
+
+        # find NGC 6819 members, because I care
+        print(K, "looking for NGC 6819 members")
+        for name in NGC6819_names:
+            print(K, name, clusters[names == name])
+        assert False
 
         # plot clusters from this K
         plotcount = 0
