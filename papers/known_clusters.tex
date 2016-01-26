@@ -1,0 +1,64 @@
+% This file is part of the Platypus project.
+% Copyright 2016 the authors.
+
+\documentclass[12pt, letterpaper, preprint]{aastex}
+
+% text
+\newcommand{\acronym}[1]{{\small{#1}}}
+\newcommand{\project}[1]{\textsl{#1}}
+\newcommand{\sdssiii}{\project{\acronym{SDSS-III}}}
+\newcommand{\apogee}{\project{\acronym{APOGEE}}}
+\newcommand{\aspcap}{\project{\acronym{ASPCAP}}}
+\newcommand{\gaiaeso}{\project{Gaia--\acronym{ESO}}}
+\newcommand{\galah}{\project{\acronym{GALAH}}}
+\newcommand{\thecannon}{\project{The~Cannon}}
+\newcommand{\foreign}[1]{\textsl{#1}}
+\newcommand{\etal}{\foreign{et~al.}}
+\newcommand{\documentname}{\textsl{Article}}
+\newcommand{\sectionname}{Section}
+
+% math
+\newcommand{\teff}{T_{\mathrm{eff}}}
+\newcommand{\logg}{\log g}
+
+% figure 
+\newlength{\figwidth}\setlength{\figwidth}{0.3\textwidth}
+\newcommand{\insanefigure}[1]{%
+\includegraphics[width=\figwidth]{../code/kmeans_figs/#1_MgFe.png}%
+\includegraphics[width=\figwidth]{../code/kmeans_figs/#1_MgK.png}%
+\includegraphics[width=\figwidth]{../code/kmeans_figs/#1_AlMg.png}\\
+\includegraphics[width=\figwidth]{../code/kmeans_figs/#1_NaO.png}%
+\includegraphics[width=\figwidth]{../code/kmeans_figs/#1_CN.png}%
+\includegraphics[width=\figwidth]{../code/kmeans_figs/#1_SAl.png}\\
+\includegraphics[width=2\figwidth]{../code/kmeans_figs/#1_gal.png}%
+\includegraphics[width=\figwidth]{../code/kmeans_figs/#1_HR.png}\\
+\includegraphics[width=2\figwidth]{../code/kmeans_figs/#1_vlon.png}}
+
+\begin{document}\sloppy\sloppypar
+
+\title{Known clusters}
+\author{David~W.~Hogg\altaffilmark{1,2,3,4},
+        Andrew~R.~Casey\altaffilmark{5},
+        Melissa~Ness\altaffilmark{4},
+        Hans-Walter~Rix\altaffilmark{4},
+    and~Daniel~Foreman-Mackey\altaffilmark{6,7}}
+\altaffiltext{1}{Simons Center for Data Analysis, 160 Fifth Avenue, 7th floor, New York, NY 10010, USA}
+\altaffiltext{2}{Center for Cosmology and Particle Physics, Department of Physics,
+  New York University, 4 Washington Pl., room 424, New York, NY 10003, USA}
+\altaffiltext{3}{Center for Data Science, New York University, 726 Broadway, 7th floor, New York, NY 10003, USA}
+\altaffiltext{4}{Max-Planck-Institut f\"ur Astronomie, K\"onigstuhl 17, D-69117 Heidelberg, Germany}
+\altaffiltext{5}{Institute of Astronomy, University of Cambridge, Madingley Road, Cambridge CB3~0HA, UK}
+\altaffiltext{6}{Sagan Fellow}
+\altaffiltext{7}{Department of Astronomy, University of Washington, Box 351580, Seattle, WA 98195, USA}
+\email{david.hogg@nyu.edu}
+
+\begin{abstract}
+All the known clusters, all in one place.
+\end{abstract}
+
+\begin{figure}[!p]
+\insanefigure{NGC_6819}
+\caption{NGC 6819}
+\end{figure}
+
+\end{document}

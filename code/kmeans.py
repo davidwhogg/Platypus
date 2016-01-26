@@ -338,8 +338,11 @@ if __name__ == "__main__":
 
         # find NGC 6819 members, because I care
         print(K, "looking for NGC 6819 members")
+        NGC6819_indices = []
         for name in NGC6819_names:
-            print(K, name, clusters[names == name])
+            NGC6819_indices += list(np.arange(len(data))[names == name])
+        NGC6819_indices = np.array(NGC6819_indices)
+        plot_one_cluster(plotdata, plotdata_labels, NGC6819_indices, "NGC_6819", dir)
         assert False
 
         # plot clusters from this K
