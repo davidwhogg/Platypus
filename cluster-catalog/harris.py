@@ -1,4 +1,8 @@
 """
+This file is part of the Platypus project.
+Copyright 2016 Andy Casey (Cambridge).
+
+# purpose:
 Have some easy-to-use catalog of globular and open clusters in the same format.
 """
 
