@@ -1,7 +1,7 @@
 LATEX       = pdflatex
 CHECK_RERUN = grep Rerun $*.log
 
-all: kmeans.pdf
+all: gradients.pdf kmeans.pdf
 
 melissa_atlas.pdf: melissa_atlas.tex
 	${LATEX} $<

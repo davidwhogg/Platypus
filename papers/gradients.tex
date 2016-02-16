@@ -1,0 +1,226 @@
+% This file is part of the Platypus project.
+% Copyright 2016 the authors.
+
+% style notes
+% - never use \cite{}, always \citep{} or \citealt{}.
+% - never use et al., always use \etal
+
+\documentclass[12pt, letterpaper, preprint]{aastex}
+
+% text
+\newcommand{\acronym}[1]{{\small{#1}}}
+\newcommand{\project}[1]{\textsl{#1}}
+\newcommand{\sdssiii}{\project{\acronym{SDSS-III}}}
+\newcommand{\apogee}{\project{\acronym{APOGEE}}}
+\newcommand{\aspcap}{\project{\acronym{ASPCAP}}}
+\newcommand{\gaiaeso}{\project{Gaia--\acronym{ESO}}}
+\newcommand{\galah}{\project{\acronym{GALAH}}}
+\newcommand{\thecannon}{\project{The~Cannon}}
+\newcommand{\foreign}[1]{\textsl{#1}}
+\newcommand{\etal}{\foreign{et~al.}}
+\newcommand{\documentname}{\textsl{Article}}
+\newcommand{\sectionname}{Section}
+
+% math
+\newcommand{\teff}{T_{\mathrm{eff}}}
+\newcommand{\logg}{\log g}
+
+% figure 
+\newlength{\figwidth}\setlength{\figwidth}{0.3\textwidth}
+\newcommand{\insanefigure}[1]{%
+\includegraphics[width=\figwidth]{./figs/#1_MgFe.png}%
+\includegraphics[width=\figwidth]{./figs/#1_MgK.png}%
+\includegraphics[width=\figwidth]{./figs/#1_AlMg.png}\\
+\includegraphics[width=\figwidth]{./figs/#1_NaO.png}%
+\includegraphics[width=\figwidth]{./figs/#1_CN.png}%
+\includegraphics[width=\figwidth]{./figs/#1_SAl.png}\\
+\includegraphics[width=2\figwidth]{./figs/#1_gal.png}%
+\includegraphics[width=\figwidth]{./figs/#1_HR.png}\\
+\includegraphics[width=2\figwidth]{./figs/#1_vlon.png}%
+\includegraphics[width=\figwidth]{./figs/#1_context.png}}
+
+% results
+\newcommand{\totalnumber}{98,462}
+
+\begin{document}\sloppy\sloppypar
+
+\title{The fifteen-dimensional chemical-abundance gradient in the Milky Way disk}
+\author{David~W.~Hogg\altaffilmark{1,2,3,4},
+        Melissa~Ness\altaffilmark{4},
+        Andrew~R.~Casey\altaffilmark{5},
+        Hans-Walter~Rix\altaffilmark{4}}
+\altaffiltext{1}{Simons Center for Data Analysis, 160 Fifth Avenue, 7th floor, New York, NY 10010, USA}
+\altaffiltext{2}{Center for Cosmology and Particle Physics, Department of Physics,
+  New York University, 4 Washington Pl., room 424, New York, NY 10003, USA}
+\altaffiltext{3}{Center for Data Science, New York University, 726 Broadway, 7th floor, New York, NY 10003, USA}
+\altaffiltext{4}{Max-Planck-Institut f\"ur Astronomie, K\"onigstuhl 17, D-69117 Heidelberg, Germany}
+\altaffiltext{5}{Institute of Astronomy, University of Cambridge, Madingley Road, Cambridge CB3~0HA, UK}
+\email{david.hogg@nyu.edu}
+
+\begin{abstract}
+% Context:
+The \apogee\ infrared spectroscopic survey and \thecannon\ model of
+stellar spectra have together produced precise abundances for 15
+elements for $10^5$ red-giant stars throughout the Milky Way disk.
+These data make possible extremely precise measurements of chemical
+abundance differences between different components of the Milky Way.
+% Aims:
+We visualize and measure the 15-dimensional chemical-abundance distribution of
+red-giant stars as a function of galactocentric radius, near the plane
+of the disk, to determine the chemical-abundance gradients, but also
+test ideas of star formation, Galactic nucleosynthesis, and radial
+migration.
+% Methods:
+Red-giant distances are determined HOW?
+Chemical-abundance gradients---in mean abundance and abundance
+dispersion---are determined by linear regression.
+% Results:
+We find STUFF.
+\end{abstract}
+
+\keywords{
+  Galaxy: abundances
+  ---
+  Galaxy: stellar content
+  ---
+  stars: abundances
+  ---
+  stars: formation
+  ---
+  stars: kinematics and dynamics
+  ---
+  Galaxy: kinematics and dynamics
+}
+
+\clearpage
+\section{Introduction}\label{sec:intro}
+
+foo.
+
+bar.
+
+\acknowledgements
+It is a pleasure to thank
+  Anna~Y.~Q.~Ho (Caltech),
+  Jeremy~Magland (\acronym{SCDA}), and
+  the Blanton--Hogg group meeting
+for valuable comments and discussions.
+This project was funded in part by
+  the \acronym{NSF} (grants \acronym{IIS-1124794}, \acronym{AST-1517237}),
+  \acronym{NASA} (grant \acronym{NNX12AI50G}),
+  the Moore-Sloan Data Science Environment at \acronym{NYU}, and
+  the European Research Council under the
+  European Union's Seventh Framework Programme (FP~7)
+  \acronym{ERC} Grant Agreement n.~\acronym{[320360, 321035]}).
+This research made use of the \acronym{NASA} \project{Astrophysics Data System}.
+
+This project made use of \sdssiii\ data.
+Funding for \sdssiii\ has been provided by the Alfred P. Sloan
+Foundation, the Participating Institutions, the National Science
+Foundation, and the \acronym{U.S.} Department of Energy Office of Science. The
+\sdssiii\ web site is http://www.sdss3.org/.
+
+\sdssiii\ is managed by the Astrophysical Research Consortium for the
+Participating Institutions of the \sdssiii\ Collaboration including the
+University of Arizona, the Brazilian Participation Group, Brookhaven
+National Laboratory, Carnegie Mellon University, University of
+Florida, the French Participation Group, the German Participation
+Group, Harvard University, the Instituto de Astrofisica de Canarias,
+the Michigan State/Notre Dame/\acronym{JINA} Participation Group, Johns Hopkins
+University, Lawrence Berkeley National Laboratory, Max Planck
+Institute for Astrophysics, Max Planck Institute for Extraterrestrial
+Physics, New Mexico State University, New York University, Ohio State
+University, Pennsylvania State University, University of Portsmouth,
+Princeton University, the Spanish Participation Group, University of
+Tokyo, University of Utah, Vanderbilt University, University of
+Virginia, University of Washington, and Yale University.
+
+All of the code for the data manipulation, clustering, and
+visualization is built on \project{numpy} \citep{numpy},
+\project{scikit-learn} \citep{sklearn}, and \project{matplotlib}
+\citep{matplotlib}.
+All of the code written specifically for this project is available in
+two open-source code repositories at
+\url{https://github.com/andycasey/AnniesLasso} and
+\url{https://github.com/davidwhogg/Platypus}.
+
+\clearpage
+\begin{thebibliography}{24}\raggedright
+\bibitem[Alam \etal(2015)]{dr12}
+Alam,~S., Albareti,~F.~D., Allende~Prieto,~C., \etal, 2015, \apjs, 219, 12
+\bibitem[Bishop(2006)]{bishop}
+Bishop,~C.~M., 2006, \textit{Pattern Recognition and Machine Learning}, Springer, New York
+\bibitem[Blanco-Cuaresma \etal(2015)]{blancocuaresma}
+Blanco-Cuaresma,~S., Soubiran,~C., Heiter,~U., \etal, 2015, \aap, 577, A47
+\bibitem[Bovy(2015)]{bovy}
+Bovy,~J., 2015, arXiv:1510.06745
+ \bibitem[Briley \etal(2004)]{Briley_2004}
+Briley, M.~M., Cohen, J.~G., Stetson, P.~B., 2004, \aj, 127, 1579 
+\bibitem[Casey \etal(2016)]{casey16}
+Casey,~A.~R., Hogg,~D.~W., Ness,~M., Rix,~H.-W., 2016, in preparation
+\bibitem[Cohen \& Mel{\'e}ndez(2005)]{Cohen_Melendez_2005}
+Cohen, J.~G.,  Mel{\'e}ndez, J., 2005, \aj, 129, 303 
+\bibitem[De~Silva \etal(2015)]{galah}
+De~Silva,~G.~M., Freeman,~K.~C., Bland-Hawthorn,~J., \etal, 2015, \mnras, 449, 2604
+\bibitem[Font \etal(2006)]{font}
+Font,~A.~S., Johnston,~K.~V., Bullock,~J.~S., Robertson,~B.~E., 2006, \apj, 638, 585 
+\bibitem[Freeman \& Bland-Hawthorn(2002)]{freeman}
+Freeman,~K., Bland-Hawthorn,~J., 2002, \araa, 40, 487
+\bibitem[Garc{\'{\i}}a~P{\'e}rez \etal(2015)]{aspcap}
+Garc{\'{\i}}a~P{\'e}rez,~A.~E., Allende~Prieto,~C., Holtzman,~J.~A., \etal, 2015, arXiv:1510.07635
+\bibitem[Geisler \etal(1997)]{Geisler_1997}
+Geisler, D., Claria, J.~J., Minniti, D., 1997, \pasp, 109, 799 
+\bibitem[Gilmore \etal(2012)]{gaiaeso}
+Gilmore,~G., Randich,~S., Asplund,~M., \etal, 2012, The Messenger, 147, 25 
+\bibitem[Gratton \etal(2012)]{gratton}
+Gratton,~R.~G., Carretta,~E., Bragaglia,~A., 2012, \aapr, 20, 50
+\bibitem[Harris(1996)]{Harris_1996}
+Harris,~W.~E., 1996, \aj, 112, 1487 
+\bibitem[Hunter(2007)]{matplotlib}
+Hunter,~J.~D., 2007, Computing in Science \& Engineering, 9, 90
+\bibitem[Jofr{\'e} \etal(2015)]{jofre}
+Jofr{\'e},~P., M{\"a}dler,~T., Gilmore,~G., \etal, 2015, \mnras, 453, 1428 
+\bibitem[Johnson \& Pilachowski(2012)]{Johnson_Pilachowski_2012}
+Johnson, C.~I.,  Pilachowski, C.~A., 2012, \apjl, 754, L38 
+\bibitem[Kraft \etal(1992)]{Kraft_1992}
+Kraft, R.~P., Sneden, C., Langer, G.~E.,  Prosser, C.~F., 1992, \aj, 104, 645 
+\bibitem[Kuzma \etal(2015)]{Kuzma_2015}
+Kuzma, P.~B., Da Costa, G.~S., Keller, S.~C., Maunder, E., 2015, \mnras, 446, 3297 
+\bibitem[Majewski \etal(2015)]{apogee}
+Majewski,~S.~R., Schiavon,~R.~P., Frinchaboy,~P.~M., \etal, 2015, arXiv:1509.05420
+\bibitem[Martell(2015)]{martell}
+Martell,~S.~L., 2015, arXiv:1507.00079
+\bibitem[Martig \etal(2016)]{martig}
+Martig,~M., Fouesneau,~M., Rix,~H.-W., \etal, 2016, \mnras, 456, 3655
+\bibitem[Melendez \etal(2014)]{melendez}
+Mel{\'e}ndez,~J., Ram{\'{\i}}rez,~I., Karakas,~A.~I., \etal, 2014, \apj, 791, 14
+\bibitem[M{\'e}sz{\'a}ros \etal(2015)]{meszaros}
+M{\'e}sz{\'a}ros,~S., Martell,~S.~L., Shetrone,~M., \etal, 2015, \aj, 149, 153
+\bibitem[Mitschang \etal(2014)]{mitschang}
+Mitschang,~A.~W., De~Silva,~G., Zucker,~D.~B., \etal, 2014, \mnras, 438, 2753
+\bibitem[Ness \etal(2015)]{thecannon}
+Ness,~M., Hogg,~D.~W., Rix,~H.-W., Ho,~A.~Y.~Q., Zasowski,~G., 2015, \apj, 808, 16
+\bibitem[Ness \etal(2016a)]{ages}
+Ness,~M., Hogg,~D.~W., Rix,~H.-W., \etal, 2016a, \apj, in press (arXiv:1511.08204)
+\bibitem[Ness \etal(2016b)]{ness16}
+Ness,~M., Hogg,~D.~W., Casey,~A.~R., Rix,~H.-W., 2016b, in preparation
+\bibitem[Pedregosa \etal(2011)]{sklearn}
+Pedregosa,~F., Varoquaux,~G., Gramfort,~A., \etal, 2011, Journal of Machine Learning Research, 12, 2825
+\bibitem[Quillen \etal(2015)]{quillen}
+Quillen,~A.~C., Anguiano,~B., De~Silva,~G., \etal, 2015, \mnras, 450, 2354
+\bibitem[Ro{\v s}kar \etal(2008)]{roskar}
+Ro{\v s}kar,~R., Debattista,~V.~P., Quinn,~T.~R., Stinson,~G.~S., Wadsley,~J., 2008, \apjl, 684, L79
+\bibitem[Smith(1985)]{Smith_1985}
+Smith, G.~H., 1985, \apj, 298, 249 
+\bibitem[Smith \etal(2002)]{Smith_2002}
+Smith, G.~H., Sneden, C., Kraft, R.~P., 2002, \aj, 123, 1502 
+\bibitem[Smith \etal(2005)]{Smith_2005}
+Smith, G.~H., Briley,~M.~M.,  Harbeck, D., 2005, \aj, 129, 1589
+\bibitem[Ting \etal(2016)]{ting}
+Ting,~Y.-S., Conroy,~C., Rix,~H.-W., 2016, \apj, 816, 10
+\bibitem[van~der~Walt \etal(2011)]{numpy}
+van~der~Walt,~S., Colbert,~S.~C., Varoquaux,~G., 2011, Computing in Science \& Engineering, 13, 22
+\bibitem[Wegg \etal(2015)]{wegg}
+Wegg,~C., Gerhard,~O., Portail,~M., 2015, \mnras, 450, 4050
+\end{thebibliography}
+\end{document}
