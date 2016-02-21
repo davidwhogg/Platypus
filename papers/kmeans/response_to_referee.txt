@@ -1,0 +1,88 @@
+Dear Editor:
+
+Please find below the response to our (very helpful) referee report on
+manuscript ApJ/ApJ101852.  We have taken all of the referees
+suggestions, and made some other changes from comments we have
+received from colleagues.
+
+In what follows, the Referee comments are indented and our responses
+are not.  In the revised manuscript, we have made the changes in bold
+text so they are apparent to the editor and referee.
+
+     This paper presents new element abundance results using The
+     Cannon, a novel, powerful method for spectroscopic abundance
+     measurements. The results presented in this paper are new and
+     very much relevant to the many large scale observing projects
+     that are currently in operation.
+
+     I highlight some comments for the authors to address:
+
+     Abstract: The last sentence is not true, as the authors note
+     later in the text the first blind search purely in abundance
+     space was carried out by Mitschang et al 2014.
+
+HOGG
+
+     Introduction: The first paragraph is missing a reference or two,
+     to support claim that most stars end up in different parts of the
+     Galaxy. Or this is something that is assumed and yet to be
+     tested?
+
+HOGG
+
+     There are some missing references to the original demonstrations
+     of chemical tagging of unbound groups, namely the Wolf 630 group
+     and HR 1614 group. Those were key to building up the case for
+     this "tagging" research.
+
+HOGG
+
+     The text needs to highlight that the training set is critical -
+     Cannon doesn't know physics. It needs to be told what is "true"
+     and that the subsequent results will be limited to the believed
+     level of truth. While it should be specified that tagging per se
+     doesn't require absolute abundances, but the subsequent
+     interpretation of the chemical accretion history will require
+     "true" abundances - not just precision. Also some clarification
+     about the Cannon's performance at the boundaries of the training
+     set parameters would have been good to see.
+
+HOGG
+
+     Section 2:
+
+     A reference for the famously demonstrated correlations in
+     globular clusters is needed.
+
+HOGG
+
+     Section 3:
+
+     The text doesn't clarify why only k-means was chosen to do the
+     'tagging' given the issues discussed, was it simply easy and
+     fast? Fine as the focus of the paper is the precision of the
+     abundance results with Cannon, not the fidelity of group finding.
+
+HOGG
+
+     I find the group in Fig 6 dubious. Its at the very edge of the
+     metallicity scale, which raises again how the Cannon performs at
+     the boundaries of the training parameters. Could this not simply
+     be metal-poor Halo stars, tagged as metal-poor Halo stars,
+     nothing more?
+
+HOGG
+
+-----
+Other changes:
+
+In addition to all the above, we made the following additional
+changes:
+
+HOGG:  We added authors!
+
+HOGG:  We added citations!
+
+HOGG:  Adjusted what we say about Ting et al?
+
+HOGG:  Go through github issues and emails.
