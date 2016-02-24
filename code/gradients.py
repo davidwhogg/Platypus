@@ -35,6 +35,7 @@ def get_data(fn, labels, metadata_labels):
     data = np.vstack((table.field(label) for label in labels)).T
     mask *= np.all(np.isfinite(data), axis=1)
     data = data[mask]
+    metadata = metadata[mask]
     print("get_data()", fn, data.shape, metadata.shape, mask.shape)
     return data, metadata, mask
 
