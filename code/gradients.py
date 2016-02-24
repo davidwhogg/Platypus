@@ -21,7 +21,14 @@ def read_pickle_file(fn):
     fd.close()
     return stuff
 
-def get_data(fn, labels, metadata_labels):
+def get_data(fn):
+    data_labels = np.array(["FE_H",
+                            "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
+                            "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"])
+    metadata_labels = np.array(["APOGEE_ID", "RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "DIST_Padova",
+                                "TEFF_ASPCAP", "LOGG_ASPCAP"])
+
+    # read FITS file
     print("get_data(): reading table from", fn)
     hdulist = fits.open(fn)
     hdu = hdulist[1]
@@ -32,27 +39,13 @@ def get_data(fn, labels, metadata_labels):
             (table.field("LOGG_ASPCAP") > 0.) *
             (table.field("LOGG_ASPCAP") < 3.9) *
             (table.field("DIST_Padova") > 0.))
+    data = np.vstack((table.field(label) for label in data_labels)).T
     metadata = np.vstack((table.field(label) for label in metadata_labels)).T
-    data = np.vstack((table.field(label) for label in labels)).T
     mask *= np.all(np.isfinite(data), axis=1)
     data = data[mask]
     metadata = metadata[mask]
-    print("get_data()", fn, data.shape, metadata.shape, mask.shape)
-    return data, metadata, mask
 
-if __name__ == "__main__":
-    print("Hello World!")
-
-    data_labels = np.array(["FE_H",
-                            "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
-                            "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"])
-    metadata_labels = np.array(["APOGEE_ID", "RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "DIST_Padova",
-                                "TEFF_ASPCAP", "LOGG_ASPCAP"])
-    dfn = "./data/cannon-distances.fits"
-    data, metadata, mask = get_data(dfn, data_labels, metadata_labels)
-    print(data.shape, metadata.shape, mask.shape)
-
-    # TO-DO: MOVE THIS LOGIC INTO get_data
+    # make distances and Galactic coordinates
     distances = (metadata[:, metadata_labels == "DIST_Padova"]).flatten().astype(float)
     ls = (np.pi / 180.) * (metadata[:, metadata_labels == "GLON"]).flatten().astype(float)
     bs = (np.pi / 180.) * (metadata[:, metadata_labels == "GLAT"]).flatten().astype(float)
@@ -60,11 +53,51 @@ if __name__ == "__main__":
     GXs = distances * np.cos(ls) * np.cos(bs) + 8.0 # kpc MAGIC
     GYs = distances * np.sin(ls) * np.cos(bs)
     GZs = distances * np.sin(bs)
-    GRs = np.sqrt(GXs ** 2 + GYs ** 2 + GZs ** 2)
+    metadata = np.vstack((metadata.T, GXs, GYs, GZs)).T # T craziness
+    metadata_labels = np.append(metadata_labels, ["GX", "GY", "GZ"])
+
+    # done!
+    print("get_data()", fn, data.shape, metadata.shape)
+    return data, data_labels, metadata, metadata_labels
+
+def stats_in_slices(data, xs):
+    M = 32
+    N = len(xs)
+    assert len(data) == N
+    ranks = np.zeros(N)
+    ranks[np.argsort(xs)] = np.arange(N)
+    ranklims = np.arange(N / M, N, N / M)
+    xmedians = []
+    medians = []
+    rmses = []
+    for rmin, rmax in zip(ranklims[:-2], ranklims[2:]):
+        mask = (ranks > rmin) * (ranks < rmax)
+        xmedians.append(np.median(xs[mask]))
+        medians.append(np.median(data[mask], axis=0))
+    return xmedians, medians
+
+if __name__ == "__main__":
+    print("Hello World!")
+
+    # read data
+    dfn = "./data/cannon-distances.fits"
+    data, data_labels, metadata, metadata_labels = get_data(dfn)
+    print(data.shape, metadata.shape)
+    print(metadata_labels)
+
+    # compute shit
+    Rs = (np.sqrt(metadata[:, metadata_labels == "GX"].astype(float) ** 2 +
+                  metadata[:, metadata_labels == "GY"].astype(float) ** 2 +
+                  metadata[:, metadata_labels == "GZ"].astype(float) ** 2)).flatten()
+    xmedians, datamedians = stats_in_slices(data, Rs)
+    print(xmedians, datamedians)
 
     # TO-DO: MAKE PRETTY PLOTS of slices
     plt.clf()
-    plt.plot(GXs, GYs, "k.", alpha=0.25)
+    plt.plot(metadata[:, metadata_labels == "GX"],
+             metadata[:, metadata_labels == "GY"], "k.", alpha=0.25)
+    plt.xlabel("X (kpc)")
+    plt.ylabel("Y (kpc)")
     plt.savefig("foo.png")
 
     # TO-DO: COMPUTE MEDIANS AND ROOT MEDIAN SQUARES OF ABUNDANCES in slices
