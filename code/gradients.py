@@ -80,8 +80,9 @@ def stats_in_slices(data, xs):
         for d in range(D):
             diffs = data[mask, d] - medians[i, d]
             mad = np.median(np.abs(diffs))
-            dmask = (np.abs(diffs) < (5. * mad)) # WRONG
+            dmask = (np.abs(diffs) < (5. * mad))
             rmses[i, d] = np.sqrt(np.mean(diffs[dmask] ** 2))
+            print(i, d, np.sum(mask), np.sum(dmask))
     return xmedians, medians, rmses
 
 def hogg_savefig(fn):
