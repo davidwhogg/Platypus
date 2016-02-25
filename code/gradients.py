@@ -50,7 +50,7 @@ def get_data(fn):
     ls = (np.pi / 180.) * (metadata[:, metadata_labels == "GLON"]).flatten().astype(float)
     bs = (np.pi / 180.) * (metadata[:, metadata_labels == "GLAT"]).flatten().astype(float)
     print(np.cos(1.2))
-    GXs = distances * np.cos(ls) * np.cos(bs) + 8.0 # kpc MAGIC
+    GXs = distances * np.cos(ls) * np.cos(bs) - 8.0 # kpc MAGIC
     GYs = distances * np.sin(ls) * np.cos(bs)
     GZs = distances * np.sin(bs)
     metadata = np.vstack((metadata.T, GXs, GYs, GZs)).T # T craziness
@@ -71,6 +71,7 @@ def stats_in_slices(data, xs):
     M = len(ranklims)
     xmedians = np.zeros(M-2)
     medians = np.zeros((M-2, D))
+    sigmas = np.zeros((M-2, D))
     rmses = np.zeros((M-2, D))
     for i in range(M-2):
         rmin, rmax = ranklims[i], ranklims[i+2]
@@ -83,7 +84,8 @@ def stats_in_slices(data, xs):
             dmask = (np.abs(diffs) < (5. * mad))
             rmses[i, d] = np.sqrt(np.mean(diffs[dmask] ** 2))
             print(i, d, np.sum(mask), np.sum(dmask))
-    return xmedians, medians, rmses
+        sigmas[i] = rmses[i] / np.sqrt(np.sum(mask))
+    return xmedians, medians, sigmas, rmses
 
 def hogg_savefig(fn):
     print("hogg_savefig():", fn)
@@ -123,7 +125,7 @@ if __name__ == "__main__":
     plotmetadata = metadata.copy()
 
     # cut in vertical direction
-    zcut = np.abs(metadata[:, metadata_labels == "GZ"].astype(float).flatten()) < 0.1 # kpc
+    zcut = np.abs(metadata[:, metadata_labels == "GZ"].astype(float).flatten()) < 0.2 # kpc
     plotdata = plotdata[zcut]
     plotmetadata = plotmetadata[zcut]
 
@@ -131,15 +133,16 @@ if __name__ == "__main__":
     Rs = (np.sqrt(plotmetadata[:, metadata_labels == "GX"].astype(float) ** 2 +
                   plotmetadata[:, metadata_labels == "GY"].astype(float) ** 2 +
                   plotmetadata[:, metadata_labels == "GZ"].astype(float) ** 2)).flatten()
-    Rmedians, datamedians, rmses = stats_in_slices(plotdata, Rs)
+    Rmedians, datamedians, sigmas, rmses = stats_in_slices(plotdata, Rs)
 
     # plot whole sample
-    plt.clf()
-    plt.plot(plotmetadata[:, metadata_labels == "GX"],
-             plotmetadata[:, metadata_labels == "GY"], "k.", alpha=0.25)
-    plt.xlabel("Galactic X (kpc)")
-    plt.ylabel("Galactic Y (kpc)")
-    hogg_savefig(dir + "/GX_GY.png")
+    if False:
+        plt.clf()
+        plt.plot(plotmetadata[:, metadata_labels == "GX"],
+                 plotmetadata[:, metadata_labels == "GY"], "k.", alpha=0.25)
+        plt.xlabel("Galactic X (kpc)")
+        plt.ylabel("Galactic Y (kpc)")
+        hogg_savefig(dir + "/GX_GY.png")
 
     label_dict = {"FE_H": "[Fe/H] (dex)",
                   "AL_H - FE_H": "[Al/Fe] (dex)",
@@ -161,11 +164,14 @@ if __name__ == "__main__":
     for d in range(len(plotdata_labels)):
         plotfn = dir + "/" + (plotdata_labels[d] + "_GR.png").replace(" ", "")
         plt.clf()
-        plt.plot(Rmedians, datamedians[:,d], "ko")
+        plt.plot(Rmedians, datamedians[:,d], "k-", alpha=0.5, lw=2)
         for j in range(len(Rmedians)):
             plt.plot([Rmedians[j], Rmedians[j]],
                      [datamedians[j,d] - rmses[j,d], datamedians[j,d] + rmses[j,d]],
-                     "k-")
+                     "k-", alpha=0.25)
+            plt.plot([Rmedians[j], Rmedians[j]],
+                     [datamedians[j,d] - sigmas[j,d], datamedians[j,d] + sigmas[j,d]],
+                     "k-", lw=3)
         plt.xlabel("Galactic R (kpc)")
         plt.ylabel(label_dict[plotdata_labels[d]])
         hogg_savefig(plotfn)
