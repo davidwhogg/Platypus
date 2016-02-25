@@ -22,9 +22,9 @@ def read_pickle_file(fn):
     return stuff
 
 def get_data(fn):
-    data_labels = np.array(["FE_H",
-                            "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
-                            "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"])
+    data_labels = ["FE_H",
+                   "AL_H", "CA_H", "C_H", "K_H",  "MG_H", "MN_H", "NA_H",
+                   "NI_H", "N_H",  "O_H", "SI_H", "S_H",  "TI_H", "V_H"]
     metadata_labels = np.array(["APOGEE_ID", "RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "DIST_Padova",
                                 "TEFF_ASPCAP", "LOGG_ASPCAP"])
 
@@ -63,18 +63,26 @@ def get_data(fn):
 def stats_in_slices(data, xs):
     M = 32
     N = len(xs)
-    assert len(data) == N
+    NN, D = data.shape
+    assert NN == N
     ranks = np.zeros(N)
     ranks[np.argsort(xs)] = np.arange(N)
     ranklims = np.arange(N / M, N, N / M)
-    xmedians = []
-    medians = []
-    rmses = []
-    for rmin, rmax in zip(ranklims[:-2], ranklims[2:]):
+    M = len(ranklims)
+    xmedians = np.zeros(M-2)
+    medians = np.zeros((M-2, D))
+    rmses = np.zeros((M-2, D))
+    for i in range(M-2):
+        rmin, rmax = ranklims[i], ranklims[i+2]
         mask = (ranks > rmin) * (ranks < rmax)
-        xmedians.append(np.median(xs[mask]))
-        medians.append(np.median(data[mask], axis=0))
-    return np.array(xmedians), np.array(medians)
+        xmedians[i] = np.median(xs[mask])
+        medians[i] = np.median(data[mask], axis=0)
+        for d in range(D):
+            diffs = data[mask, d] - medians[i, d]
+            mad = np.median(np.abs(diffs))
+            dmask = (np.abs(diffs) < (5. * mad)) # WRONG
+            rmses[i, d] = np.sqrt(np.mean(diffs[dmask] ** 2))
+    return xmedians, medians, rmses
 
 def hogg_savefig(fn):
     print("hogg_savefig():", fn)
@@ -82,6 +90,9 @@ def hogg_savefig(fn):
 
 if __name__ == "__main__":
     print("Hello World!")
+    dir = "./gradients_figs"
+    if not os.path.exists(dir):
+        os.mkdir(dir)
 
     # read data
     dfn = "./data/cannon-distances.fits"
@@ -96,25 +107,64 @@ if __name__ == "__main__":
         pickle_to_file(pfn, (data, data_labels, metadata, metadata_labels))
         print(pfn, data.shape, metadata.shape)
 
+    # check and adjust data
+    N, D = data.shape
+    assert len(data_labels) == D
+    NN, DD = metadata.shape
+    assert N == NN
+    assert len(metadata_labels) == DD
+    plotdata = data.copy()
+    plotdata_labels = data_labels.copy()
+    for d in np.arange(1,D):
+        plotdata[:,d] = data[:,d] - data[:,0]
+        plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
+    print(plotdata_labels)
+    plotmetadata = metadata.copy()
+
+    # cut in vertical direction
+    zcut = np.abs(metadata[:, metadata_labels == "GZ"].astype(float).flatten()) < 0.1 # kpc
+    plotdata = plotdata[zcut]
+    plotmetadata = plotmetadata[zcut]
+
     # compute shit
-    Rs = (np.sqrt(metadata[:, metadata_labels == "GX"].astype(float) ** 2 +
-                  metadata[:, metadata_labels == "GY"].astype(float) ** 2 +
-                  metadata[:, metadata_labels == "GZ"].astype(float) ** 2)).flatten()
-    Rmedians, datamedians = stats_in_slices(data, Rs)
+    Rs = (np.sqrt(plotmetadata[:, metadata_labels == "GX"].astype(float) ** 2 +
+                  plotmetadata[:, metadata_labels == "GY"].astype(float) ** 2 +
+                  plotmetadata[:, metadata_labels == "GZ"].astype(float) ** 2)).flatten()
+    Rmedians, datamedians, rmses = stats_in_slices(plotdata, Rs)
 
     # plot whole sample
     plt.clf()
-    plt.plot(metadata[:, metadata_labels == "GX"],
-             metadata[:, metadata_labels == "GY"], "k.", alpha=0.25)
+    plt.plot(plotmetadata[:, metadata_labels == "GX"],
+             plotmetadata[:, metadata_labels == "GY"], "k.", alpha=0.25)
     plt.xlabel("Galactic X (kpc)")
     plt.ylabel("Galactic Y (kpc)")
-    hogg_savefig("GX_GY.png")
+    hogg_savefig(dir + "/GX_GY.png")
+
+    label_dict = {"FE_H": "[Fe/H] (dex)",
+                  "AL_H - FE_H": "[Al/Fe] (dex)",
+                  "CA_H - FE_H": "[Ca/Fe] (dex)",
+                  "C_H - FE_H":  "[C/Fe] (dex)",
+                  "K_H - FE_H":  "[K/Fe] (dex)",
+                  "MG_H - FE_H": "[Mg/Fe] (dex)",
+                  "MN_H - FE_H": "[Mn/Fe] (dex)",
+                  "NA_H - FE_H": "[Na/Fe] (dex)",
+                  "NI_H - FE_H": "[Ni/Fe] (dex)",
+                  "N_H - FE_H":  "[N/Fe] (dex)",
+                  "O_H - FE_H":  "[O/Fe] (dex)",
+                  "SI_H - FE_H": "[Si/Fe] (dex)",
+                  "S_H - FE_H":  "[S/Fe] (dex)",
+                  "TI_H - FE_H": "[Ti/Fe] (dex)",
+                  "V_H - FE_H":  "[V/Fe] (dex)",}
 
     # plot slices
-    for i in range(len(data_labels)):
-        pfn = data_labels[i] + "_GR.png"
+    for d in range(len(plotdata_labels)):
+        plotfn = dir + "/" + (plotdata_labels[d] + "_GR.png").replace(" ", "")
         plt.clf()
-        plt.plot(Rmedians, datamedians[:,i], "ko")
+        plt.plot(Rmedians, datamedians[:,d], "ko")
+        for j in range(len(Rmedians)):
+            plt.plot([Rmedians[j], Rmedians[j]],
+                     [datamedians[j,d] - rmses[j,d], datamedians[j,d] + rmses[j,d]],
+                     "k-")
         plt.xlabel("Galactic R (kpc)")
-        plt.ylabel(data_labels[i] + " (dex)")
-        hogg_savefig(pfn)
+        plt.ylabel(label_dict[plotdata_labels[d]])
+        hogg_savefig(plotfn)
