@@ -74,30 +74,47 @@ def stats_in_slices(data, xs):
         mask = (ranks > rmin) * (ranks < rmax)
         xmedians.append(np.median(xs[mask]))
         medians.append(np.median(data[mask], axis=0))
-    return xmedians, medians
+    return np.array(xmedians), np.array(medians)
+
+def hogg_savefig(fn):
+    print("hogg_savefig():", fn)
+    return plt.savefig(fn)
 
 if __name__ == "__main__":
     print("Hello World!")
 
     # read data
     dfn = "./data/cannon-distances.fits"
-    data, data_labels, metadata, metadata_labels = get_data(dfn)
-    print(data.shape, metadata.shape)
-    print(metadata_labels)
+    pfn = "./data/gradients.pkl"
+    try:
+        print("attempting to read pickle", pfn)
+        data, data_labels, metadata, metadata_labels = read_pickle_file(pfn)
+        print(pfn, data.shape, metadata.shape)
+    except:
+        print("failed to read pickle", pfn)
+        data, data_labels, metadata, metadata_labels = get_data(dfn)
+        pickle_to_file(pfn, (data, data_labels, metadata, metadata_labels))
+        print(pfn, data.shape, metadata.shape)
 
     # compute shit
     Rs = (np.sqrt(metadata[:, metadata_labels == "GX"].astype(float) ** 2 +
                   metadata[:, metadata_labels == "GY"].astype(float) ** 2 +
                   metadata[:, metadata_labels == "GZ"].astype(float) ** 2)).flatten()
-    xmedians, datamedians = stats_in_slices(data, Rs)
-    print(xmedians, datamedians)
+    Rmedians, datamedians = stats_in_slices(data, Rs)
 
-    # TO-DO: MAKE PRETTY PLOTS of slices
+    # plot whole sample
     plt.clf()
     plt.plot(metadata[:, metadata_labels == "GX"],
              metadata[:, metadata_labels == "GY"], "k.", alpha=0.25)
-    plt.xlabel("X (kpc)")
-    plt.ylabel("Y (kpc)")
-    plt.savefig("foo.png")
+    plt.xlabel("Galactic X (kpc)")
+    plt.ylabel("Galactic Y (kpc)")
+    hogg_savefig("GX_GY.png")
 
-    # TO-DO: COMPUTE MEDIANS AND ROOT MEDIAN SQUARES OF ABUNDANCES in slices
+    # plot slices
+    for i in range(len(data_labels)):
+        pfn = data_labels[i] + "_GR.png"
+        plt.clf()
+        plt.plot(Rmedians, datamedians[:,i], "ko")
+        plt.xlabel("Galactic R (kpc)")
+        plt.ylabel(data_labels[i] + " (dex)")
+        hogg_savefig(pfn)

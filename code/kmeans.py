@@ -128,7 +128,7 @@ def plot_cluster_context(sizes, densities, dir, name=None, k=None, suffix="png")
         fn = "{}/clusters_{:04d}.{}".format(dir, K, suffix)
     else:
         fn = "{}/{}_context.{}".format(dir, name, suffix)
-    if os.path.exists(fn):
+    if os.th.exists(fn):
         print("plot_cluster_context(): {} exists already".format(fn))
         return
     if k is None:
