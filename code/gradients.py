@@ -9,6 +9,8 @@ import sklearn.cluster as cl
 from astropy.io import fits
 import pylab as plt
 
+Xsun = -8.0 # kpc MAGIC
+
 def pickle_to_file(fn, stuff):
     fd = open(fn, "wb")
     cp.dump(stuff, fd)
@@ -50,7 +52,7 @@ def get_data(fn):
     ls = (np.pi / 180.) * (metadata[:, metadata_labels == "GLON"]).flatten().astype(float)
     bs = (np.pi / 180.) * (metadata[:, metadata_labels == "GLAT"]).flatten().astype(float)
     print(np.cos(1.2))
-    GXs = distances * np.cos(ls) * np.cos(bs) - 8.0 # kpc MAGIC
+    GXs = distances * np.cos(ls) * np.cos(bs) + Xsun
     GYs = distances * np.sin(ls) * np.cos(bs)
     GZs = distances * np.sin(bs)
     metadata = np.vstack((metadata.T, GXs, GYs, GZs)).T # T craziness
@@ -61,13 +63,12 @@ def get_data(fn):
     return data, data_labels, metadata, metadata_labels
 
 def stats_in_slices(data, xs):
-    M = 32
     N = len(xs)
     NN, D = data.shape
     assert NN == N
     ranks = np.zeros(N)
     ranks[np.argsort(xs)] = np.arange(N)
-    ranklims = np.arange(N / M, N, N / M)
+    ranklims = np.arange(0.5, N, 512)
     M = len(ranklims)
     xmedians = np.zeros(M-2)
     medians = np.zeros((M-2, D))
@@ -124,25 +125,23 @@ if __name__ == "__main__":
     print(plotdata_labels)
     plotmetadata = metadata.copy()
 
-    # cut in vertical direction
-    zcut = np.abs(metadata[:, metadata_labels == "GZ"].astype(float).flatten()) < 0.2 # kpc
-    plotdata = plotdata[zcut]
-    plotmetadata = plotmetadata[zcut]
-
     # compute shit
     Rs = (np.sqrt(plotmetadata[:, metadata_labels == "GX"].astype(float) ** 2 +
                   plotmetadata[:, metadata_labels == "GY"].astype(float) ** 2 +
                   plotmetadata[:, metadata_labels == "GZ"].astype(float) ** 2)).flatten()
-    Rmedians, datamedians, sigmas, rmses = stats_in_slices(plotdata, Rs)
+    Zs = plotmetadata[:, metadata_labels == "GZ"].astype(float).flatten()
 
-    # plot whole sample
-    if False:
-        plt.clf()
-        plt.plot(plotmetadata[:, metadata_labels == "GX"],
-                 plotmetadata[:, metadata_labels == "GY"], "k.", alpha=0.25)
-        plt.xlabel("Galactic X (kpc)")
-        plt.ylabel("Galactic Y (kpc)")
-        hogg_savefig(dir + "/GX_GY.png")
+    # cut in vertical direction
+    zcut = np.abs(metadata[:, metadata_labels == "GZ"].astype(float).flatten()) < 0.3 # kpc
+
+    # cut in cylinder (around Sun)
+    cylcut = (np.sqrt((plotmetadata[:, metadata_labels == "GX"].astype(float) - Xsun) ** 2 +
+                      plotmetadata[:, metadata_labels == "GY"].astype(float) ** 2)).flatten() < 3.0 # kpc
+
+
+    # compute shit
+    Rmedians, Rdatamedians, Rsigmas, Rrmses = stats_in_slices(plotdata[zcut], Rs[zcut])
+    Zmedians, Zdatamedians, Zsigmas, Zrmses = stats_in_slices(plotdata[cylcut], Zs[cylcut])
 
     label_dict = {"FE_H": "[Fe/H] (dex)",
                   "AL_H - FE_H": "[Al/Fe] (dex)",
@@ -161,17 +160,20 @@ if __name__ == "__main__":
                   "V_H - FE_H":  "[V/Fe] (dex)",}
 
     # plot slices
-    for d in range(len(plotdata_labels)):
-        plotfn = dir + "/" + (plotdata_labels[d] + "_GR.png").replace(" ", "")
-        plt.clf()
-        plt.plot(Rmedians, datamedians[:,d], "k-", alpha=0.5, lw=2)
-        for j in range(len(Rmedians)):
-            plt.plot([Rmedians[j], Rmedians[j]],
-                     [datamedians[j,d] - rmses[j,d], datamedians[j,d] + rmses[j,d]],
-                     "k-", alpha=0.25)
-            plt.plot([Rmedians[j], Rmedians[j]],
-                     [datamedians[j,d] - sigmas[j,d], datamedians[j,d] + sigmas[j,d]],
-                     "k-", lw=3)
-        plt.xlabel("Galactic R (kpc)")
-        plt.ylabel(label_dict[plotdata_labels[d]])
-        hogg_savefig(plotfn)
+    for medians, datamedians, sigmas, rmses, infix in [(Rmedians, Rdatamedians, Rsigmas, Rrmses, "R"),
+                                                       (Zmedians, Zdatamedians, Zsigmas, Zrmses, "Z"),
+                                                       ]:
+        for d in range(len(plotdata_labels)):
+            plotfn = dir + "/G" + infix + "_" + plotdata_labels[d].replace(" ", "") + ".png"
+            plt.clf()
+            plt.plot(medians, datamedians[:,d], "k-", alpha=0.5, lw=2)
+            for j in range(len(medians)):
+                plt.plot([medians[j], medians[j]],
+                         [datamedians[j,d] - rmses[j,d], datamedians[j,d] + rmses[j,d]],
+                         "k-", alpha=0.25)
+                plt.plot([medians[j], medians[j]],
+                         [datamedians[j,d] - sigmas[j,d], datamedians[j,d] + sigmas[j,d]],
+                         "k-", lw=3)
+            plt.xlabel("Galactic " + infix + " (kpc)")
+            plt.ylabel(label_dict[plotdata_labels[d]])
+            hogg_savefig(plotfn)
