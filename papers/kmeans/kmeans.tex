@@ -51,7 +51,10 @@
         Andrew~R.~Casey\altaffilmark{5},
         Melissa~Ness\altaffilmark{4},
         Hans-Walter~Rix\altaffilmark{4},
-    and~Daniel~Foreman-Mackey\altaffilmark{6,7}}
+        Daniel~Foreman-Mackey\altaffilmark{6,7},
+        Anna~Y.~Q.~Ho\altaffilmark{8},
+        Jon~A.~Holtzman\altaffilmark{9},
+        David~L.~Nidever\altaffilmark{10}}
 \altaffiltext{1}{Simons Center for Data Analysis, 160 Fifth Avenue, 7th floor, New York, NY 10010, USA}
 \altaffiltext{2}{Center for Cosmology and Particle Physics, Department of Physics,
   New York University, 4 Washington Pl., room 424, New York, NY 10003, USA}
@@ -60,6 +63,9 @@
 \altaffiltext{5}{Institute of Astronomy, University of Cambridge, Madingley Road, Cambridge CB3~0HA, UK}
 \altaffiltext{6}{Sagan Fellow}
 \altaffiltext{7}{Department of Astronomy, University of Washington, Box 351580, Seattle, WA 98195, USA}
+\altaffiltext{8}{Astronomy Department, California Institute of Technology, MC 249-17, 1200 East California Blvd, Pasadena, CA 91125, USA}
+\altaffiltext{9}{New Mexico State University, Las Cruces, NM 88003, USA}
+\altaffiltext{10}{Steward Observatory, 933 North Cherry Ave, Tuscon, AZ 85719, USA}
 \email{david.hogg@nyu.edu}
 
 \begin{abstract}
@@ -236,7 +242,9 @@ equilibrium all contribute to produce inaccurate abundances.
 chemical abundances, whereas the accuracy of those labels is limited only
 by the training (reference) set employed.
 
-In what follows, we are going to use \apogee\ \acronym{DR12} data \citep{dr12}, in
+In what follows, we are going to use \apogee\ \acronym{DR12}
+data \citep{apogeedr12, dr12}
+from \sdssiii\ \citep{sdssiii}, in
 which we can re-derive 15 element abundances (C, N, O, Na, Mg, Al, Si,
 S, K, Ca, Ti, V, Mn, Fe, Ni), using \thecannon\ \citep{thecannon}.
 The \apogee\ data set covers a huge radial extent and---because the
@@ -265,7 +273,7 @@ unravelling the formation of the Milky Way.
 \section{Data: \apogee\ giants with abundances from \thecannon}\label{sec:data}
 
 Our analysis draws on the spectra of \totalnumber\ giant stars ($\logg
-< 3.9$) from \apogee\ \acronym{DR12} \citep{dr12}, with no warning flags
+< 3.9$) from \apogee\ \acronym{DR12} \citep{apogeedr12}, with no warning flags
 set in the \apogee\ \aspcap\ \citep{aspcap} pipeline
 reductions.
 We re-analyze these \emph{spectra} using \thecannon, because it can
@@ -691,8 +699,8 @@ Chemical tagging capabilities are expected to grow as the
 
 \acknowledgements
 It is a pleasure to thank
-  Anna~Y.~Q.~Ho (Caltech),
-  Jeremy~Magland (\acronym{SCDA}), and
+  Jeremy~Magland (\acronym{SCDA}),
+  Don Schneider (PSU), and
   the Blanton--Hogg group meeting
 for valuable comments and discussions.
 This project was funded in part by
@@ -752,6 +760,8 @@ Casey,~A.~R., Hogg,~D.~W., Ness,~M., Rix,~H.-W., 2016, in preparation
 Cohen, J.~G.,  Mel{\'e}ndez, J., 2005, \aj, 129, 303 
 \bibitem[De~Silva \etal(2015)]{galah}
 De~Silva,~G.~M., Freeman,~K.~C., Bland-Hawthorn,~J., \etal, 2015, \mnras, 449, 2604
+\bibitem[Eisenstein \etal(2011)]{sdssiii}
+Eisenstein, D.~J., Weinberg, D.~H., Agol, E., \etal, 2011, \aj, 142, 72 
 \bibitem[Font \etal(2006)]{font}
 Font,~A.~S., Johnston,~K.~V., Bullock,~J.~S., Robertson,~B.~E., 2006, \apj, 638, 585 
 \bibitem[Freeman \& Bland-Hawthorn(2002)]{freeman}
@@ -766,6 +776,8 @@ Gilmore,~G., Randich,~S., Asplund,~M., \etal, 2012, The Messenger, 147, 25
 Gratton,~R.~G., Carretta,~E., Bragaglia,~A., 2012, \aapr, 20, 50
 \bibitem[Harris(1996)]{Harris_1996}
 Harris,~W.~E., 1996, \aj, 112, 1487 
+\bibitem[Holtzman \etal(2015)]{apogeedr12}
+Holtzman, J.~A., Shetrone, M., Johnson, J.~A., \etal, 2015, \aj, 150, 148
 \bibitem[Hunter(2007)]{matplotlib}
 Hunter,~J.~D., 2007, Computing in Science \& Engineering, 9, 90
 \bibitem[Jofr{\'e} \etal(2015)]{jofre}

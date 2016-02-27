@@ -79,10 +79,17 @@ Other changes:
 In addition to all the above, we made the following additional
 changes:
 
-HOGG:  We added authors!
+Because of a large number of valuable contributions both prior to and
+subsequent to our submission of this paper, we expanded the author
+list.  There are now several additional new authors, most of whom
+contributed by building the APOGEE project (and hence the input data).
 
-HOGG:  We added citations!
+We added a few citations: Eisenstein 2011 (SDSS-III), Holtzman 2015
+(APOGEE DR12) and ...HOGG
 
 HOGG:  Adjusted what we say about Ting et al?
 
 HOGG:  Go through github issues and emails.
+
+We also added a few names to the acknowledgements for providing minor
+comments.
