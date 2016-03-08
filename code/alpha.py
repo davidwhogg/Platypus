@@ -133,7 +133,46 @@ if __name__ == "__main__":
     plotdata_labels = np.array(plotdata_labels)
     plotmetadata = metadata.copy()
 
-    # compute shit
+    label_dict = {"FE_H": "[Fe/H] (dex)",
+                  "alpha_FE": "[alpha/Fe] (dex)",
+                  "AL_H - FE_H": "[Al/Fe] (dex)",
+                  "CA_H - FE_H": "[Ca/Fe] (dex)",
+                  "C_H - FE_H":  "[C/Fe] (dex)",
+                  "K_H - FE_H":  "[K/Fe] (dex)",
+                  "MG_H - FE_H": "[Mg/Fe] (dex)",
+                  "MN_H - FE_H": "[Mn/Fe] (dex)",
+                  "NA_H - FE_H": "[Na/Fe] (dex)",
+                  "NI_H - FE_H": "[Ni/Fe] (dex)",
+                  "N_H - FE_H":  "[N/Fe] (dex)",
+                  "O_H - FE_H":  "[O/Fe] (dex)",
+                  "SI_H - FE_H": "[Si/Fe] (dex)",
+                  "S_H - FE_H":  "[S/Fe] (dex)",
+                  "TI_H - FE_H": "[Ti/Fe] (dex)",
+                  "V_H - FE_H":  "[V/Fe] (dex)",}
+
+    # make scatterplots
+    for yy in range(1,6):
+        plotfn = dir + "/s" + plotdata_labels[yy].replace(" ", "") + ".png"
+        plt.clf()
+        plt.plot(plotdata[:, 0], plotdata[:, yy], "k.", ms=0.5, alpha=0.50)
+        plt.xlabel(label_dict[plotdata_labels[0]])
+        plt.ylabel(label_dict[plotdata_labels[yy]])
+        y0 = np.median(plotdata[:, yy])
+        plt.ylim(y0 - 0.6, y0 + 0.6)
+        hogg_savefig(plotfn)
+        for xx in range(yy+1,6):
+            plotfn = dir + "/s" + plotdata_labels[yy].replace(" ", "") + "vs" + plotdata_labels[xx].replace(" ", "") + ".png"
+            plt.clf()
+            plt.plot(plotdata[:, xx], plotdata[:, yy], "k.", ms=0.5, alpha=0.50)
+            plt.xlabel(label_dict[plotdata_labels[xx]])
+            plt.ylabel(label_dict[plotdata_labels[yy]])
+            x0 = np.median(plotdata[:, xx])
+            plt.xlim(x0 - 0.6, x0 + 0.6)
+            y0 = np.median(plotdata[:, yy])
+            plt.ylim(y0 - 0.6, y0 + 0.6)
+            hogg_savefig(plotfn)
+
+    # compute shit for slicing
     Rs = (np.sqrt(plotmetadata[:, metadata_labels == "GX"].astype(float) ** 2 +
                   plotmetadata[:, metadata_labels == "GY"].astype(float) ** 2 +
                   plotmetadata[:, metadata_labels == "GZ"].astype(float) ** 2)).flatten()
@@ -155,23 +194,6 @@ if __name__ == "__main__":
     Cmedians, Cdatamedians, Csigmas, Crmses = stats_in_slices(plotdata, Cs)
     Fmedians, Fdatamedians, Fsigmas, Frmses = stats_in_slices(plotdata, Fs)
     Tmedians, Tdatamedians, Tsigmas, Trmses = stats_in_slices(plotdata, Ts)
-
-    label_dict = {"FE_H": "[Fe/H] (dex)",
-                  "alpha_FE": "[alpha/Fe] (dex)",
-                  "AL_H - FE_H": "[Al/Fe] (dex)",
-                  "CA_H - FE_H": "[Ca/Fe] (dex)",
-                  "C_H - FE_H":  "[C/Fe] (dex)",
-                  "K_H - FE_H":  "[K/Fe] (dex)",
-                  "MG_H - FE_H": "[Mg/Fe] (dex)",
-                  "MN_H - FE_H": "[Mn/Fe] (dex)",
-                  "NA_H - FE_H": "[Na/Fe] (dex)",
-                  "NI_H - FE_H": "[Ni/Fe] (dex)",
-                  "N_H - FE_H":  "[N/Fe] (dex)",
-                  "O_H - FE_H":  "[O/Fe] (dex)",
-                  "SI_H - FE_H": "[Si/Fe] (dex)",
-                  "S_H - FE_H":  "[S/Fe] (dex)",
-                  "TI_H - FE_H": "[Ti/Fe] (dex)",
-                  "V_H - FE_H":  "[V/Fe] (dex)",}
 
     # plot slices
     for medians, datamedians, sigmas, rmses, infix, xlabel in \
