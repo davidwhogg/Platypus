@@ -13,4 +13,7 @@ See the file `LICENSE` for more details.
 - [deprecated: rotating rectangular data into interesting orthonormal coordinate systems]
 - [deprecated: finding clusters with friends-of-friends]
 - finding clusters with k-means
-- look at nearest neighbors in abundance space, especially for young stars
+- looking at nearest neighbors in abundance space, especially for young stars
+- measuring spatial gradients (in the Milky Way) in chemical-abundance ratios
+- identifying known star clusters and investigating their chemical properties
+- using Milky Way structure to resolve supernova yields
