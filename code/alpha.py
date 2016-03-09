@@ -35,7 +35,7 @@ def read_pickle_file(fn):
     return stuff
 
 def get_data(fn):
-    data_labels = ["FE_H", "O_H", "MG_H", "SI_H", "S_H", "CA_H"]
+    data_labels = ["FE_H", "O_H", "MG_H", "SI_H", "S_H", "CA_H", "TI_H"]
     metadata_labels = np.array(["APOGEE_ID", "RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "DIST_Padova",
                                 "TEFF_ASPCAP", "LOGG_ASPCAP"])
 
@@ -151,7 +151,8 @@ if __name__ == "__main__":
                   "V_H - FE_H":  "[V/Fe] (dex)",}
 
     # make scatterplots
-    for yy in range(1,6):
+    alpha_indexes = range(1,7)
+    for yy in alpha_indexes:
         plotfn = dir + "/s" + plotdata_labels[yy].replace(" ", "") + ".png"
         plt.clf()
         plt.plot(plotdata[:, 0], plotdata[:, yy], "k.", ms=0.5, alpha=0.50)
@@ -160,7 +161,9 @@ if __name__ == "__main__":
         y0 = np.median(plotdata[:, yy])
         plt.ylim(y0 - 0.6, y0 + 0.6)
         hogg_savefig(plotfn)
-        for xx in range(yy+1,6):
+        for xx in alpha_indexes:
+            if xx == yy:
+                continue
             plotfn = dir + "/s" + plotdata_labels[yy].replace(" ", "") + "vs" + plotdata_labels[xx].replace(" ", "") + ".png"
             plt.clf()
             plt.plot(plotdata[:, xx], plotdata[:, yy], "k.", ms=0.5, alpha=0.50)
