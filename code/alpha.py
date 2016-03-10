@@ -18,7 +18,6 @@ import os
 import pickle as cp
 import numpy as np 
 from astropy.io import fits
-import pylab as plt
 
 Xsun = -8.0 # kpc MAGIC
 
@@ -35,7 +34,7 @@ def read_pickle_file(fn):
     return stuff
 
 def get_data(fn):
-    data_labels = ["FE_H", "O_H", "MG_H", "SI_H", "S_H", "CA_H", "TI_H"]
+    data_labels = ["FE_H", "O_H", "MG_H", "SI_H", "S_H", "CA_H"]
     metadata_labels = np.array(["APOGEE_ID", "RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "DIST_Padova",
                                 "TEFF_ASPCAP", "LOGG_ASPCAP"])
 
@@ -100,7 +99,50 @@ def hogg_savefig(fn):
     print("hogg_savefig():", fn)
     return plt.savefig(fn)
 
+class abundance_model:
+    """
+    Assumes that the `self.data` are [X/Y] `log_10` element ratios.
+    """
+
+    def __init__(self, data, ivars, K):
+        N, D = data.shape
+        self.N = N
+        self.D = D
+        self.data = data
+        assert data.shape == ivars.shape
+        self.ivars = ivars
+        self.K = K
+        print("initialized with ", N, D, K)
+
+    def set_pars_from_vector(self, parsvec):
+        self.amplitudes = (parsvec[0:self.N*self.K]).reshape((self.N,self.K))
+        self.vectors = (parsvec[self.N*self.K:self.N*self.K+self.K*self.D]).reshape((self.K,self.D))
+
+    def ln_prior(self):
+        if np.any(self.amplitudes < 0.):
+            return -np.Inf
+        if np.any(self.vectors < 0.):
+            return -np.Inf
+        return -100. * np.sum((self.vectors[:,0] - 1.) ** 2) # MAGIC: force [Fe/H] components near 1
+
+    def ln_like(self):
+        resids = self.data - np.log10(np.dot(self.amplitudes, self.vectors))
+        return -0.5 * np.sum(resids * self.ivars * resids)
+
+    def ln_post(self):
+        lnp = self.ln_prior()
+        if not np.isfinite(lnp):
+            return -np.Inf
+        return lnp + self.ln_like()
+
+    def __call__(self, parsvec):
+        self.set_pars_from_vector(parsvec)
+        return -2. * self.ln_post()
+
 if __name__ == "__main__":
+    import pylab as plt
+    import scipy.optimize as op
+
     print("Hello World!")
     dir = "./alpha_figs"
     if not os.path.exists(dir):
@@ -133,6 +175,26 @@ if __name__ == "__main__":
     plotdata_labels = np.array(plotdata_labels)
     plotmetadata = metadata.copy()
 
+    # make horrible fake uncertainties!
+    ivars = np.zeros_like(plotdata)
+    ivars[:,0] = 1. / 0.02 ** 2
+    ivars[:,1:] = 1. / 0.05 ** 2
+
+    # initialize model
+    K = 3
+    fitsubsample = np.random.randint(N, size=100)
+    model = abundance_model(data[fitsubsample], ivars[fitsubsample], K)
+    amplitudes = 10. ** plotdata[fitsubsample,:K]
+    vectors = np.ones((K, D))
+    parvec0 = np.append(amplitudes.flatten(), vectors.flatten())
+    print(amplitudes.shape, vectors.shape, np.dot(amplitudes, vectors).shape, parvec0.shape)
+    print(model(parvec0))
+    result = op.minimize(model, parvec0, method="Powell")
+    parvec1 = result["x"]
+    print(parvec1)
+    print(model(parvec1), model.vectors)
+    assert False
+
     label_dict = {"FE_H": "[Fe/H] (dex)",
                   "alpha_FE": "[alpha/Fe] (dex)",
                   "AL_H - FE_H": "[Al/Fe] (dex)",
@@ -151,20 +213,21 @@ if __name__ == "__main__":
                   "V_H - FE_H":  "[V/Fe] (dex)",}
 
     # make scatterplots
-    alpha_indexes = range(1,7)
+    alpha_indexes = range(1,6)
     for yy in alpha_indexes:
-        plotfn = dir + "/s" + plotdata_labels[yy].replace(" ", "") + ".png"
+        plotfn = dir + "/a" + plotdata_labels[yy].replace(" ", "") + ".png"
         plt.clf()
         plt.plot(plotdata[:, 0], plotdata[:, yy], "k.", ms=0.5, alpha=0.50)
         plt.xlabel(label_dict[plotdata_labels[0]])
         plt.ylabel(label_dict[plotdata_labels[yy]])
+        plt.xlim(-0.9, 0.5)
         y0 = np.median(plotdata[:, yy])
-        plt.ylim(y0 - 0.6, y0 + 0.6)
+        plt.ylim(y0 - 0.3, y0 + 0.4)
         hogg_savefig(plotfn)
         for xx in alpha_indexes:
             if xx == yy:
                 continue
-            plotfn = dir + "/s" + plotdata_labels[yy].replace(" ", "") + "vs" + plotdata_labels[xx].replace(" ", "") + ".png"
+            plotfn = dir + "/b" + plotdata_labels[yy].replace(" ", "") + "vs" + plotdata_labels[xx].replace(" ", "") + ".png"
             plt.clf()
             plt.plot(plotdata[:, xx], plotdata[:, yy], "k.", ms=0.5, alpha=0.50)
             plt.xlabel(label_dict[plotdata_labels[xx]])
