@@ -8,7 +8,9 @@ Copyright 2016 David W. Hogg (NYU).
 - Show that there is more than one kind of alpha element!
 
 ## bugs / notes
-- Not yet doing anything interesting.
+- Need to write derivatives for the model posterior.
+- Ought to make it so we can optimize amplitudes and vectors separately.
+- Plots are just TERRIBLE.
 - Paranoid temperature cuts!
 - Uses Jason Sanders's distances and Andy Casey's element abundances.
   Both of these are out-of-date and should be updated regularly.
@@ -123,10 +125,13 @@ class abundance_model:
             return -np.Inf
         if np.any(self.vectors < 0.):
             return -np.Inf
-        return -100. * np.sum((self.vectors[:,0] - 1.) ** 2) # MAGIC: force [Fe/H] components near 1
+        return -10000. * np.sum((self.vectors[:,0] - 1.) ** 2) # MAGIC: force [Fe/H] components near 1
+
+    def predicted_data(self):
+        return np.log10(np.dot(self.amplitudes, self.vectors))
 
     def ln_like(self):
-        resids = self.data - np.log10(np.dot(self.amplitudes, self.vectors))
+        resids = self.data - self.predicted_data()
         return -0.5 * np.sum(resids * self.ivars * resids)
 
     def ln_post(self):
@@ -181,19 +186,16 @@ if __name__ == "__main__":
     ivars[:,1:] = 1. / 0.05 ** 2
 
     # initialize model
-    K = 3
-    fitsubsample = np.random.randint(N, size=100)
-    model = abundance_model(data[fitsubsample], ivars[fitsubsample], K)
+    K = 2
+    fitsubsample = np.random.randint(N, size=512)
+    model = abundance_model(plotdata[fitsubsample], ivars[fitsubsample], K)
     amplitudes = 10. ** plotdata[fitsubsample,:K]
     vectors = np.ones((K, D))
     parvec0 = np.append(amplitudes.flatten(), vectors.flatten())
-    print(amplitudes.shape, vectors.shape, np.dot(amplitudes, vectors).shape, parvec0.shape)
-    print(model(parvec0))
     result = op.minimize(model, parvec0, method="Powell")
     parvec1 = result["x"]
-    print(parvec1)
-    print(model(parvec1), model.vectors)
-    assert False
+    print(model(parvec1)) # required to set parameters
+    predicteddata = model.predicted_data()
 
     label_dict = {"FE_H": "[Fe/H] (dex)",
                   "alpha_FE": "[alpha/Fe] (dex)",
@@ -217,7 +219,8 @@ if __name__ == "__main__":
     for yy in alpha_indexes:
         plotfn = dir + "/a" + plotdata_labels[yy].replace(" ", "") + ".png"
         plt.clf()
-        plt.plot(plotdata[:, 0], plotdata[:, yy], "k.", ms=0.5, alpha=0.50)
+        plt.plot(plotdata[fitsubsample, 0], plotdata[fitsubsample, yy], "k.", ms=0.5, alpha=0.5)
+        plt.plot(predicteddata[:, 0], predicteddata[:, yy], "r.", ms=1.0)
         plt.xlabel(label_dict[plotdata_labels[0]])
         plt.ylabel(label_dict[plotdata_labels[yy]])
         plt.xlim(-0.9, 0.5)
