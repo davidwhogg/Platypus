@@ -8,8 +8,7 @@ Copyright 2016 David W. Hogg (NYU).
 - Show that there is more than one kind of alpha element!
 
 ## bugs / notes
-- Need to write derivatives for the model posterior.
-- Ought to make it so we can optimize amplitudes and vectors separately.
+- Need to write derivatives to make optimizations faster.
 - Plots are just TERRIBLE.
 - Paranoid temperature cuts!
 - Uses Jason Sanders's distances and Andy Casey's element abundances.
@@ -19,6 +18,7 @@ Copyright 2016 David W. Hogg (NYU).
 import os
 import pickle as cp
 import numpy as np 
+import scipy.optimize as op
 from astropy.io import fits
 
 Xsun = -8.0 # kpc MAGIC
@@ -101,6 +101,9 @@ def hogg_savefig(fn):
     print("hogg_savefig():", fn)
     return plt.savefig(fn)
 
+def tento(x):
+    return 10. ** x
+
 class abundance_model:
     """
     Assumes that the `self.data` are [X/Y] `log_10` element ratios.
@@ -114,39 +117,57 @@ class abundance_model:
         assert data.shape == ivars.shape
         self.ivars = ivars
         self.K = K
+        self.log10amplitudes = np.zeros((self.N, self.K))
+        self.log10vectors = np.zeros((self.K, self.D))
         print("initialized with ", N, D, K)
 
-    def set_pars_from_vector(self, parsvec):
-        self.amplitudes = (parsvec[0:self.N*self.K]).reshape((self.N,self.K))
-        self.vectors = (parsvec[self.N*self.K:self.N*self.K+self.K*self.D]).reshape((self.K,self.D))
+    def set_amplitudes(self):
+        thislog10amps = np.zeros(self.K)
+        offset2 = np.max(self.log10vectors)
+        vectors = tento(self.log10vectors - offset2)
+        for n in range(self.N):
+            thislog10amps[:] = self.log10amplitudes[n]
+            data = self.data[n]
+            ivars = self.ivars[n]
+            def obj(log10amps):
+                offset1 = np.max(log10amps)
+                resids = data - (np.log10(np.dot(tento(log10amps - offset1),
+                                                 vectors))
+                                 + offset1 + offset2)
+                return np.sum(resids * ivars * resids)
+            thisresult = op.minimize(obj, thislog10amps, method="Powell")
+            self.log10amplitudes[n] = thisresult["x"]
 
-    def ln_prior(self):
-        if np.any(self.amplitudes < 0.):
-            return -np.Inf
-        if np.any(self.vectors < 0.):
-            return -np.Inf
-        return -10000. * np.sum((self.vectors[:,0] - 1.) ** 2) # MAGIC: force [Fe/H] components near 1
+    def set_vectors(self):
+        thislog10vecs = np.zeros(self.K)
+        offset1 = np.max(self.log10amplitudes)
+        amplitudes = tento(self.log10amplitudes - offset1)
+        for d in range(1, self.D): # don't mess with the zero component [Fe/H]
+            thislog10vecs[:] = self.log10vectors[:,d]
+            data = self.data[:,d]
+            ivars = self.ivars[:,d]
+            def obj(log10vecs):
+                offset2 = np.max(log10vecs)
+                resids = data - (np.log10(np.dot(amplitudes,
+                                                 tento(log10vecs - offset2)))
+                                 + offset1 + offset2)
+                return np.sum(resids * ivars * resids)
+            thisresult = op.minimize(obj, thislog10vecs, method="Powell")
+            self.log10vectors[:,d] = thisresult["x"]
 
     def predicted_data(self):
-        return np.log10(np.dot(self.amplitudes, self.vectors))
+        offset1 = np.max(self.log10amplitudes)
+        offset2 = np.max(self.log10vectors)
+        return np.log10(np.dot(tento(self.log10amplitudes - offset1),
+                               tento(self.log10vectors - offset2))) \
+                               + offset1 + offset2
 
-    def ln_like(self):
+    def chisq(self):
         resids = self.data - self.predicted_data()
-        return -0.5 * np.sum(resids * self.ivars * resids)
-
-    def ln_post(self):
-        lnp = self.ln_prior()
-        if not np.isfinite(lnp):
-            return -np.Inf
-        return lnp + self.ln_like()
-
-    def __call__(self, parsvec):
-        self.set_pars_from_vector(parsvec)
-        return -2. * self.ln_post()
+        return np.sum(resids * self.ivars * resids)
 
 if __name__ == "__main__":
     import pylab as plt
-    import scipy.optimize as op
 
     print("Hello World!")
     dir = "./alpha_figs"
@@ -185,16 +206,18 @@ if __name__ == "__main__":
     ivars[:,0] = 1. / 0.02 ** 2
     ivars[:,1:] = 1. / 0.05 ** 2
 
-    # initialize model
-    K = 2
-    fitsubsample = np.random.randint(N, size=512)
+    # build and optimize model
+    K = 3
+    fitsubsample = np.random.randint(N, size=1024)
     model = abundance_model(plotdata[fitsubsample], ivars[fitsubsample], K)
-    amplitudes = 10. ** plotdata[fitsubsample,:K]
-    vectors = np.ones((K, D))
-    parvec0 = np.append(amplitudes.flatten(), vectors.flatten())
-    result = op.minimize(model, parvec0, method="Powell")
-    parvec1 = result["x"]
-    print(model(parvec1)) # required to set parameters
+    model.log10amplitudes = np.random.normal(size=(len(fitsubsample), K))
+    for t in range(256):
+        print(t)
+        model.set_vectors()
+        print(model.chisq())
+        model.set_amplitudes()
+        print(model.chisq())
+        print(model.log10vectors)
     predicteddata = model.predicted_data()
 
     label_dict = {"FE_H": "[Fe/H] (dex)",
@@ -217,17 +240,36 @@ if __name__ == "__main__":
     # make scatterplots
     alpha_indexes = range(1,6)
     for yy in alpha_indexes:
-        plotfn = dir + "/a" + plotdata_labels[yy].replace(" ", "") + ".png"
+        plotfn = dir + "/a" + plotdata_labels[yy].replace(" ", "") + "_{:1d}.png".format(K)
+        plt.figure(figsize=(6, 12))
         plt.clf()
-        plt.plot(plotdata[fitsubsample, 0], plotdata[fitsubsample, yy], "k.", ms=0.5, alpha=0.5)
-        plt.plot(predicteddata[:, 0], predicteddata[:, yy], "r.", ms=1.0)
-        plt.xlabel(label_dict[plotdata_labels[0]])
-        plt.ylabel(label_dict[plotdata_labels[yy]])
+        plt.subplot(311)
+        plt.plot(plotdata[fitsubsample, 0], plotdata[fitsubsample, yy], "k.", ms=1.0)
         plt.xlim(-0.9, 0.5)
+        xlim = plt.xlim()
         y0 = np.median(plotdata[:, yy])
         plt.ylim(y0 - 0.3, y0 + 0.4)
+        ylim = plt.ylim()
+        plt.ylabel(label_dict[plotdata_labels[yy]])
+        plt.title("K = {:1d}".format(model.K))
+        plt.text(0.02, 0.01, "data", transform=plt.gca().transAxes)
+        plt.subplot(312)
+        plt.plot(predicteddata[:, 0], predicteddata[:, yy], "k.", ms=1.0)
+        plt.xlim(xlim)
+        plt.ylim(ylim)
+        plt.ylabel(label_dict[plotdata_labels[yy]])
+        plt.text(0.02, 0.01, "model", transform=plt.gca().transAxes)
+        plt.subplot(313)
+        plt.plot(plotdata[fitsubsample, 0], plotdata[fitsubsample, yy] - predicteddata[:, yy], "k.", ms=1.0)
+        plt.xlim(xlim)
+        plt.ylim(ylim - np.mean(ylim))
+        plt.xlabel(label_dict[plotdata_labels[0]])
+        plt.ylabel("delta " + label_dict[plotdata_labels[yy]])
+        plt.text(0.02, 0.01, "residuals", transform=plt.gca().transAxes)
         hogg_savefig(plotfn)
-        for xx in alpha_indexes:
+
+        if False:
+        # for xx in alpha_indexes:
             if xx == yy:
                 continue
             plotfn = dir + "/b" + plotdata_labels[yy].replace(" ", "") + "vs" + plotdata_labels[xx].replace(" ", "") + ".png"
@@ -240,6 +282,8 @@ if __name__ == "__main__":
             y0 = np.median(plotdata[:, yy])
             plt.ylim(y0 - 0.6, y0 + 0.6)
             hogg_savefig(plotfn)
+
+    assert False
 
     # compute shit for slicing
     Rs = (np.sqrt(plotmetadata[:, metadata_labels == "GX"].astype(float) ** 2 +
