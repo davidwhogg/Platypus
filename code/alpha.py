@@ -117,49 +117,64 @@ class abundance_model:
         assert data.shape == ivars.shape
         self.ivars = ivars
         self.K = K
-        self.log10amplitudes = np.zeros((self.N, self.K))
-        self.log10vectors = np.zeros((self.K, self.D))
+        self.log10amps = np.zeros((self.N, self.K))
+        self.log10vecs = np.zeros((self.K, self.D))
         print("initialized with ", N, D, K)
 
-    def set_amplitudes(self):
+    def set_amps(self):
+        """
+        Needs obj() to return gradient too!
+        """
         thislog10amps = np.zeros(self.K)
-        offset2 = np.max(self.log10vectors)
-        vectors = tento(self.log10vectors - offset2)
+        offset2 = np.max(self.log10vecs)
+        vecs = tento(self.log10vecs - offset2)
         for n in range(self.N):
-            thislog10amps[:] = self.log10amplitudes[n]
+            thislog10amps[:] = self.log10amps[n]
             data = self.data[n]
             ivars = self.ivars[n]
             def obj(log10amps):
                 offset1 = np.max(log10amps)
                 resids = data - (np.log10(np.dot(tento(log10amps - offset1),
-                                                 vectors))
+                                                 vecs))
                                  + offset1 + offset2)
                 return np.sum(resids * ivars * resids)
             thisresult = op.minimize(obj, thislog10amps, method="Powell")
-            self.log10amplitudes[n] = thisresult["x"]
+            self.log10amps[n] = thisresult["x"]
 
-    def set_vectors(self):
+    def set_vecs(self):
+        """
+        - Bugs in obj() gradient, I think.
+        - divide in obj() unstable.
+        """
         thislog10vecs = np.zeros(self.K)
-        offset1 = np.max(self.log10amplitudes)
-        amplitudes = tento(self.log10amplitudes - offset1)
+        offset1 = np.max(self.log10amps)
+        amps = tento(self.log10amps - offset1)
         for d in range(1, self.D): # don't mess with the zero component [Fe/H]
-            thislog10vecs[:] = self.log10vectors[:,d]
+            thislog10vecs[:] = self.log10vecs[:,d]
             data = self.data[:,d]
             ivars = self.ivars[:,d]
             def obj(log10vecs):
                 offset2 = np.max(log10vecs)
-                resids = data - (np.log10(np.dot(amplitudes,
-                                                 tento(log10vecs - offset2)))
-                                 + offset1 + offset2)
-                return np.sum(resids * ivars * resids)
-            thisresult = op.minimize(obj, thislog10vecs, method="Powell")
-            self.log10vectors[:,d] = thisresult["x"]
+                foo = tento(log10vecs - offset2)
+                denominator = np.dot(amps, foo)
+                if np.any(denominator <= 0.):
+                    print(denominator)
+                    for l in self.log10amps:
+                        if np.max(l) > 1.:
+                            print("fucked:", l)
+                    print(offset1, offset2, np.max(amps), np.max(foo))
+                    assert False
+                derivs = (amps * foo[None,:]) / denominator[:,None]
+                resids = data - (np.log10(denominator) + offset1 + offset2)
+                return np.sum(resids * ivars * resids), -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0)
+            thisresult = op.minimize(obj, thislog10vecs, method="BFGS", jac="True")
+            self.log10vecs[:,d] = thisresult["x"]
 
     def predicted_data(self):
-        offset1 = np.max(self.log10amplitudes)
-        offset2 = np.max(self.log10vectors)
-        return np.log10(np.dot(tento(self.log10amplitudes - offset1),
-                               tento(self.log10vectors - offset2))) \
+        offset1 = np.max(self.log10amps)
+        offset2 = np.max(self.log10vecs)
+        return np.log10(np.dot(tento(self.log10amps - offset1),
+                               tento(self.log10vecs - offset2))) \
                                + offset1 + offset2
 
     def chisq(self):
@@ -210,14 +225,14 @@ if __name__ == "__main__":
     K = 3
     fitsubsample = np.random.randint(N, size=1024)
     model = abundance_model(plotdata[fitsubsample], ivars[fitsubsample], K)
-    model.log10amplitudes = np.random.normal(size=(len(fitsubsample), K))
+    model.log10amps = np.random.normal(size=(len(fitsubsample), K))
     for t in range(256):
         print(t)
-        model.set_vectors()
+        model.set_vecs()
         print(model.chisq())
-        model.set_amplitudes()
+        model.set_amps()
         print(model.chisq())
-        print(model.log10vectors)
+        print(model.log10vecs)
     predicteddata = model.predicted_data()
 
     label_dict = {"FE_H": "[Fe/H] (dex)",
