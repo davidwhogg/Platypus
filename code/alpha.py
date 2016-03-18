@@ -8,7 +8,9 @@ Copyright 2016 David W. Hogg (NYU).
 - Show that there is more than one kind of alpha element!
 
 ## bugs / notes
-- Need to write derivatives to make optimizations faster.
+- All math very unstable to underflow; fix this; see HACK.
+- Need to regularize the yield vectors to be near Solar.
+- Need to regularize the amplitudes to be sparse?
 - Plots are just TERRIBLE.
 - Paranoid temperature cuts!
 - Uses Jason Sanders's distances and Andy Casey's element abundances.
@@ -102,7 +104,8 @@ def hogg_savefig(fn):
     return plt.savefig(fn)
 
 def tento(x):
-    return 10. ** x
+    result = 10. ** x
+    return result + 1.e-14 * np.max(result) # HACK HACK
 
 class abundance_model:
     """
@@ -134,11 +137,21 @@ class abundance_model:
             ivars = self.ivars[n]
             def obj(log10amps):
                 offset1 = np.max(log10amps)
-                resids = data - (np.log10(np.dot(tento(log10amps - offset1),
-                                                 vecs))
-                                 + offset1 + offset2)
-                return np.sum(resids * ivars * resids)
-            thisresult = op.minimize(obj, thislog10amps, method="Powell")
+                foo = tento(log10amps - offset1)
+                denominator = np.dot(foo, vecs)
+                derivs = (foo[:,None] * vecs).T / denominator[:,None]
+                resids = data - (np.log10(denominator) + offset1 + offset2)
+                return np.sum(resids * ivars * resids), -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0)
+            """ # testing
+            obj1, deriv = obj(thislog10amps)
+            tiny = 1.e-5
+            thislog10amps2 = thislog10amps.copy()
+            thislog10amps2[0] += tiny
+            obj2, foo = obj(thislog10amps2)
+            print(obj1, deriv, (obj2 - obj1) / tiny)
+            assert False
+            """
+            thisresult = op.minimize(obj, thislog10amps, method="BFGS", jac=True)
             self.log10amps[n] = thisresult["x"]
 
     def set_vecs(self):
@@ -149,6 +162,11 @@ class abundance_model:
         thislog10vecs = np.zeros(self.K)
         offset1 = np.max(self.log10amps)
         amps = tento(self.log10amps - offset1)
+        if np.any(self.log10amps > 10.):
+            for n,l in enumerate(self.log10amps):
+                if np.max(l) > 10.:
+                    print("fucked", n, l, self.data[n], self.predicted_data()[n])
+                    assert False
         for d in range(1, self.D): # don't mess with the zero component [Fe/H]
             thislog10vecs[:] = self.log10vecs[:,d]
             data = self.data[:,d]
@@ -158,15 +176,22 @@ class abundance_model:
                 foo = tento(log10vecs - offset2)
                 denominator = np.dot(amps, foo)
                 if np.any(denominator <= 0.):
-                    print(denominator)
-                    for l in self.log10amps:
-                        if np.max(l) > 1.:
-                            print("fucked:", l)
-                    print(offset1, offset2, np.max(amps), np.max(foo))
-                    assert False
+                    for n,den in enumerate(denominator):
+                        if den <= 0.:
+                            print("denominator fucked", amps[n], log10vecs, offset1, offset2, foo, den, data[n], self.predicted_data()[n,d])
+                            assert False
                 derivs = (amps * foo[None,:]) / denominator[:,None]
                 resids = data - (np.log10(denominator) + offset1 + offset2)
                 return np.sum(resids * ivars * resids), -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0)
+            """ # testing
+            obj1, deriv = obj(thislog10vecs)
+            tiny = 1.e-5
+            thislog10vecs2 = thislog10vecs.copy()
+            thislog10vecs2[0] += tiny
+            obj2, foo = obj(thislog10vecs2)
+            print(obj1, deriv, (obj2 - obj1) / tiny)
+            assert False
+            """
             thisresult = op.minimize(obj, thislog10vecs, method="BFGS", jac="True")
             self.log10vecs[:,d] = thisresult["x"]
 
@@ -183,6 +208,7 @@ class abundance_model:
 
 if __name__ == "__main__":
     import pylab as plt
+    np.random.seed(42)
 
     print("Hello World!")
     dir = "./alpha_figs"
@@ -223,14 +249,16 @@ if __name__ == "__main__":
 
     # build and optimize model
     K = 3
-    fitsubsample = np.random.randint(N, size=1024)
+    fitsubsample = np.random.randint(N, size=2048)
     model = abundance_model(plotdata[fitsubsample], ivars[fitsubsample], K)
-    model.log10amps = np.random.normal(size=(len(fitsubsample), K))
+    model.log10vecs = np.array([[0., 0.0, 0.0, 0.0, 0.0, 0.0],
+                                [0., 0.3, 0.3, 0.3, 0.3, 0.3],
+                                [0., 0.0, 0.3, 0.0, 0.0, 0.0]])
     for t in range(256):
         print(t)
-        model.set_vecs()
-        print(model.chisq())
         model.set_amps()
+        print(model.chisq())
+        model.set_vecs()
         print(model.chisq())
         print(model.log10vecs)
     predicteddata = model.predicted_data()
