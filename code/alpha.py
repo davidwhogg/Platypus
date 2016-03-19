@@ -162,12 +162,7 @@ class abundance_model:
         thislog10vecs = np.zeros(self.K)
         offset1 = np.max(self.log10amps)
         amps = tento(self.log10amps - offset1)
-        if np.any(self.log10amps > 10.):
-            for n,l in enumerate(self.log10amps):
-                if np.max(l) > 10.:
-                    print("fucked", n, l, self.data[n], self.predicted_data()[n])
-                    assert False
-        for d in range(1, self.D): # don't mess with the zero component [Fe/H]
+        for d in range(self.D):
             thislog10vecs[:] = self.log10vecs[:,d]
             data = self.data[:,d]
             ivars = self.ivars[:,d]
@@ -175,11 +170,6 @@ class abundance_model:
                 offset2 = np.max(log10vecs)
                 foo = tento(log10vecs - offset2)
                 denominator = np.dot(amps, foo)
-                if np.any(denominator <= 0.):
-                    for n,den in enumerate(denominator):
-                        if den <= 0.:
-                            print("denominator fucked", amps[n], log10vecs, offset1, offset2, foo, den, data[n], self.predicted_data()[n,d])
-                            assert False
                 derivs = (amps * foo[None,:]) / denominator[:,None]
                 resids = data - (np.log10(denominator) + offset1 + offset2)
                 return np.sum(resids * ivars * resids), -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0)
@@ -194,6 +184,24 @@ class abundance_model:
             """
             thisresult = op.minimize(obj, thislog10vecs, method="BFGS", jac="True")
             self.log10vecs[:,d] = thisresult["x"]
+
+    def optimize(self, tol=0.1):
+        prevchisq = np.Inf
+        for t in range(512):
+            print(t)
+            self.set_amps()
+            print(t, self.chisq())
+            self.set_vecs()
+            chisq = self.chisq()
+            print(t, chisq)
+            if chisq > prevchisq:
+                print(t, "optimize(): The sky is falling", prevchisq, chisq)
+                assert False
+            if chisq > (prevchisq - tol):
+                print(t, "optimize(): okay, good enough")
+                break
+            prevchisq = chisq
+        print(self.log10vecs)
 
     def predicted_data(self):
         offset1 = np.max(self.log10amps)
@@ -218,6 +226,7 @@ if __name__ == "__main__":
     # read data
     dfn = "./data/cannon-distances.fits"
     pfn = "./data/alpha.pkl"
+    yfn = "./data/alpha_model.pkl"
     try:
         print("attempting to read pickle", pfn)
         data, data_labels, metadata, metadata_labels = read_pickle_file(pfn)
@@ -245,24 +254,37 @@ if __name__ == "__main__":
     # make horrible fake uncertainties!
     ivars = np.zeros_like(plotdata)
     ivars[:,0] = 1. / 0.02 ** 2
-    ivars[:,1:] = 1. / 0.05 ** 2
+    ivars[:,1:] = 1. / 0.1 ** 2
 
     # build and optimize model
-    K = 3
-    fitsubsample = np.random.randint(N, size=2048)
-    model = abundance_model(plotdata[fitsubsample], ivars[fitsubsample], K)
-    model.log10vecs = np.array([[0., 0.0, 0.0, 0.0, 0.0, 0.0],
-                                [0., 0.3, 0.3, 0.3, 0.3, 0.3],
-                                [0., 0.0, 0.3, 0.0, 0.0, 0.0]])
-    for t in range(256):
-        print(t)
-        model.set_amps()
-        print(model.chisq())
-        model.set_vecs()
-        print(model.chisq())
-        print(model.log10vecs)
-    predicteddata = model.predicted_data()
+    try:
+        print("attempting to read pickle", yfn)
+        model = read_pickle_file(yfn)
+        print(model)
+        K = model.K
+    except:
+        K = 2
+        bestlog10vecs = None
+        for Nfit in 2. ** np.arange(8, 13):
+            fitsubsample = np.random.randint(N, size=Nfit)
+            model = abundance_model(plotdata[fitsubsample, 1:], ivars[fitsubsample, 1:], K) # drop [Fe/H] from fitting.
+            if bestlog10vecs is None:
+                model.log10vecs = np.array([[0.3, 0.3, 0.3, 0.3, 0.3],
+                                            [0.0, 0.3, 0.0, 0.0, 0.0]])
+            else:
+                model.log10vecs = bestlog10vecs
+            model.optimize()
+            bestlog10vecs = model.log10vecs.copy()
+        model = abundance_model(plotdata[:, 1:], ivars[:, 1:], K) # drop [Fe/H] from fitting.
+        model.log10vecs = bestlog10vecs # initialize
+        model.optimize()
+        pickle_to_file(yfn, model)
 
+    # make predicted data
+    predicteddata = plotdata.copy()
+    predicteddata[:, 1:] = model.predicted_data()
+
+    # get ready to plot
     label_dict = {"FE_H": "[Fe/H] (dex)",
                   "alpha_FE": "[alpha/Fe] (dex)",
                   "AL_H - FE_H": "[Al/Fe] (dex)",
@@ -287,7 +309,7 @@ if __name__ == "__main__":
         plt.figure(figsize=(6, 12))
         plt.clf()
         plt.subplot(311)
-        plt.plot(plotdata[fitsubsample, 0], plotdata[fitsubsample, yy], "k.", ms=1.0)
+        plt.plot(plotdata[:, 0], plotdata[:, yy], "k.", ms=1.0)
         plt.xlim(-0.9, 0.5)
         xlim = plt.xlim()
         y0 = np.median(plotdata[:, yy])
@@ -303,7 +325,7 @@ if __name__ == "__main__":
         plt.ylabel(label_dict[plotdata_labels[yy]])
         plt.text(0.02, 0.01, "model", transform=plt.gca().transAxes)
         plt.subplot(313)
-        plt.plot(plotdata[fitsubsample, 0], plotdata[fitsubsample, yy] - predicteddata[:, yy], "k.", ms=1.0)
+        plt.plot(plotdata[:, 0], plotdata[:, yy] - predicteddata[:, yy], "k.", ms=1.0)
         plt.xlim(xlim)
         plt.ylim(ylim - np.mean(ylim))
         plt.xlabel(label_dict[plotdata_labels[0]])
