@@ -1,10 +1,16 @@
 \documentclass[12pt, preprint]{aastex}
 
+% text commands
 \newcommand{\acronym}[1]{{\small{#1}}}
 \newcommand{\project}[1]{\textsl{#1}}
 \newcommand{\apogee}{\project{\acronym{APOGEE}}}
 
+% math commands
 \newcommand{\solar}{\odot}
+\newcommand{\abundance}[1]{\lbrack{#1}\rbrack}
+\newcommand{\given}{\,|\,}
+\newcommand{\normal}{\mathcal{N}}
+
 
 \begin{document}
 
@@ -29,8 +35,18 @@ Nucleosynthesis is important.  Models are wrong.  Data are now abundant.
 \section{Model}
 
 \begin{eqnarray}
-  [X/Y] &\equiv& \log_{10}\left(\frac{X}{Y}\right) -
-                 \log_{10}\left(\frac{X}{Y}\right)_\solar
+  \abundance{X/Y}_n &\equiv& \log_{10}\left(\left.\frac{X}{Y}\right|_n\right) -
+                             \log_{10}\left(\left.\frac{X}{Y}\right|_\solar\right)
+\\
+  \abundance{X/Y}_n &=& \log_{10}(y_{nd}) + e_{nd}
+\\
+  p(e_{nd}) &=& \normal(e_{nd}\given 0,\sigma^2_{nd})
+\\
+  y_{nd} &=& \sum_{k=1}^K a_{nk}\,g_{kd}
+\\
+  g_{kd} &=& G_{kd} + \epsilon_{kd}
+\\
+  p(\epsilon_{kd}) &=& \normal(\epsilon_{kd}\given 0,\Sigma^2_{kd})
 \end{eqnarray}
 
 \end{document}
