@@ -38,7 +38,8 @@ def read_pickle_file(fn):
     return stuff
 
 def get_data(fn):
-    data_labels = ["FE_H", "O_H", "MG_H", "SI_H", "S_H", "CA_H"]
+    # array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni'], dtype='|S2')
+    data_labels = ["C_H", "N_H", "O_H", "NA_H", "MG_H", "AL_H", "SI_H", "S_H", "K_H", "CA_H", "TI_H", "V_H", "MN_H", "FE_H", "NI_H"]
     metadata_labels = np.array(["APOGEE_ID", "RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "DIST_Padova",
                                 "TEFF_ASPCAP", "LOGG_ASPCAP"])
 
@@ -112,21 +113,24 @@ class abundance_model:
     Assumes that the `self.data` are [X/Y] `log_10` element ratios.
     """
 
-    def __init__(self, data, ivars, K):
+    def __init__(self, data, ivars, priorlog10vecs):
         N, D = data.shape
         self.N = N
         self.D = D
         self.data = data
         assert data.shape == ivars.shape
         self.ivars = ivars
+        K, DD = priorlog10vecs.shape
+        assert D == DD
         self.K = K
+        self.priorlog10vecs = priorlog10vecs
+        self.priorivar = 1.0 / (0.1 * 0.1) # dex^{-2}
+        self.log10vecs = priorlog10vecs
         self.log10amps = np.zeros((self.N, self.K))
-        self.log10vecs = np.zeros((self.K, self.D))
         print("initialized with ", N, D, K)
 
     def set_amps(self):
         """
-        Needs obj() to return gradient too!
         """
         thislog10amps = np.zeros(self.K)
         offset2 = np.max(self.log10vecs)
@@ -156,14 +160,16 @@ class abundance_model:
 
     def set_vecs(self):
         """
-        - Bugs in obj() gradient, I think.
         - divide in obj() unstable.
+        - haven't got penalty added in, nor derivative.
         """
         thislog10vecs = np.zeros(self.K)
+        thispriorlog10vecs = np.zeros(self.K)
         offset1 = np.max(self.log10amps)
         amps = tento(self.log10amps - offset1)
         for d in range(self.D):
             thislog10vecs[:] = self.log10vecs[:,d]
+            thispriorlog10vecs[:] = self.priorlog10vecs[:,d]
             data = self.data[:,d]
             ivars = self.ivars[:,d]
             def obj(log10vecs):
@@ -171,9 +177,11 @@ class abundance_model:
                 foo = tento(log10vecs - offset2)
                 denominator = np.dot(amps, foo)
                 derivs = (amps * foo[None,:]) / denominator[:,None]
-                resids = data - (np.log10(denominator) + offset1 + offset2)
-                return np.sum(resids * ivars * resids), -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0)
-            """ # testing
+                resids = data - (np.log10(denominator) + offset1 + offset2) # data residiual
+                vresids = thispriorlog10vecs - log10vecs # penalty piece
+                return np.sum(resids * ivars * resids) + np.sum(vresids * self.priorivar * vresids), \
+                    -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0) - 2. * vresids * self.priorivar
+            """ testing
             obj1, deriv = obj(thislog10vecs)
             tiny = 1.e-5
             thislog10vecs2 = thislog10vecs.copy()
@@ -190,9 +198,9 @@ class abundance_model:
         for t in range(512):
             print(t)
             self.set_amps()
-            print(t, self.chisq())
+            print(t, self.penalized_chisq())
             self.set_vecs()
-            chisq = self.chisq()
+            chisq = self.penalized_chisq()
             print(t, chisq)
             if chisq > prevchisq:
                 print(t, "optimize(): The sky is falling", prevchisq, chisq)
@@ -213,6 +221,13 @@ class abundance_model:
     def chisq(self):
         resids = self.data - self.predicted_data()
         return np.sum(resids * self.ivars * resids)
+
+    def penalty(self):
+        resids = self.log10vecs - self.priorlog10vecs
+        return np.sum(resids * self.priorivar * resids)
+
+    def penalized_chisq(self):
+        return self.chisq() + self.penalty()
 
 if __name__ == "__main__":
     import pylab as plt
@@ -245,16 +260,18 @@ if __name__ == "__main__":
     assert len(metadata_labels) == DD
     plotdata = data.copy()
     plotdata_labels = data_labels.copy()
-    for d in np.arange(1,D):
-        plotdata[:,d] = data[:,d] - data[:,0]
-        plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
+    FE_index = 13 # HACK BRITTLE MAGIC
+    for d in np.arange(0,D):
+        if d != FE_index:
+            plotdata[:,d] -= data[:,FE_index]
+            plotdata_labels[d] += " - " + data_labels[FE_index]
     plotdata_labels = np.array(plotdata_labels)
     plotmetadata = metadata.copy()
 
     # make horrible fake uncertainties!
     ivars = np.zeros_like(plotdata)
-    ivars[:,0] = 1. / 0.02 ** 2
-    ivars[:,1:] = 1. / 0.1 ** 2
+    ivars[:,:] = 1. / 0.1 ** 2
+    ivars[:,FE_index] = 1. / 0.02 ** 2
 
     # build and optimize model
     try:
@@ -263,26 +280,40 @@ if __name__ == "__main__":
         print(model)
         K = model.K
     except:
-        K = 2
+        # read prior information
+        # HACKITY HACK HACK - brittle, etc
+        # >>> np.load("./data/elements.npy")
+        # array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni'], dtype='|S2')
+        Jan_labels = np.load("./data/elements.npy")
+        K = 3
+        priorlog10vecs = np.zeros((K, D))
+        priorlog10vecs[0,:] = np.log10(np.load("./data/sn2.npy"))
+        priorlog10vecs[1,:] = np.log10(np.load("./data/sn1a.npy"))
+        priorlog10vecs[2,:] = np.log10(np.load("./data/agb.npy"))
+        priorlog10vecs -= (priorlog10vecs[:, FE_index])[:, None]
+        print(priorlog10vecs)
+        
         bestlog10vecs = None
         for Nfit in 2. ** np.arange(8, 13):
             fitsubsample = np.random.randint(N, size=Nfit)
-            model = abundance_model(plotdata[fitsubsample, 1:], ivars[fitsubsample, 1:], K) # drop [Fe/H] from fitting.
+            model = abundance_model(data[fitsubsample, :], ivars[fitsubsample, :], priorlog10vecs)
             if bestlog10vecs is None:
-                model.log10vecs = np.array([[0.3, 0.3, 0.3, 0.3, 0.3],
-                                            [0.0, 0.3, 0.0, 0.0, 0.0]])
+                model.log10vecs = model.priorlog10vecs
             else:
                 model.log10vecs = bestlog10vecs
             model.optimize()
             bestlog10vecs = model.log10vecs.copy()
-        model = abundance_model(plotdata[:, 1:], ivars[:, 1:], K) # drop [Fe/H] from fitting.
+        model = abundance_model(data, ivars, priorlog10vecs) # drop [Fe/H] from fitting.
         model.log10vecs = bestlog10vecs # initialize
         model.optimize()
         pickle_to_file(yfn, model)
 
     # make predicted data
     predicteddata = plotdata.copy()
-    predicteddata[:, 1:] = model.predicted_data()
+    predicteddata = model.predicted_data()
+    for d in np.arange(0,D):
+        if d != FE_index:
+            predicteddata[:,d] -= predicteddata[:,FE_index]
 
     # get ready to plot
     label_dict = {"FE_H": "[Fe/H] (dex)",
@@ -309,7 +340,7 @@ if __name__ == "__main__":
         plt.figure(figsize=(6, 12))
         plt.clf()
         plt.subplot(311)
-        plt.plot(plotdata[:, 0], plotdata[:, yy], "k.", ms=1.0)
+        plt.plot(plotdata[:, FE_index], plotdata[:, yy], "k.", ms=1.0)
         plt.xlim(-0.9, 0.5)
         xlim = plt.xlim()
         y0 = np.median(plotdata[:, yy])
@@ -319,16 +350,16 @@ if __name__ == "__main__":
         plt.title("K = {:1d}".format(model.K))
         plt.text(0.02, 0.01, "data", transform=plt.gca().transAxes)
         plt.subplot(312)
-        plt.plot(predicteddata[:, 0], predicteddata[:, yy], "k.", ms=1.0)
+        plt.plot(predicteddata[:, FE_index], predicteddata[:, yy], "k.", ms=1.0)
         plt.xlim(xlim)
         plt.ylim(ylim)
         plt.ylabel(label_dict[plotdata_labels[yy]])
         plt.text(0.02, 0.01, "model", transform=plt.gca().transAxes)
         plt.subplot(313)
-        plt.plot(plotdata[:, 0], plotdata[:, yy] - predicteddata[:, yy], "k.", ms=1.0)
+        plt.plot(plotdata[:, FE_index], plotdata[:, yy] - predicteddata[:, yy], "k.", ms=1.0)
         plt.xlim(xlim)
         plt.ylim(ylim - np.mean(ylim))
-        plt.xlabel(label_dict[plotdata_labels[0]])
+        plt.xlabel(label_dict[plotdata_labels[FE_index]])
         plt.ylabel("delta " + label_dict[plotdata_labels[yy]])
         plt.text(0.02, 0.01, "residuals", transform=plt.gca().transAxes)
         hogg_savefig(plotfn)
