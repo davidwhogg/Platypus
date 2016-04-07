@@ -354,6 +354,10 @@ if __name__ == "__main__":
     plt.clf()
     plotfn = dir + "/vecs.png"
     print(model.priorlog10vecs)
+    c = "0.75"
+    plt.axhline(0., color=c)
+    plt.plot(range(model.D), model.offsets, "-", color=c, lw=3.)
+    plt.plot(range(model.D), model.offsets, "o", color=c, mec=c)
     colors = ["b", "g", "r"]
     for k in range(model.K):
         c = colors[k]
@@ -366,8 +370,6 @@ if __name__ == "__main__":
         plt.ylim(-2., 1.)
         plt.ylabel("log10 yields, Solar scale, arbitrary overall amplitudes")
     hogg_savefig(plotfn)
-
-    assert False
 
     # make scatterplots
     for yy in range(D):
@@ -417,6 +419,8 @@ if __name__ == "__main__":
             y0 = np.median(plotdata[:, yy])
             plt.ylim(y0 - 0.6, y0 + 0.6)
             hogg_savefig(plotfn)
+
+    assert False
 
     # compute shit for slicing
     Rs = (np.sqrt(plotmetadata[:, metadata_labels == "GX"].astype(float) ** 2 +
