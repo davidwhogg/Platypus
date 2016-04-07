@@ -301,7 +301,11 @@ if __name__ == "__main__":
     ivars = np.zeros_like(plotdata)
     ivars[:,:] = 1. / 0.2 ** 2
     ivars[:,FE_index] = 1. / 0.02 ** 2
-    Jan_labels = np.load("./data/elements.npy").astype(str)
+    Jan_labels = [l for l in np.load("./data/elements.npy").astype(str)] # undoing np.array insanity
+    if combine_CN:
+        # BRITTLE, MAGIC
+        Jan_labels[1] = "C+N"
+        Jan_labels = Jan_labels[1:]
 
     # build and optimize model
     try:
@@ -324,8 +328,6 @@ if __name__ == "__main__":
             # BRITTLE, MAGIC
             priorlog10vecs[:,1] = np.log10(tento(priorlog10vecs[:,0]) + tento(priorlog10vecs[:,1]))
             priorlog10vecs = priorlog10vecs[:,1:]
-            Jan_labels[1] = "C+N"
-            Jan_labels = Jan_labels[1:]
         priorlog10vecs -= (priorlog10vecs[:, FE_index])[:, None]
         for d in range(D):
             print(Jan_labels[d], priorlog10vecs[:,d])
