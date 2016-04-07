@@ -8,13 +8,11 @@ Copyright 2016 David W. Hogg (NYU).
 - Show that there is more than one kind of alpha element!
 
 ## bugs / notes
-- All math very unstable to underflow; fix this; see HACK.
-- Need to regularize the yield vectors to be near Solar.
+- Need to add a step to optimize OFFSETS
 - Need to regularize the amplitudes to be sparse?
 - Plots are just TERRIBLE.
 - Paranoid temperature cuts!
-- Uses Jason Sanders's distances and Andy Casey's element abundances.
-  Both of these are out-of-date and should be updated regularly.
+- Uses old element abundances; these are out-of-date and should be updated regularly.
 
 """
 import os
@@ -123,10 +121,11 @@ class abundance_model:
         K, DD = priorlog10vecs.shape
         assert D == DD
         self.K = K
-        self.priorlog10vecs = priorlog10vecs
+        self.priorlog10vecs = priorlog10vecs.copy()
         self.priorivar = 0.01 ** -2.0 # dex^{-2}
-        self.log10vecs = priorlog10vecs
+        self.log10vecs = priorlog10vecs.copy()
         self.log10amps = np.zeros((self.N, self.K))
+        self.offsets = np.zeros(self.D)
         print("initialized with ", N, D, K)
 
     def set_amps(self):
@@ -137,7 +136,7 @@ class abundance_model:
         vecs = tento(self.log10vecs - offset2)
         for n in range(self.N):
             thislog10amps[:] = self.log10amps[n]
-            data = self.data[n]
+            data = self.data[n] - self.offsets # remove offsets from data!
             ivars = self.ivars[n]
             def obj(log10amps):
                 offset1 = np.max(log10amps)
@@ -156,7 +155,14 @@ class abundance_model:
             assert False
             """
             thisresult = op.minimize(obj, thislog10amps, method="BFGS", jac=True)
-            self.log10amps[n] = thisresult["x"]
+            self.log10amps[n] = thisresult["x"].copy()
+
+    def set_offsets(self):
+        """
+        - Least squares is a trivial weighted mean, in this case!
+        """
+        resids = self.data - self.predicted_data()
+        self.offsets += np.sum(self.ivars * resids, axis=0) / np.sum(self.ivars, axis=0)
 
     def set_vecs(self):
         """
@@ -165,12 +171,13 @@ class abundance_model:
         """
         thislog10vecs = np.zeros(self.K)
         thispriorlog10vecs = np.zeros(self.K)
+        priorivar = np.zeros(self.K) + self.priorivar
         offset1 = np.max(self.log10amps)
         amps = tento(self.log10amps - offset1)
         for d in range(self.D):
             thislog10vecs[:] = self.log10vecs[:,d]
             thispriorlog10vecs[:] = self.priorlog10vecs[:,d]
-            data = self.data[:,d]
+            data = self.data[:,d] - self.offsets[None,d] # remove offsets from data
             ivars = self.ivars[:,d]
             def obj(log10vecs):
                 offset2 = np.max(log10vecs)
@@ -179,8 +186,8 @@ class abundance_model:
                 derivs = (amps * foo[None,:]) / denominator[:,None]
                 resids = data - (np.log10(denominator) + offset1 + offset2) # data residiual
                 vresids = thispriorlog10vecs - log10vecs # penalty piece
-                return np.sum(resids * ivars * resids) + np.sum(vresids * self.priorivar * vresids), \
-                    -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0) - 2. * vresids * self.priorivar
+                return np.sum(resids * ivars * resids) + np.sum(vresids * priorivar * vresids), \
+                    -2. * np.sum(resids[:,None] * ivars[:,None] * derivs, axis=0) - 2. * vresids * priorivar
             """ testing
             obj1, deriv = obj(thislog10vecs)
             tiny = 1.e-5
@@ -191,13 +198,16 @@ class abundance_model:
             assert False
             """
             thisresult = op.minimize(obj, thislog10vecs, method="BFGS", jac="True")
-            self.log10vecs[:,d] = thisresult["x"]
+            self.log10vecs[:,d] = thisresult["x"].copy()
 
     def optimize(self, tol=0.1):
         prevchisq = np.Inf
-        for t in range(512):
+        for t in range(32): # MAGIC
             print(t)
+            print(t, self.penalized_chisq())
             self.set_amps()
+            print(t, self.penalized_chisq())
+            self.set_offsets()
             print(t, self.penalized_chisq())
             self.set_vecs()
             chisq = self.penalized_chisq()
@@ -209,6 +219,7 @@ class abundance_model:
                 print(t, "optimize(): okay, good enough")
                 break
             prevchisq = chisq
+        print(self.offsets)
         print(self.log10vecs)
 
     def predicted_data(self):
@@ -216,7 +227,7 @@ class abundance_model:
         offset2 = np.max(self.log10vecs)
         return np.log10(np.dot(tento(self.log10amps - offset1),
                                tento(self.log10vecs - offset2))) \
-                               + offset1 + offset2
+                               + offset1 + offset2 + self.offsets[None,:]
 
     def chisq(self):
         resids = self.data - self.predicted_data()
@@ -272,6 +283,7 @@ if __name__ == "__main__":
     ivars = np.zeros_like(plotdata)
     ivars[:,:] = 1. / 0.2 ** 2
     ivars[:,FE_index] = 1. / 0.02 ** 2
+    Jan_labels = np.load("./data/elements.npy").astype(str)
 
     # build and optimize model
     try:
@@ -284,7 +296,6 @@ if __name__ == "__main__":
         # HACKITY HACK HACK - brittle, etc
         # >>> np.load("./data/elements.npy")
         # array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni'], dtype='|S2')
-        Jan_labels = np.load("./data/elements.npy")
         K = 3
         priorlog10vecs = np.zeros((K, D))
         priorlog10vecs[0,:] = np.log10(np.load("./data/sn2.npy"))
@@ -300,15 +311,19 @@ if __name__ == "__main__":
             fitsubsample = np.random.randint(N, size=Nfit)
             model = abundance_model(data[fitsubsample, :], ivars[fitsubsample, :], priorlog10vecs)
             if bestlog10vecs is None:
-                model.log10vecs = model.priorlog10vecs
+                model.log10vecs = model.priorlog10vecs.copy()
             else:
-                model.log10vecs = bestlog10vecs
+                model.log10vecs = bestlog10vecs.copy()
+                model.offsets = bestoffsets.copy()
             model.optimize()
             bestlog10vecs = model.log10vecs.copy()
+            bestoffsets = model.offsets.copy()
         model = abundance_model(data, ivars, priorlog10vecs) # drop [Fe/H] from fitting.
-        model.log10vecs = bestlog10vecs # initialize
-        model.optimize()
-        pickle_to_file(yfn, model)
+        model.log10vecs = bestlog10vecs.copy() # initialize
+        model.offsets = bestoffsets.copy() # initialize
+        for iter in range(16):
+            model.optimize()
+            pickle_to_file(yfn, model) # save and keep optimizing
 
     # make predicted data
     predicteddata = plotdata.copy()
@@ -334,6 +349,25 @@ if __name__ == "__main__":
                   "S_H - FE_H":  "[S/Fe] (dex)",
                   "TI_H - FE_H": "[Ti/Fe] (dex)",
                   "V_H - FE_H":  "[V/Fe] (dex)",}
+
+    # make vector plots
+    plt.clf()
+    plotfn = dir + "/vecs.png"
+    print(model.priorlog10vecs)
+    colors = ["b", "g", "r"]
+    for k in range(model.K):
+        c = colors[k]
+        plt.plot(range(model.D), model.priorlog10vecs[k], c + "-", lw=1.)
+        plt.plot(range(model.D), model.priorlog10vecs[k], c + "o", mew=1., mec=c, mfc="w")
+        plt.plot(range(model.D), model.log10vecs[k], c + "-", lw=3.)
+        plt.plot(range(model.D), model.log10vecs[k], c + "o", mec=c)
+        plt.xlim(-0.5, model.D-0.5)
+        plt.xticks(range(model.D), Jan_labels)
+        plt.ylim(-2., 1.)
+        plt.ylabel("log10 yields, Solar scale, arbitrary overall amplitudes")
+    hogg_savefig(plotfn)
+
+    assert False
 
     # make scatterplots
     for yy in range(D):
@@ -368,8 +402,10 @@ if __name__ == "__main__":
         hogg_savefig(plotfn)
 
         if False:
-        # for xx in alpha_indexes:
+        # for xx in range(D):
             if xx == yy:
+                continue
+            if xx == FE_index:
                 continue
             plotfn = dir + "/b" + plotdata_labels[yy].replace(" ", "") + "vs" + plotdata_labels[xx].replace(" ", "") + ".png"
             plt.clf()
@@ -381,8 +417,6 @@ if __name__ == "__main__":
             y0 = np.median(plotdata[:, yy])
             plt.ylim(y0 - 0.6, y0 + 0.6)
             hogg_savefig(plotfn)
-
-    assert False
 
     # compute shit for slicing
     Rs = (np.sqrt(plotmetadata[:, metadata_labels == "GX"].astype(float) ** 2 +
