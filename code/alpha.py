@@ -200,7 +200,7 @@ class abundance_model:
             thisresult = op.minimize(obj, thislog10vecs, method="BFGS", jac="True")
             self.log10vecs[:,d] = thisresult["x"].copy()
 
-    def optimize(self, tol=0.1):
+    def optimize(self, tol=0.1, update_vecs=True):
         prevchisq = np.Inf
         for t in range(32): # MAGIC
             print(t)
@@ -208,8 +208,9 @@ class abundance_model:
             self.set_amps()
             print(t, self.penalized_chisq())
             self.set_offsets()
-            print(t, self.penalized_chisq())
-            self.set_vecs()
+            if update_vecs:
+                print(t, self.penalized_chisq())
+                self.set_vecs()
             chisq = self.penalized_chisq()
             print(t, chisq)
             if chisq > prevchisq:
@@ -243,6 +244,14 @@ class abundance_model:
 if __name__ == "__main__":
     import pylab as plt
     np.random.seed(42)
+    update_vecs = False
+    combine_CN = True
+
+    infix = ""
+    if not update_vecs:
+        infix += "_novecs"
+    if combine_CN:
+        infix += "_CN"
 
     print("Hello World!")
     dir = "./alpha_figs"
@@ -252,7 +261,7 @@ if __name__ == "__main__":
     # read data
     dfn = "./data/cannon-distances.fits"
     pfn = "./data/alpha.pkl"
-    yfn = "./data/alpha_model.pkl"
+    yfn = "./data/alpha_model" + infix + ".pkl"
     try:
         print("attempting to read pickle", pfn)
         data, data_labels, metadata, metadata_labels = read_pickle_file(pfn)
@@ -262,6 +271,16 @@ if __name__ == "__main__":
         data, data_labels, metadata, metadata_labels = get_data(dfn)
         pickle_to_file(pfn, (data, data_labels, metadata, metadata_labels))
         print(pfn, data.shape, metadata.shape)
+    FE_index = 13 # HACK BRITTLE MAGIC
+
+    # possibly combine C&N
+    if combine_CN:
+        # BRITTLE, MAGIC
+        data[:,1] = np.log10(tento(data[:,0]) + tento(data[:,1]))
+        data = data[:,1:]
+        data_labels[1] = "C+N_H"
+        data_labels = data_labels[1:]
+        FE_index -= 1
 
     # check and adjust data
     N, D = data.shape
@@ -271,7 +290,6 @@ if __name__ == "__main__":
     assert len(metadata_labels) == DD
     plotdata = data.copy()
     plotdata_labels = data_labels.copy()
-    FE_index = 13 # HACK BRITTLE MAGIC
     for d in range(D):
         if d != FE_index:
             plotdata[:,d] -= data[:,FE_index]
@@ -298,10 +316,16 @@ if __name__ == "__main__":
         # array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni'], dtype='|S2')
         K = 3
         priorlog10vecs = np.zeros((K, D))
-        priorlog10vecs[0,:] = np.log10(np.load("./data/sn2.npy"))
-        priorlog10vecs[1,:] = np.log10(np.load("./data/sn1a.npy"))
-        priorlog10vecs[2,:] = np.log10(np.load("./data/agb.npy"))
+        priorlog10vecs = np.vstack([np.log10(np.load("./data/sn2.npy")),
+                                    np.log10(np.load("./data/sn1a.npy")),
+                                    np.log10(np.load("./data/agb.npy"))])
         priorlog10vecs -= np.log10(np.load("./data/lin_sol.npy"))[None, :]
+        if combine_CN:
+            # BRITTLE, MAGIC
+            priorlog10vecs[:,1] = np.log10(tento(priorlog10vecs[:,0]) + tento(priorlog10vecs[:,1]))
+            priorlog10vecs = priorlog10vecs[:,1:]
+            Jan_labels[1] = "C+N"
+            Jan_labels = Jan_labels[1:]
         priorlog10vecs -= (priorlog10vecs[:, FE_index])[:, None]
         for d in range(D):
             print(Jan_labels[d], priorlog10vecs[:,d])
@@ -315,14 +339,14 @@ if __name__ == "__main__":
             else:
                 model.log10vecs = bestlog10vecs.copy()
                 model.offsets = bestoffsets.copy()
-            model.optimize()
+            model.optimize(update_vecs=update_vecs)
             bestlog10vecs = model.log10vecs.copy()
             bestoffsets = model.offsets.copy()
         model = abundance_model(data, ivars, priorlog10vecs) # drop [Fe/H] from fitting.
         model.log10vecs = bestlog10vecs.copy() # initialize
         model.offsets = bestoffsets.copy() # initialize
         for iter in range(16):
-            model.optimize()
+            model.optimize(update_vecs=update_vecs)
             pickle_to_file(yfn, model) # save and keep optimizing
 
     # make predicted data
@@ -355,16 +379,19 @@ if __name__ == "__main__":
     plotfn = dir + "/vecs.png"
     print(model.priorlog10vecs)
     c = "0.75"
+    for d in range(model.D):
+        plt.axvline(d, color=c)
     plt.axhline(0., color=c)
     plt.plot(range(model.D), model.offsets, "-", color=c, lw=3.)
     plt.plot(range(model.D), model.offsets, "o", color=c, mec=c)
     colors = ["b", "g", "r"]
     for k in range(model.K):
         c = colors[k]
-        plt.plot(range(model.D), model.priorlog10vecs[k], c + "-", lw=1.)
-        plt.plot(range(model.D), model.priorlog10vecs[k], c + "o", mew=1., mec=c, mfc="w")
-        plt.plot(range(model.D), model.log10vecs[k], c + "-", lw=3.)
-        plt.plot(range(model.D), model.log10vecs[k], c + "o", mec=c)
+        a = 1.
+        plt.plot(range(model.D), model.priorlog10vecs[k], c + "-", lw=1., alpha=a)
+        plt.plot(range(model.D), model.priorlog10vecs[k], c + "o", mew=1., mec=c, mfc="w", alpha=a)
+        plt.plot(range(model.D), model.log10vecs[k], c + "-", lw=3., alpha=a)
+        plt.plot(range(model.D), model.log10vecs[k], c + "o", mec=c, alpha=a)
         plt.xlim(-0.5, model.D-0.5)
         plt.xticks(range(model.D), Jan_labels)
         plt.ylim(-2., 1.)
