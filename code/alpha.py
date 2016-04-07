@@ -124,7 +124,7 @@ class abundance_model:
         assert D == DD
         self.K = K
         self.priorlog10vecs = priorlog10vecs
-        self.priorivar = 1.0 / (0.1 * 0.1) # dex^{-2}
+        self.priorivar = 0.01 ** -2.0 # dex^{-2}
         self.log10vecs = priorlog10vecs
         self.log10amps = np.zeros((self.N, self.K))
         print("initialized with ", N, D, K)
@@ -261,7 +261,7 @@ if __name__ == "__main__":
     plotdata = data.copy()
     plotdata_labels = data_labels.copy()
     FE_index = 13 # HACK BRITTLE MAGIC
-    for d in np.arange(0,D):
+    for d in range(D):
         if d != FE_index:
             plotdata[:,d] -= data[:,FE_index]
             plotdata_labels[d] += " - " + data_labels[FE_index]
@@ -270,7 +270,7 @@ if __name__ == "__main__":
 
     # make horrible fake uncertainties!
     ivars = np.zeros_like(plotdata)
-    ivars[:,:] = 1. / 0.1 ** 2
+    ivars[:,:] = 1. / 0.2 ** 2
     ivars[:,FE_index] = 1. / 0.02 ** 2
 
     # build and optimize model
@@ -290,8 +290,10 @@ if __name__ == "__main__":
         priorlog10vecs[0,:] = np.log10(np.load("./data/sn2.npy"))
         priorlog10vecs[1,:] = np.log10(np.load("./data/sn1a.npy"))
         priorlog10vecs[2,:] = np.log10(np.load("./data/agb.npy"))
+        priorlog10vecs -= np.log10(np.load("./data/lin_sol.npy"))[None, :]
         priorlog10vecs -= (priorlog10vecs[:, FE_index])[:, None]
-        print(priorlog10vecs)
+        for d in range(D):
+            print(Jan_labels[d], priorlog10vecs[:,d])
         
         bestlog10vecs = None
         for Nfit in 2. ** np.arange(8, 13):
@@ -311,7 +313,7 @@ if __name__ == "__main__":
     # make predicted data
     predicteddata = plotdata.copy()
     predicteddata = model.predicted_data()
-    for d in np.arange(0,D):
+    for d in range(D):
         if d != FE_index:
             predicteddata[:,d] -= predicteddata[:,FE_index]
 
@@ -334,8 +336,9 @@ if __name__ == "__main__":
                   "V_H - FE_H":  "[V/Fe] (dex)",}
 
     # make scatterplots
-    alpha_indexes = range(1,6)
-    for yy in alpha_indexes:
+    for yy in range(D):
+        if yy == FE_index:
+            continue
         plotfn = dir + "/a" + plotdata_labels[yy].replace(" ", "") + "_{:1d}.png".format(K)
         plt.figure(figsize=(6, 12))
         plt.clf()
