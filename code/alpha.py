@@ -10,7 +10,11 @@ Copyright 2016 David W. Hogg (NYU).
 - Or show that there must be stochastic nucleosynthetic processes.
 
 ## bugs / notes
-- Very brittle in various places
+- Too much content below the "__main__" conditional.
+- Plots ought to be methods of the model class.
+- What we do about inverse variance is just insane; search code for "ivar".
+- Need to put a prior on the individual-star amplitudes! In particular, AGB needs to be limited in its action.
+- Very brittle in various places.
 - Need to regularize the amplitudes to be sparse?
 - Paranoid temperature cuts?!
 - Uses old element abundances; these are out-of-date and should be updated regularly.
@@ -227,12 +231,21 @@ class abundance_model:
         print(self.offsets)
         print(self.log10vecs)
 
+    def fractional_yields(self):
+        fractionalyields = tento(model.log10vecs) * np.sum(tento(model.log10amps), axis=0)[:,None]
+        fractionalyields /= np.sum(fractionalyields, axis=0)[None,:]
+        return fractionalyields
+
     def predicted_data(self):
         offset1 = np.max(self.log10amps)
         offset2 = np.max(self.log10vecs)
         return np.log10(np.dot(tento(self.log10amps - offset1),
                                tento(self.log10vecs - offset2))) \
                                + offset1 + offset2 + self.offsets[None,:]
+
+    def prediction_variances(self):
+        resids = self.data - self.predicted_data()
+        return np.var(resids, axis=0)
 
     def chisq(self):
         resids = self.data - self.predicted_data()
@@ -248,7 +261,7 @@ class abundance_model:
 if __name__ == "__main__":
     import pylab as plt
     np.random.seed(42)
-    update_vecs = True
+    update_vecs = False
     combine_CN = True
 
     infix = ""
@@ -312,6 +325,7 @@ if __name__ == "__main__":
         Jan_labels = Jan_labels[1:]
 
     # build and optimize model
+    # note HACKs to update inverse variances
     try:
         print("attempting to read pickle", yfn)
         model = read_pickle_file(yfn)
@@ -337,7 +351,7 @@ if __name__ == "__main__":
             print(Jan_labels[d], priorlog10vecs[:,d])
         
         bestlog10vecs = None
-        for Nfit in 2. ** np.arange(8, 13):
+        for Nfit in 2. ** np.arange(8, 14):
             fitsubsample = np.random.randint(N, size=Nfit)
             model = abundance_model(data[fitsubsample, :], ivars[fitsubsample, :], priorlog10vecs)
             if bestlog10vecs is None:
@@ -348,6 +362,10 @@ if __name__ == "__main__":
             model.optimize(update_vecs=update_vecs)
             bestlog10vecs = model.log10vecs.copy()
             bestoffsets = model.offsets.copy()
+            # HACK to update inverse variances
+            vars = model.prediction_variances() + (0.02) ** 2 # don't let things get TOO precise.
+            print("updating inverse variances to:", 1./vars)
+            ivars[:,:] = 1. / vars[None,:]
         model = abundance_model(data, ivars, priorlog10vecs) # drop [Fe/H] from fitting.
         model.log10vecs = bestlog10vecs.copy() # initialize
         model.offsets = bestoffsets.copy() # initialize
@@ -381,10 +399,25 @@ if __name__ == "__main__":
                   "V_H - FE_H":  "[V/Fe] (dex)",
                   "C+N_H - FE_H":  "[(C+N)/Fe] (dex)",}
 
-    # make vector plots
+    # make fractional yield plots
+    plt.clf()
+    plotfn = dir + "/fractional_yields" + infix + ".png"
+    c = "0.75"
+    fys = model.fractional_yields()
+    colors = ["b", "g", "r"]
+    for k in range(model.K):
+        c = colors[k]
+        a = 1.
+        plt.bar(np.arange(model.D)+0.25*k-0.25, fys[k], color=c, width=0.2, alpha=a)
+        plt.xlim(-0.5, model.D-0.5)
+        plt.xticks(range(model.D), Jan_labels)
+        plt.ylim(0., 1.)
+        plt.ylabel("fractional yields")
+    hogg_savefig(plotfn)
+
+    # make yield and offset vector plots
     plt.clf()
     plotfn = dir + "/yields" + infix + ".png"
-    print(model.priorlog10vecs)
     c = "0.75"
     for d in range(model.D):
         plt.axvline(d, color=c)
@@ -406,6 +439,7 @@ if __name__ == "__main__":
     hogg_savefig(plotfn)
 
     # make scatterplots
+    sigmas = np.sqrt(model.prediction_variances())
     for yy in range(D):
         if yy == FE_index:
             continue
@@ -433,8 +467,8 @@ if __name__ == "__main__":
         plt.xlim(xlim)
         plt.ylim(ylim - np.mean(ylim))
         plt.xlabel(label_dict[plotdata_labels[FE_index]])
-        plt.ylabel("delta " + label_dict[plotdata_labels[yy]])
-        plt.text(0.02, 0.01, "residuals", transform=plt.gca().transAxes)
+        plt.ylabel("residual in " + label_dict[plotdata_labels[yy]])
+        plt.text(0.02, 0.01, "residuals, sigma = {:.2f}".format(sigmas[yy]), transform=plt.gca().transAxes)
         hogg_savefig(plotfn)
 
         if False:
