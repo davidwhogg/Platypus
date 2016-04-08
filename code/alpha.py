@@ -6,12 +6,13 @@ Copyright 2016 David W. Hogg (NYU).
 
 ## purpose
 - Show that there is more than one kind of alpha element!
+- Or fix supernova yields.
+- Or show that there must be stochastic nucleosynthetic processes.
 
 ## bugs / notes
-- Need to add a step to optimize OFFSETS
+- Very brittle in various places
 - Need to regularize the amplitudes to be sparse?
-- Plots are just TERRIBLE.
-- Paranoid temperature cuts!
+- Paranoid temperature cuts?!
 - Uses old element abundances; these are out-of-date and should be updated regularly.
 
 """
@@ -36,6 +37,9 @@ def read_pickle_file(fn):
     return stuff
 
 def get_data(fn):
+    """
+    - BRITTLE
+    """
     # array(['C', 'N', 'O', 'Na', 'Mg', 'Al', 'Si', 'S', 'K', 'Ca', 'Ti', 'V', 'Mn', 'Fe', 'Ni'], dtype='|S2')
     data_labels = ["C_H", "N_H", "O_H", "NA_H", "MG_H", "AL_H", "SI_H", "S_H", "K_H", "CA_H", "TI_H", "V_H", "MN_H", "FE_H", "NI_H"]
     metadata_labels = np.array(["APOGEE_ID", "RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "DIST_Padova",
@@ -244,7 +248,7 @@ class abundance_model:
 if __name__ == "__main__":
     import pylab as plt
     np.random.seed(42)
-    update_vecs = False
+    update_vecs = True
     combine_CN = True
 
     infix = ""
@@ -374,11 +378,12 @@ if __name__ == "__main__":
                   "SI_H - FE_H": "[Si/Fe] (dex)",
                   "S_H - FE_H":  "[S/Fe] (dex)",
                   "TI_H - FE_H": "[Ti/Fe] (dex)",
-                  "V_H - FE_H":  "[V/Fe] (dex)",}
+                  "V_H - FE_H":  "[V/Fe] (dex)",
+                  "C+N_H - FE_H":  "[(C+N)/Fe] (dex)",}
 
     # make vector plots
     plt.clf()
-    plotfn = dir + "/vecs.png"
+    plotfn = dir + "/yields" + infix + ".png"
     print(model.priorlog10vecs)
     c = "0.75"
     for d in range(model.D):
@@ -404,7 +409,7 @@ if __name__ == "__main__":
     for yy in range(D):
         if yy == FE_index:
             continue
-        plotfn = dir + "/a" + plotdata_labels[yy].replace(" ", "") + "_{:1d}.png".format(K)
+        plotfn = dir + "/a" + plotdata_labels[yy].replace(" ", "") + infix + "_{:1d}.png".format(K)
         plt.figure(figsize=(6, 12))
         plt.clf()
         plt.subplot(311)
