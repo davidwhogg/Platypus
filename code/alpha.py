@@ -10,7 +10,9 @@ Copyright 2016 David W. Hogg (NYU).
 - Or show that there must be stochastic nucleosynthetic processes.
 
 ## bugs / notes
+- Need to get a fake data set from Jan.
 - Too much content below the "__main__" conditional.
+- Ought to restrict to RC and nearby (Jan arguments).
 - Plots ought to be methods of the model class.
 - What we do about inverse variance is just insane; search code for "ivar".
 - Need to put a prior on the individual-star amplitudes! In particular, AGB needs to be limited in its action.
