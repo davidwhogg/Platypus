@@ -91,7 +91,7 @@ We use \emph{only} abundance-space information (no positional information) to id
 We find that clusters in abundance space are indeed clusters in phase space.
 We recover some known phase-space clusters and find other interesting structures.
 This confirms the chemical-tagging hypothesis and verifies the precision of the abundance measurements delivered by \thecannon.
-This is the first-ever project to identify phase-space structures by blind search purely in abundance space;
+This is the first-ever project to identify phase-space structures at survey-scale by blind search purely in abundance space;
 the prospects for future data sets are very good.
 \end{abstract}
 
@@ -136,7 +136,8 @@ Galaxy's disk, bulge and halo.
 Chemical tagging holds the promise of revealing not just the
 star-formation history of the Galaxy, but also the accretion history
 (as things that fall in are expected to be chemically distinct from
-those that form in the parent body; for example, \citealt{font}) and
+those that form in the parent body; for example, 
+\citealt{font,De_Silva_2007,eggen_1970,bubar_king_2010}) and
 stellar-orbit diffusion process like radial mixing and radial
 migration (for example, \citealt{roskar, quillen}).  After
 stars are born---or after a star cluster is accreted and
@@ -240,8 +241,15 @@ motion, and inconsistencies resulting from positing local thermal
 equilibrium all contribute to produce inaccurate abundances.
 \thecannon\ stands out because it demonstrably improves the precision on
 chemical abundances, whereas the accuracy of those labels is limited only
-by the training (reference) set employed.
-
+by the training (reference) set employed.  At the same time, it is crucial
+to be cognisant of the constraints in the training set: the
+results of \thecannon\ will be limited by the quality of the training 
+set labels. While chemical tagging does not necessarily require
+accurate abundance labels (precision is paramount), comparing abundance
+labels to models of Galactic chemical enrichment requires a firm level
+of belief in the label accuracy. Particularly for the abundance labels
+of stars in the training set.
+    
 In what follows, we are going to use \apogee\ \acronym{DR12}
 data \citep{apogeedr12, dr12}
 from \sdssiii\ \citep{sdssiii}, in
@@ -309,7 +317,7 @@ immense to visualize. The projections shown are ones which
 have been extensively used in abundance studies of globular clusters
 and satellite systems. These are typically light element abundances,
 and our projections include C--N, Na--O, and Mg--Al. Globular clusters
-famously demonstrate correlations in these elements, thereby making
+famously demonstrate correlations in these elements \citep[e.g., see][and references therein]{Norris_1995,Carretta_2009}, thereby making
 them suitable projections for us to show in verifying and examining
 any substructure identified by k-means (or any other clustering algorithm).
 
@@ -404,9 +412,14 @@ algorithm.
 Nothing about this algorithm or our choices are particularly
 tuned or optimized; this is in no sense the
 algorithm or the method that reveals the best structures.
+We chose k-means as a simple and tractable approach to identifying
+clusters in high dimensional label space. In practice more complex
+clustering algorithms may perform better than k-means, or even
+tuning k-means by heuristically setting $K$ is likely to improve
+upon the results here. This \documentname\ serves as a proof of concept.
 Indeed, it is a feature of this work that even the simplest, most
 generic clustering algorithm returns interesting
-structures (as shown below).
+structures (as shown below). 
 The prospects for Milky Way science only improve as the clustering
 algorithm improves.
 
@@ -754,14 +767,18 @@ Blanco-Cuaresma,~S., Soubiran,~C., Heiter,~U., \etal, 2015, \aap, 577, A47
 Bovy,~J., 2015, arXiv:1510.06745
  \bibitem[Briley \etal(2004)]{Briley_2004}
 Briley, M.~M., Cohen, J.~G., Stetson, P.~B., 2004, \aj, 127, 1579 
+\bibitem[Bubar \& King(2010)]{bubar_king_2010} Bubar, E.~J., \& King, J.~R.\ 2010, \aj, 140, 293 
+\bibitem[Carretta et al.(2009)]{Carretta_2009} Carretta, E., Bragaglia, A., Gratton, R.~G., et al.\ 2009, \aap, 505, 117 
 \bibitem[Casey \etal(2016)]{casey16}
 Casey,~A.~R., Hogg,~D.~W., Ness,~M., Rix,~H.-W., 2016, in preparation
 \bibitem[Cohen \& Mel{\'e}ndez(2005)]{Cohen_Melendez_2005}
 Cohen, J.~G.,  Mel{\'e}ndez, J., 2005, \aj, 129, 303 
+\bibitem[De Silva et al.(2007)]{De_Silva_2007} De Silva, G.~M., Freeman, K.~C., Bland-Hawthorn, J., Asplund, M., \& Bessell, M.~S.\ 2007, \aj, 133, 694
 \bibitem[De~Silva \etal(2015)]{galah}
 De~Silva,~G.~M., Freeman,~K.~C., Bland-Hawthorn,~J., \etal, 2015, \mnras, 449, 2604
 \bibitem[Eisenstein \etal(2011)]{sdssiii}
 Eisenstein, D.~J., Weinberg, D.~H., Agol, E., \etal, 2011, \aj, 142, 72 
+\bibitem[Eggen(1970)]{eggen_1970} Eggen, O.~J.\ 1970, \pasp, 82, 99 
 \bibitem[Font \etal(2006)]{font}
 Font,~A.~S., Johnston,~K.~V., Bullock,~J.~S., Robertson,~B.~E., 2006, \apj, 638, 585 
 \bibitem[Freeman \& Bland-Hawthorn(2002)]{freeman}
@@ -806,6 +823,7 @@ Ness,~M., Hogg,~D.~W., Rix,~H.-W., Ho,~A.~Y.~Q., Zasowski,~G., 2015, \apj, 808, 
 Ness,~M., Hogg,~D.~W., Rix,~H.-W., \etal, 2016a, \apj, in press (arXiv:1511.08204)
 \bibitem[Ness \etal(2016b)]{ness16}
 Ness,~M., Hogg,~D.~W., Casey,~A.~R., Rix,~H.-W., 2016b, in preparation
+\bibitem[Norris \& Da Costa(1995)]{Norris_1995} Norris, J.~E., \& Da Costa, G.~S.\ 1995, \apjl, 441, L81 
 \bibitem[Pedregosa \etal(2011)]{sklearn}
 Pedregosa,~F., Varoquaux,~G., Gramfort,~A., \etal, 2011, Journal of Machine Learning Research, 12, 2825
 \bibitem[Quillen \etal(2015)]{quillen}
