@@ -5,7 +5,7 @@
 % - never use \cite{}, always \citep{} or \citealt{}.
 % - never use et al., always use \etal
 
-\documentclass[12pt, letterpaper, preprint]{aastex}
+\documentclass[12pt, letterpaper, preprint]{aastex6}
 
 % text
 \newcommand{\acronym}[1]{{\small{#1}}}
@@ -745,15 +745,16 @@ University, Pennsylvania State University, University of Portsmouth,
 Princeton University, the Spanish Participation Group, University of
 Tokyo, University of Utah, Vanderbilt University, University of
 Virginia, University of Washington, and Yale University.
-
-All of the code for the data manipulation, clustering, and
-visualization is built on \project{numpy} \citep{numpy},
-\project{scikit-learn} \citep{sklearn}, and \project{matplotlib}
-\citep{matplotlib}.
+	
 All of the code written specifically for this project is available in
 two open-source code repositories at
 \url{https://github.com/andycasey/AnniesLasso} and
 \url{https://github.com/davidwhogg/Platypus}.
+
+\software{
+	\project{numpy} \citep{numpy},
+	\project{scikit-learn}, \citep{sklearn},
+	\project{matplotlib} \citep{matplotlib}}.
 
 \clearpage
 \begin{thebibliography}{24}\raggedright
