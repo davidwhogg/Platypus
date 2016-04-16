@@ -1645,7 +1645,7 @@ revtex4-1.cls^^J^^J}\stop
      pdfnewwindow=true,      % links in new window
      colorlinks=true,    % false: boxed links; true: colored links
      linkcolor=cyan,     % color of internal links
-     citecolor=black,     % color of links to bibliography
+     citecolor=cyan,     % color of links to bibliography
      filecolor=cyan,  % color of file links
      urlcolor=cyan,      % color of external links
  ]{hyperref}

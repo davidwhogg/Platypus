@@ -5,7 +5,30 @@
 % - never use \cite{}, always \citep{} or \citealt{}.
 % - never use et al., always use \etal
 
-\documentclass[manuscript]{aastex6}
+\documentclass[manuscript, letterpaper]{aastex6}
+
+% omg AASTEX 6.0
+\setlength{\voffset}{0in}
+\setlength{\hoffset}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9in}
+\setlength{\headheight}{0ex}
+\setlength{\headsep}{\baselineskip} % this is 2 lines in ``manuscript''
+\setlength{\topmargin}{-1\headsep}
+\linespread{0.54} % close to 10/13 spacing in ``manuscript''
+\setlength{\parindent}{0.54\baselineskip}
+\hypersetup{
+  colorlinks = false,
+}
+\makeatletter % you know you are living your life wrong when you need to do this
+\long\def\frontmatter@title@above{
+\vspace*{-\headsep}\vspace*{\headheight}
+\noindent\footnotesize
+{\noindent\footnotesize\textsc{\@journalinfo}}\par
+{\noindent\scriptsize Preprint typeset using \LaTeX\ style AASTeX6 v.\ 1.0 but heavily modified by David W. Hogg (NYU).
+}\par\vspace*{-\baselineskip}\vspace*{0.625in}
+}%
+\makeatother
 
 % text
 \newcommand{\acronym}[1]{{\small{#1}}}
@@ -27,7 +50,7 @@
 
 % figure 
 \newlength{\figwidth}\setlength{\figwidth}{0.3\textwidth}
-\newcommand{\insanefigure}[1]{%
+\newcommand{\insanefigure}[1]{\rule{0ex}{\headsep}\\% This shouldn't be necessary, but something is fucked with AASTEX 6.0
 \includegraphics[width=\figwidth]{./figs/#1_MgFe.png}%
 \includegraphics[width=\figwidth]{./figs/#1_MgK.png}%
 \includegraphics[width=\figwidth]{./figs/#1_AlMg.png}\\
@@ -41,6 +64,11 @@
 
 % results
 \newcommand{\totalnumber}{98,462}
+
+\shorttitle{Chemical tagging can work}
+\shortauthors{Hogg, Casey, Ness, \etal}
+\submitted{Submitted to \textit{The Astrophysical Journal}}
+
 
 \begin{document}\sloppy\sloppypar
 
@@ -66,7 +94,6 @@
 \altaffiltext{8}{Astronomy Department, California Institute of Technology, MC 249-17, 1200 East California Blvd, Pasadena, CA 91125, USA}
 \altaffiltext{9}{New Mexico State University, Las Cruces, NM 88003, USA}
 \altaffiltext{10}{Steward Observatory, 933 North Cherry Ave, Tuscon, AZ 85719, USA}
-\email{david.hogg@nyu.edu}
 
 \begin{abstract}
 % Context:
@@ -145,7 +172,7 @@ disrupted---associations or groups will disperse, through
 two-body processes, interactions with resonances, or tides from the whole Galaxy.
 
 Although undeniably promising---and motivating the 
-launch of costly large-scale spectroscopic surveys---
+launch of costly large-scale spectroscopic surveys---%
 chemical-tagging as a search technique has yet to be proven in
 practice: identifying stars of common birth origin {\it purely} on the
 basis of their near-identical abundances patterns, without any
@@ -769,12 +796,12 @@ Bovy,~J., 2015, arXiv:1510.06745
  \bibitem[Briley \etal(2004)]{Briley_2004}
 Briley, M.~M., Cohen, J.~G., Stetson, P.~B., 2004, \aj, 127, 1579 
 \bibitem[Bubar \& King(2010)]{bubar_king_2010} Bubar, E.~J., \& King, J.~R.\ 2010, \aj, 140, 293 
-\bibitem[Carretta et al.(2009)]{Carretta_2009} Carretta, E., Bragaglia, A., Gratton, R.~G., et al.\ 2009, \aap, 505, 117 
+\bibitem[Carretta \etal(2009)]{Carretta_2009} Carretta, E., Bragaglia, A., Gratton, R.~G., \etal, 2009, \aap, 505, 117 
 \bibitem[Casey \etal(2016)]{casey16}
 Casey,~A.~R., Hogg,~D.~W., Ness,~M., Rix,~H.-W., 2016, in preparation
 \bibitem[Cohen \& Mel{\'e}ndez(2005)]{Cohen_Melendez_2005}
 Cohen, J.~G.,  Mel{\'e}ndez, J., 2005, \aj, 129, 303 
-\bibitem[De Silva et al.(2007)]{De_Silva_2007} De Silva, G.~M., Freeman, K.~C., Bland-Hawthorn, J., Asplund, M., \& Bessell, M.~S.\ 2007, \aj, 133, 694
+\bibitem[De Silva \etal(2007)]{De_Silva_2007} De Silva, G.~M., Freeman, K.~C., Bland-Hawthorn, J., Asplund, M., \& Bessell, M.~S.\ 2007, \aj, 133, 694
 \bibitem[De~Silva \etal(2015)]{galah}
 De~Silva,~G.~M., Freeman,~K.~C., Bland-Hawthorn,~J., \etal, 2015, \mnras, 449, 2604
 \bibitem[Eisenstein \etal(2011)]{sdssiii}
