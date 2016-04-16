@@ -10,6 +10,8 @@ Copyright 2016 David W. Hogg (NYU).
 - Or show that there must be stochastic nucleosynthetic processes.
 
 ## bugs / notes
+- Need to add command-line options.
+- Need to make a "refine" option that takes the current state and further refines it.
 - Need to get a fake data set from Jan.
 - Too much content below the "__main__" conditional.
 - Ought to restrict to RC and nearby (Jan arguments).

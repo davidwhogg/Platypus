@@ -21,65 +21,47 @@ text so they are apparent to the editor and referee.
     later in the text the first blind search purely in abundance
     space was carried out by Mitschang et al 2014.
 
-        We have referenced Mitschang et al. (2014) for their work in
-        chemical tagging, but we believe the last sentence of the
-        abstract is correct. To clarify: Mitschang et al. (2014) did
-        perform a blind search in chemical abundances to identify
-        substructure, but one of the key conclusions of their work
-        was that ".. these groups may not represent distinct 
-        formation sites, e.g. as in dissolved open clusters, as 
-        previously thought". While the Mitschang et al. (2014) work
-        showed their chemically-identified structures had similar 
-        (U, V, W) space velocities (e.g., their Figure 2), those 
-        velocities are not dissimilar from the background velocity
-        distribution. In contrast, our work is the first blind
-        search in chemical abundances that has identified structures
-        that are *also* structures in phase-space: specifically
-        on-sky position and radial velocities.
+We have referenced Mitschang et al. (2014) for their work in chemical
+tagging, but we believe the last sentence of the abstract is
+correct. To clarify: Mitschang et al. (2014) did perform a blind
+search in chemical abundances to identify substructure, but one of the
+key conclusions of their work was that ".. these groups may not
+represent distinct formation sites, e.g. as in dissolved open
+clusters, as previously thought". While the Mitschang et al. (2014)
+work showed their chemically-identified structures had similar (U, V,
+W) space velocities (e.g., their Figure 2), those velocities are not
+dissimilar from the background velocity distribution. In contrast, our
+work is the first blind search in chemical abundances that has
+identified structures that are *also* structures in phase-space:
+specifically on-sky position and radial velocities.
 
-        Nevertheless, to avoid unwarranted claims, we have qualified
-        this statement from:
-
-        "This is the first-ever project to identify phase-space 
-        structures by blind search purely in abundance space;
-        the prospects for future data sets are very good."
-
-        to:
-
-        "This is the first-ever project to identify phase-space 
-        structures at survey-scale by blind search purely in abundance space;
-        the prospects for future data sets are very good."
-
-        since the Mitschang et al. (2014) work had a sample size of
-        714 stars.
-
+Nevertheless, to avoid unwarranted claims, we have qualified this
+statement in the abstract.
 
     Introduction: The first paragraph is missing a reference or two,
     to support claim that most stars end up in different parts of the
     Galaxy. Or this is something that is assumed and yet to be
     tested?
 
-        The text claims that stars end up in different parts of
-        phase-space in the Galaxy: that is to say that any common
-        kinematic (or dynamic: actions, angles) signature between
-        stars born in the same molecular gas cloud at the same time
-        will eventually disperse, presumably throughout the disk.
-        This line of reasoning follows from expectations that most
-        stars form in clusters, but the disk is full of stars that
-        do not appear to be kinematically bound to a cluster. For
-        these reasons we would claim that the opening paragraph is
-        more of an introduction to the expectations from star
-        formation, or rather introducing the line of reasoning for
-        why elemental abundances can be instructive for reconstructing
-        the evolution of the Galaxy.
+The text claims that stars end up in different parts of phase-space in
+the Galaxy: that is to say that any common kinematic (or dynamic:
+actions, angles) signature between stars born in the same molecular
+gas cloud at the same time will eventually disperse, presumably
+throughout the disk.  This line of reasoning follows from expectations
+that most stars form in clusters, but the disk is full of stars that
+do not appear to be kinematically bound to a cluster. For these
+reasons we would claim that the opening paragraph is more of an
+introduction to the expectations from star formation, or rather
+introducing the line of reasoning for why elemental abundances can be
+instructive for reconstructing the evolution of the Galaxy.
 
     There are some missing references to the original demonstrations
     of chemical tagging of unbound groups, namely the Wolf 630 group
     and HR 1614 group. Those were key to building up the case for
     this "tagging" research.
 
-        We have added the following references: De Silva et al. 
-        (2007), Eggen (1970), and Bubar & King (2010).
+We have added the following references: De Silva et al (2007), Eggen
+(1970), and Bubar & King (2010).
 
     The text needs to highlight that the training set is critical -
     Cannon doesn't know physics. It needs to be told what is "true"
@@ -98,12 +80,11 @@ HOGG
     A reference for the famously demonstrated correlations in
     globular clusters is needed.
 
-        We have added references to: Norris & Da Costa (1995), which
-        (to our knowledge) was the first to unambiguously show anti-
-        correlations in Na, Al, and O, and to Carretta et al. (2009),
-        which provides a more recent and comprehensive view of our
-        current knowledge of elemental abundance correlations in
-        gloublar clusters. 
+We have added references to: Norris & Da Costa (1995), which (to our
+knowledge) was the first to unambiguously show anti- correlations in
+Na, Al, and O, and to Carretta et al. (2009), which provides a more
+recent and comprehensive view of our current knowledge of elemental
+abundance correlations in gloublar clusters.
 
     Section 3:
 
@@ -112,31 +93,7 @@ HOGG
     fast? Fine as the focus of the paper is the precision of the
     abundance results with Cannon, not the fidelity of group finding.
 
-        We have added text to clarify why k-means was chosen.
-        Specifically we have updated the paragraph:
-
-        "Nothing about this algorithm or our choices are particularly
-        tuned or optimized; this is in no sense the
-        algorithm or the method that reveals the best structures.
-        Indeed, it is a feature of this work that even the simplest, most
-        generic clustering algorithm returns interesting
-        structures (as shown below). The prospects for Milky Way science only 
-        improve as the clustering algorithm improves."
-
-        To now read as:
-
-        "Nothing about this algorithm or our choices are particularly
-        tuned or optimized; this is in no sense the
-        algorithm or the method that reveals the best structures.
-        We chose k-means as a simple and tractable approach to identifying
-        clusters in high dimensional label space. In practice more complex
-        clustering algorithms may perform better than k-means, or even
-        tuning k-means by heuristically setting $K$ is likely to improve
-        upon the results here. This \documentname\ serves as a proof of concept.
-        Indeed, it is a feature of this work that even the simplest, most
-        generic clustering algorithm returns interesting
-        structures (as shown below). The prospects for Milky Way science only 
-        improve as the clustering algorithm improves."
+We have added text to clarify why k-means was chosen.
 
     I find the group in Fig 6 dubious. Its at the very edge of the
     metallicity scale, which raises again how the Cannon performs at
