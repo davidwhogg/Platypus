@@ -130,6 +130,9 @@ abstract and also cited Majewski et al 2012. We also added a caveat
 that globular-cluster members are over-represented in APOGEE because
 of targeting decisions.
 
+We fixed a small bug with the cluster density measure and updated the
+figure. This changes no conclusions.
+
 HOGG:  Adjusted what we say about Ting et al?
 
 HOGG:  Commented on, eg, the Na abundances?
