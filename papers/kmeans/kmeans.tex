@@ -616,8 +616,11 @@ and references within those).
 However, it was not known---prior to this work---whether abundance-space information would be
 informative enough, or \emph{measurable} precisely enough to find this
 structure in surveys dominated by a large mix of stars from different
-origins and ages (and there was good reason to be pessimistic;
-\citealt{ting}).
+origins and ages.
+There was good reason to be pessimistic, but plausibly the increased
+precision obtained here by \thecannon\ made this possible; even tiny improvements
+in individual abundances can enormously increase contrast in the high-dimensional
+abundance space \citep{ting}.
 We have demonstrated with a straightforward (and in no way optimal)
 clustering in chemical-abundance space that it is easy to find co-eval
 stellar structures.
@@ -627,6 +630,15 @@ looking for features that are consistent with being delta functions in
 chemical-abundance space (convolved with a measurement noise
 distribution); we have looked only for over-densities, not delta
 functions.
+
+One clear result here is that it is easier for the clustering algorithm
+to find structures at low metallicity than at high metallicity:
+Some of our low-metallicity features are very compact in phase space,
+while none of our higher metallicity features are.
+This probably relates to the much higher background
+(in abundance space) of unclustered stars at higher metallicities than
+at low metallicities; in general it is easier to find abundance-space features
+at the edges of the distribution than in the center \citep{ting}.
 
 What made our success here possible is substantial improvements in precision
 delivered by \thecannon.
@@ -685,17 +697,19 @@ in high-dimensional space, and the first stars that would be assigned to another
 cluster would be those with the most extreme abundances: low [O/Fe] and
 high [Na/Fe].
 
-%HOGG: THIS PARAGRAPH IS ALL WRONG!
-There are scant abundance measurements reported for Palomar 5, for which
-most stars in the cluster in \figurename~\ref{fig:Pal5} belong. We find a mean
-metallicity of [Fe/H]$ = -1.3$, which lies between the only
-photometric \citep{Geisler_1997} and spectroscopic \citep{Smith_1985,Smith_2002} abundance
-measurements for this cluster.  The anti-correlation in C--N and Na--O abundance
-have been seen elsewhere \citep[][respectively]{Smith_1985,Smith_2002}, although
-to our knowledge the Mg--Al anti-correlation has not previously been shown for this cluster.
-Indeed, this work contains the largest number of abundances for Palomar 5,
-permitting a thorough search of tidally disrupted members \citep[for example,][]{Kuzma_2015} 
-that have retained the unique cluster abundance signature.
+% HOGG: THIS PARAGRAPH IS ALL WRONG!
+% There are scant abundance measurements reported for Palomar 5, for which
+% most stars in the cluster in \figurename~\ref{fig:Pal5} belong. We find a mean
+% metallicity of [Fe/H]$ = -1.3$, which lies between the only
+% photometric \citep{Geisler_1997} and spectroscopic \citep{Smith_1985,Smith_2002} abundance
+% measurements for this cluster.  The anti-correlation in C--N and Na--O abundance
+% have been seen elsewhere \citep[][respectively]{Smith_1985,Smith_2002}, although
+% to our knowledge the Mg--Al anti-correlation has not previously been shown for this cluster.
+% Indeed, this work contains the largest number of abundances for Palomar 5,
+% permitting a thorough search of tidally disrupted members \citep[for example,][]{Kuzma_2015} 
+% that have retained the unique cluster abundance signature.
+
+[HOGG, CASEY: INSERT PARAGRAPH ABOUT M5 HERE]
 
 The high velocity-dispersion structure seen in \figurename~\ref{fig:halo} stands
 in stark contrast to the rest of the clusters we have identified. In
