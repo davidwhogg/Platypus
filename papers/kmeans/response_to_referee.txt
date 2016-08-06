@@ -21,13 +21,13 @@ text so they are apparent to the editor and referee.
     later in the text the first blind search purely in abundance
     space was carried out by Mitschang et al 2014.
 
-We have referenced Mitschang et al. (2014) for their work in chemical
+We have referenced Mitschang et al (2014) for their work in chemical
 tagging, but we believe the last sentence of the abstract is
-correct. To clarify: Mitschang et al. (2014) did perform a blind
+correct. To clarify: Mitschang et al (2014) did perform a blind
 search in chemical abundances to identify substructure, but one of the
 key conclusions of their work was that ".. these groups may not
 represent distinct formation sites, e.g. as in dissolved open
-clusters, as previously thought". While the Mitschang et al. (2014)
+clusters, as previously thought". While the Mitschang et al (2014)
 work showed their chemically-identified structures had similar (U, V,
 W) space velocities (e.g., their Figure 2), those velocities are not
 dissimilar from the background velocity distribution. In contrast, our
@@ -61,7 +61,7 @@ instructive for reconstructing the evolution of the Galaxy.
     this "tagging" research.
 
 We have added the following references: De Silva et al (2007), Eggen
-(1970), and Bubar & King (2010).
+(1970), and Bubar & King (2010). Also Helmi et al (2006) and (2014).
 
     The text needs to highlight that the training set is critical -
     Cannon doesn't know physics. It needs to be told what is "true"
@@ -83,7 +83,7 @@ in [HOGG]
 
 We have added references to: Norris & Da Costa (1995), which (to our
 knowledge) was the first to unambiguously show anti- correlations in
-Na, Al, and O, and to Carretta et al. (2009), which provides a more
+Na, Al, and O, and to Carretta et al (2009), which provides a more
 recent and comprehensive view of our current knowledge of elemental
 abundance correlations in gloublar clusters.
 
@@ -122,11 +122,11 @@ are now several additional new authors, most of whom contributed to
 this project most directly by building the APOGEE project (and hence
 the input data and tests thereof).
 
-We added the two crucial APOGEE references: Eisenstein 2011 (SDSS-III)
-Holtzman 2015 (APOGEE DR12).
+We added the two crucial APOGEE references: Eisenstein et al (2011;
+SDSS-III) Holtzman et al (2015; APOGEE DR12).
 
 We softened very slightly the "no previous successes" sentence in the
-abstract and also cited Majewski et al 2012. We also added a caveat
+abstract and also cited Majewski et al (2012). We also added a caveat
 that globular-cluster members are over-represented in APOGEE because
 of targeting decisions.
 
@@ -138,13 +138,13 @@ We fixed the (embarrassing) bug that everywhere we say "Pal 5" we mean
 changes in the discussion, including some reference changes. No
 fundamental conclusions change because of this.
 
-HOGG:  Adjusted what we say about Ting et al?
+We noted the point (related to the referee's comments) that everything
+we find that is dense in phase space is at low metallicity; this is
+probably because of our sensitivity to clusters above background (in
+abundance space).
 
 HOGG:  Commented on, eg, the Na abundances?
-
-HOGG:  Go through github issues and emails?
 
 We also added a few names to the acknowledgements for providing minor
 comments, and made other small, non-content-changing corrections to
 wording.
-
