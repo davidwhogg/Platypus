@@ -163,7 +163,7 @@ abundances, long after any spatial proximity has
 vanished.
 
 This idea---dubbed ``chemical tagging''
-\citep{freeman}---is one of the principal motivations for a number
+\citep{freeman, jbh}---is one of the principal motivations for a number
 of surveys, including \apogee\ \citep{apogee},
 \gaiaeso\ \citep{gaiaeso} and \galah\ \citep{galah}.
 In order to determine the precise abundance labels for chemical
@@ -214,9 +214,12 @@ There may be chemical-abundance overlaps among open clusters
 but different birth places \citep{mitschang}, and the
 chemical-abundance space might be low in dimensionality.
 On the other hand, precise studies of stellar twins \citep{melendez, jofre}
-and open clusters \citep{bovy} indicate that chemical abundances ought to be
-very similar for co-eval stars, and peculiar abundance ratios
+indicate that pairs of stars can be found with unusually similar abundances, 
+open clusters show remarkably uniform chemical abundances \citep{bovy},
+and peculiar abundance ratios
 have been successfully used to identify disrupted cluster members (for example, \citealt{ocen}).
+There have also been hints seen of relationships between chemistry and kinematics
+(for example, \citealt{helmi, helmi2}).
 
 The second issue for chemical tagging---and the one we address
 here---is measurement precision (and accuracy).
@@ -490,7 +493,7 @@ in the $K=256$ run and show them in
 \figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
 \ref{fig:halo}, and \ref{fig:disk}.
 The first three of these are dominated by stars in the known clusters
-M13 and Pal5, and the Sagittarius stream (we identify overlap with these objects
+M13 and M5, and the Sagittarius stream (we identify overlap with these objects
 by looking at stellar position and velocity, and, in some cases,
 \apogee\ targeting flags).
 The fourth is a halo structure with high velocity dispersion and
@@ -572,8 +575,8 @@ catalogs of stellar clusters is beyond our present scope.
 \insanefigure{cluster_0256_0034}
 \caption{Same as \figurename~\ref{fig:M13} but for another dense
   abundance-space cluster.
-  This one turns out to be dominated by the disrupting globular
-  cluster Palomar 5.\label{fig:Pal5}}
+  This one turns out to be dominated by globular
+  cluster M5.\label{fig:Pal5}}
 \end{figure}
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0177}
@@ -682,6 +685,7 @@ in high-dimensional space, and the first stars that would be assigned to another
 cluster would be those with the most extreme abundances: low [O/Fe] and
 high [Na/Fe].
 
+%HOGG: THIS PARAGRAPH IS ALL WRONG!
 There are scant abundance measurements reported for Palomar 5, for which
 most stars in the cluster in \figurename~\ref{fig:Pal5} belong. We find a mean
 metallicity of [Fe/H]$ = -1.3$, which lies between the only
@@ -751,7 +755,7 @@ elements, more stars, and all-sky angular coverage with \apogee2, and
 \galah\ is working towards releasing chemical abundances on a larger set
 of 29 elements.
 The \apogee\ elements employed in this project include alpha
-(Mg, O, Si, Ca, Ti), light proton-capture (C, N, S), odd-Z (Na, Al, K)
+(Mg, O, Si, S, Ca, Ti), light proton-capture (C, N, S), odd-Z (Na, Al, K)
 and iron peak (Fe, Ni, V, Mn) elements.
 \galah\ will deliver element abundances from all the major
 nucleosynthetic processes, including light proton capture elements,
@@ -770,6 +774,7 @@ It is a pleasure to thank
   Jeremy Magland (\acronym{SCDA}),
   Don Schneider (\acronym{PSU}),
   Keivan Stassun (Vanderbilt),
+  Angus Williams (Cambridge),
   and the Blanton--Hogg group meeting
 for valuable comments and discussions.
 This project was funded in part by
@@ -820,6 +825,8 @@ Alam,~S., Albareti,~F.~D., Allende~Prieto,~C., \etal, 2015, \apjs, 219, 12
 Bishop,~C.~M., 2006, \textit{Pattern Recognition and Machine Learning}, Springer, New York
 \bibitem[Blanco-Cuaresma \etal(2015)]{blancocuaresma}
 Blanco-Cuaresma,~S., Soubiran,~C., Heiter,~U., \etal, 2015, \aap, 577, A47
+\bibitem[Bland-Hawthorn \etal(2010)]{jbh}
+Bland-Hawthorn,~J., Krumholz,~M.~R., \& Freeman,~K., 2010, \apj, 713, 166
 \bibitem[Bovy(2015)]{bovy}
 Bovy,~J., 2015, arXiv:1510.06745
  \bibitem[Briley \etal(2004)]{Briley_2004}
@@ -849,7 +856,11 @@ Gilmore,~G., Randich,~S., Asplund,~M., \etal, 2012, The Messenger, 147, 25
 \bibitem[Gratton \etal(2012)]{gratton}
 Gratton,~R.~G., Carretta,~E., Bragaglia,~A., 2012, \aapr, 20, 50
 \bibitem[Harris(1996)]{Harris_1996}
-Harris,~W.~E., 1996, \aj, 112, 1487 
+Harris,~W.~E., 1996, \aj, 112, 1487
+\bibitem[Helmi \etal(2006)]{helmi}
+Helmi,~A., Navarro,~J.~F., Nordstr{\"o}m,~B., Holmberg,~J., Abadi,~M.~G., \& Steinmetz,~M., 2006, \mnras, 365, 1309
+\bibitem[Helmi \etal(2014)]{helmi2}
+Helmi,~A., Williams,~M., Freeman,~K.~C., Bland-Hawthorn,~J., \& De~Silva,~G., 2014, \apj, 791, 135
 \bibitem[Holtzman \etal(2015)]{apogeedr12}
 Holtzman, J.~A., Shetrone, M., Johnson, J.~A., \etal, 2015, \aj, 150, 148
 \bibitem[Hunter(2007)]{matplotlib}

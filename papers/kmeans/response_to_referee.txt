@@ -133,6 +133,11 @@ of targeting decisions.
 We fixed a small bug with the cluster density measure and updated the
 figure. This changes no conclusions.
 
+We fixed the (embarrassing) bug that everywhere we say "Pal 5" we mean
+"M5". This was a straight-up mistake in the paper, and leads to some
+changes in the discussion, including some reference changes. No
+fundamental conclusions change because of this.
+
 HOGG:  Adjusted what we say about Ting et al?
 
 HOGG:  Commented on, eg, the Na abundances?
