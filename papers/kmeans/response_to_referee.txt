@@ -1,7 +1,7 @@
 Dear Editor:
 
 Please find below the response to our (very helpful) referee report on
-manuscript ApJ/ApJ101852.  We have taken all of the referees
+manuscript ApJ/ApJ101852.  We have taken all of the referee's
 suggestions, and made some other changes from comments we have
 received from colleagues.
 
@@ -73,7 +73,8 @@ We have added the following references: De Silva et al (2007), Eggen
     about the Cannon's performance at the boundaries of the training
     set parameters would have been good to see.
 
-HOGG
+This statement and point is true and wise. We have modified the text
+in [HOGG]
 
     Section 2:
 
@@ -93,7 +94,10 @@ abundance correlations in gloublar clusters.
     fast? Fine as the focus of the paper is the precision of the
     abundance results with Cannon, not the fidelity of group finding.
 
-We have added text to clarify why k-means was chosen.
+We have added text to clarify why k-means was chosen. It is
+fundamentally because k-means is the clustering algorithm of "first
+resort", which contains very few assumptions and only one (integer)
+adjustable parameter (not counting the metric on the vector space).
 
     I find the group in Fig 6 dubious. Its at the very edge of the
     metallicity scale, which raises again how the Cannon performs at
@@ -109,17 +113,23 @@ Other changes:
 In addition to all the above, we made the following additional
 changes:
 
-Because of a large number of valuable contributions both prior to and
-subsequent to our submission of this paper, we expanded the author
-list.  There are now several additional new authors, most of whom
-contributed by building the APOGEE project (and hence the input data).
+Because of discussions and checking of results that happened
+subsequent to our submission of this paper with the APOGEE team, some
+of which made use of proprietary data and information about the
+survey, we have expanded the author list in accordance with the
+APOGEE/SDSS-III authorship policies.  The consequence is that there
+are now several additional new authors, most of whom contributed to
+this project most directly by building the APOGEE project (and hence
+the input data and tests thereof).
 
-We added a few citations: Eisenstein 2011 (SDSS-III), Holtzman 2015
-(APOGEE DR12) and ...HOGG
+We added the two crucial APOGEE references: Eisenstein 2011 (SDSS-III)
+Holtzman 2015 (APOGEE DR12).
 
 HOGG:  Adjusted what we say about Ting et al?
 
-HOGG:  Go through github issues and emails.
+HOGG:  Commented on, eg, the Na abundances?
+
+HOGG:  Go through github issues and emails?
 
 We also added a few names to the acknowledgements for providing minor
 comments.
