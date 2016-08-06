@@ -76,7 +76,7 @@
 
 \title{Chemical tagging can work: \\
        Identification of stellar phase-space structures \\
-       purely by chemical-abundance similarity}
+       purely by chemical-abundance similarity\vspace{-7ex}}
 \author{David~W.~Hogg\altaffilmark{1,2,3,4},
         Andrew~R.~Casey\altaffilmark{5},
         Melissa~Ness\altaffilmark{4},
@@ -111,7 +111,7 @@
 Chemical tagging promises to use detailed abundance measurements to
 identify spatially separated stars that were in fact born together
 (in the same molecular cloud), long ago.
-This idea has not previously yielded scientific successes, probably because of the
+This idea has not yielded much success, probably because of the
 noise and incompleteness in chemical-abundance measurements.
 However, we have succeeded in substantially improving spectroscopic
 measurements with \thecannon, which has now delivered $15$ individual
@@ -176,11 +176,11 @@ star-formation history of the Galaxy, but also the accretion history
 (as things that fall in are expected to be chemically distinct from
 those that form in the parent body; for example, 
 \citealt{eggen_1970,font,De_Silva_2007,bubar_king_2010}) and
-stellar-orbit diffusion process like radial mixing and radial
+stellar-orbit diffusion processes like radial mixing and radial
 migration (for example, \citealt{roskar, quillen}).  After
 stars are born---or after a star cluster is accreted and
 disrupted---associations or groups will disperse, through
-two-body processes, interactions with resonances, or tides from the whole Galaxy.
+two-body mechanisms, interactions with resonances, or tides from the whole Galaxy.
 
 Although undeniably promising---and motivating the 
 launch of costly large-scale spectroscopic surveys---%
@@ -215,7 +215,8 @@ but different birth places \citep{mitschang}, and the
 chemical-abundance space might be low in dimensionality.
 On the other hand, precise studies of stellar twins \citep{melendez, jofre}
 and open clusters \citep{bovy} indicate that chemical abundances ought to be
-very similar for co-eval stars.
+very similar for co-eval stars, and peculiar abundance ratios
+have been successfully used to identify disrupted cluster members (for example, \citealt{ocen}).
 
 The second issue for chemical tagging---and the one we address
 here---is measurement precision (and accuracy).
@@ -294,13 +295,15 @@ from \sdssiii\ \citep{sdssiii}, in
 which we can re-derive 15 element abundances (C, N, O, Na, Mg, Al, Si,
 S, K, Ca, Ti, V, Mn, Fe, Ni), using \thecannon\ \citep{thecannon}.
 The \apogee\ data set covers a huge radial extent and---because the
-data are taken in the infrared---explores the thin disk.
+data are taken in the infrared---is capable of exploring all parts of the disk,
+including the thin parts.
 However, it has the disadvantage that its spatial coverage is incomplete
 (that is, limited pointings produce a fractured sky map),
 which makes it hard to see, within the data set, linear or
 extended stellar structures.
 In many ways, \galah\ will deliver improvements, both because it will
-have more abundances (possibly 29) and contiguous sky coverage.
+have more abundances (possibly 29) and contiguous sky coverage; that
+said, it will not observe much of the thin disk.
 
 One final note:
 we think of this \documentname\ as performing a proof of concept.
@@ -311,7 +314,7 @@ chemical-abundance space.  Does this work the other way around?
 Can chemical tagging identify small subsets of stars, among a vastly
 greater background sample, that have a common birth origin? If we 
 find stars purely by their clustering in abundance space and subsequently
-show that they are part of a still spatially coherent cluster, then
+show that they are part of a still spatially coherent cluster, group, or stream, then
 we will have resolved all practical outstanding issues plaguing 
 chemical tagging, thereby bringing us much closer to
 unravelling the formation of the Milky Way.
@@ -551,14 +554,17 @@ catalogs of stellar clusters is beyond our present scope.
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0253}
 \caption{Same as \figurename~\ref{fig:all} except that the entire
-  sample has been made gray and the members of the most dense
-  $K=256$ abundance-space cluster have been rendered as unique, prominent triangles
-  (color is velocity rank, orientation is $\logg$ rank).
-  The lower-right plot shows this cluster (circle) in context of the other clusters (dots).
-  This cluster, which was identified only in abundance space (six
-  projections of which are the top six panels in this \figurename),
-  turns out to be dominated by the halo globular cluster
-  M13.\label{fig:M13}}
+  sample has been made gray and the members of the most dense $K=256$
+  abundance-space cluster have been rendered as unique, prominent
+  triangles (color is velocity rank, orientation is $\logg$ rank).
+  The lower-right plot shows this cluster (circle) in context of the
+  other clusters (dots).  This cluster, which was identified only in
+  abundance space (six projections of which are the top six panels in
+  this \figurename), turns out to be dominated by the halo globular
+  cluster M13. The symbol orientations and colors have no meaning;
+  they are randomly generated---one unique color and orientation for
+  each highlighted star---to make the points cross-identifiable across
+  panels.\label{fig:M13}}
 \end{figure}
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0034}
@@ -651,6 +657,10 @@ sub-optimally selected by k-means. For these reasons the fact that (a)~\thecanno
 reports these abundance correlations and (b)~k-means (as a simple algorithm
 without information about expectations in abundance space) does not appear to be
 severely impacted by these correlations, gives us great hope for more sophisticated approaches.
+That said, globular cluster members are over-represented in teh \apogee\ data set,
+because many of them were specifically targeted for observations for being cluster
+members \citep{apogee}; that is, globular-cluster structure is over-represented relative to the
+field in this data set.
 
 The abundances of known clusters that we identify by k-means are in
 excellent agreement with the literature. For the group shown in \figurename~\ref{fig:M13},
@@ -688,7 +698,7 @@ clustered in our 2-d projections. Indeed, it is more clustered in our
 abundance projections than the young stellar structure in the disk,
 and comparably so to the other known globular clusters that we have
 shown here. The disparity between this structure and others presented
-here is the lack of co-spatial stars. 12 stars within this cluster are
+here is the lack of co-spatial stars. Twelve stars within this cluster are
 marked as `M53' candidates by \apogee, but the remaining 145 stars
 are spread amongst fields throughout the halo.  
 
@@ -703,7 +713,7 @@ the Galaxy halo.
 Because some stars ($<8\%$) are candidate members of the massive globular
 cluster M53, it provides tantalizing possibility that these stars may
 indeed be all members of the same co-natal gas cloud, implying that 
-these stars have been accreted onto the halo by a single globular
+these stars have been accreted onto the halo from a single globular
 cluster early in the Milky Way's formation. While speculative,
 this idea demonstrates the promise of chemical tagging. 
 
@@ -734,9 +744,9 @@ precise enough and the chemical-abundance space is informative enough.
 The \apogee\ project shows great promise for these studies, and with
 the appearance of the companion papers, we will release the
 chemical-abundance measurements we used here for further study.
-The future is even brighter, however: \apogee\ is expanding to 19
+The future is even brighter, however: \apogee\ is expanding to more measured
 elements, more stars, and all-sky angular coverage with \apogee2, and
-\galah\ is nearly ready to release chemical abundances on a larger set
+\galah\ is working towards releasing chemical abundances on a larger set
 of 29 elements.
 The \apogee\ elements employed in this project include alpha
 (Mg, O, Si, Ca, Ti), light proton-capture (C, N, S), odd-Z (Na, Al, K)
@@ -846,6 +856,9 @@ Johnson, C.~I.,  Pilachowski, C.~A., 2012, \apjl, 754, L38
 Kraft, R.~P., Sneden, C., Langer, G.~E.,  Prosser, C.~F., 1992, \aj, 104, 645 
 \bibitem[Kuzma \etal(2015)]{Kuzma_2015}
 Kuzma, P.~B., Da Costa, G.~S., Keller, S.~C., Maunder, E., 2015, \mnras, 446, 3297 
+\bibitem[Majewski \etal(2012)]{ocen}
+Majewski,~S.~R., Nidever,~D.~L., Smith,~V.~V., Damke,~G.~J., Kunkel,~W.~E.,
+Patterson,~R.~J., Bizyaev,~D., \& Garca~P ́erez~ A~ E,. 2012,\apjl, 747, L37
 \bibitem[Majewski \etal(2015)]{apogee}
 Majewski,~S.~R., Schiavon,~R.~P., Frinchaboy,~P.~M., \etal, 2015, arXiv:1509.05420
 \bibitem[Martell(2015)]{martell}

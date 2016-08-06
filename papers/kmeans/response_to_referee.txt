@@ -125,6 +125,11 @@ the input data and tests thereof).
 We added the two crucial APOGEE references: Eisenstein 2011 (SDSS-III)
 Holtzman 2015 (APOGEE DR12).
 
+We softened very slightly the "no previous successes" sentence in the
+abstract and also cited Majewski et al 2012. We also added a caveat
+that globular-cluster members are over-represented in APOGEE because
+of targeting decisions.
+
 HOGG:  Adjusted what we say about Ting et al?
 
 HOGG:  Commented on, eg, the Na abundances?
@@ -132,4 +137,6 @@ HOGG:  Commented on, eg, the Na abundances?
 HOGG:  Go through github issues and emails?
 
 We also added a few names to the acknowledgements for providing minor
-comments.
+comments, and made other small, non-content-changing corrections to
+wording.
+
