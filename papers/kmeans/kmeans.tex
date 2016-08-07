@@ -353,6 +353,11 @@ and therefore fast. The test
 step for 150,000 spectra takes less than 30~minutes on a small 
 research cluster in Cambridge.
 
+HOGG: Paragraph here about limitations of \thecannon: Dependence on
+training set, makes use of element-element correlations (especially, say, Na),
+and delivers precision but no guarantees of accuracy beyond that in the training set.
+Comment on its performance at the edges of the abundance distribution...? As per referee issue.
+
 Six two-dimensional projections of the abundance data, plus some other
 data quantities, are shown in \figurename~\ref{fig:all}.  Throughout
 this work we show two-dimensional abundance projections for only a few
@@ -456,8 +461,12 @@ algorithm.
 Nothing about this algorithm or our choices are particularly
 tuned or optimized; this is in no sense the
 algorithm or the method that reveals the best structures.
-We chose k-means as a simple and tractable approach to identifying
-clusters in high dimensional label space. In practice more complex
+We chose k-means as a simple and straightforward approach to identifying
+clusters in high dimensional label space, with very few control parameters
+or decisions required.
+It is also an algorithm that is well studied in the machine-learning literature,
+so it has well understood properties.
+In practice more complex
 clustering algorithms may perform better than k-means, or even
 tuning k-means by heuristically setting $K$ is likely to improve
 upon the results here. This \documentname\ serves as a proof of concept.
