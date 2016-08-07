@@ -73,13 +73,16 @@ We have added the following references: De Silva et al (2007), Eggen
     about the Cannon's performance at the boundaries of the training
     set parameters would have been good to see.
 
-This statement and point is true and wise. We have added a paragraph
-in Section 2 describing and emphasizing this point, and also
-addressing the point that The Cannon can use element-element
-correlations to improve its precision. All these things reduce the
-interpretability of the absolute abundances shown in the paper, as the
-referee notes. We refer to the Casey et al paper to see the
-performance of the method at the edges.
+This statement and point is true and wise. We have added a long and
+substantial paragraph in Section 2 describing and emphasizing this
+point, and also addressing the point that The Cannon can use
+element-element correlations to improve its precision. All these
+things reduce the interpretability of the absolute abundances shown in
+the paper, as the referee notes. We also discuss the concern that
+things could diverge at the boundaries of the training set.
+
+We also add a paragraph in the discussion bringing up issues with
+Na/Fe abundances that relate to this referee comment.
 
     Section 2:
 
@@ -111,7 +114,16 @@ it is also well tested and understood.
     be metal-poor Halo stars, tagged as metal-poor Halo stars,
     nothing more?
 
-HOGG
+The lower-right panel of Fig 6 shows that the group a strong
+over-density in abundance space. The referee makes a good point: It is
+indeed conceivable that this is created somehow by issues with The
+Cannon at low metallicity. We now include a couple of sentences of
+discussion of this point in the discussion section.  We make the
+prediction for this structure that if it is followed up with data that
+are sensitive to more elements, it could (in principle) be shown to
+have abundances that are consistent with cluster or dwarf-galaxy
+formation; if this succeeded, it might represent a discovery related
+to the accretion formation of the halo.
 
 -----
 Other changes:

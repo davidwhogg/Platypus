@@ -353,10 +353,31 @@ and therefore fast. The test
 step for 150,000 spectra takes less than 30~minutes on a small 
 research cluster in Cambridge.
 
-HOGG: Paragraph here about limitations of \thecannon: Dependence on
-training set, makes use of element-element correlations (especially, say, Na),
-and delivers precision but no guarantees of accuracy beyond that in the training set.
-Comment on its performance at the edges of the abundance distribution...? As per referee issue.
+It is important here to note some of the limitations of stellar labels
+delivered by \thecannon.
+The first is that \thecannon\ is only as good as its training set!
+All of the biases and calibration issues in the input training set will be
+delivered to the output labels.
+This means that there is no sense in which \thecannon\ delivers
+absolute abundances any better than \aspcap\ does.
+The second is that \thecannon\ (in the form used here) is aggressively
+data-driven.
+It will use anything it can to measure, say, the Na abundance, not just
+actual Na lines.
+This means that population-level correlations in  element abundances are
+being used to deliver information about individual elements.
+We bring up Na as an example here for the important reason that at low
+metallicity, there are no significant Na lines in the spectra; we are
+measuring Na only indirectly at low metallicity.
+A third limitation of \thecannon\ is that it is operating a regression
+in a very high dimensional label space.
+This regression is hard to test and validate near the edges of the range
+of applicability.
+One way to say this is that the convex hull of the training set of
+points in 17-dimensional space is potentially very small, and it is
+hard to visualize what is going on outside that hull.
+For these reasons, there might be label biases that grow with displacement
+from the bulk of the training data.
 
 Six two-dimensional projections of the abundance data, plus some other
 data quantities, are shown in \figurename~\ref{fig:all}.  Throughout
@@ -720,6 +741,16 @@ high [Na/Fe].
 
 [HOGG, CASEY: INSERT PARAGRAPH ABOUT M5 HERE]
 
+All that said, we reiterate a caveat here that we also mentioned in
+\sectionname~\ref{sec:data}, which is that at very low metallicity, Na
+does not show strong lines in any \apogee\ spectrum.  For this reason,
+the [Na/Fe] shown for the low-metallicity structures are obtained not
+by measuring Na lines but rather the lines of elements that correlate
+strongly with Na at the population level.
+The true [Na/Fe] may show correlations, variations, or anomalies in
+the clusters that are not captured by \thecannon\ working at low
+metallicity.
+
 The high velocity-dispersion structure seen in \figurename~\ref{fig:halo} stands
 in stark contrast to the rest of the clusters we have identified. In
 addition to being highly clustered in 15-dimensions, it is visibly
@@ -729,7 +760,18 @@ and comparably so to the other known globular clusters that we have
 shown here. The disparity between this structure and others presented
 here is the lack of co-spatial stars. Twelve stars within this cluster are
 marked as `M53' candidates by \apogee, but the remaining 145 stars
-are spread amongst fields throughout the halo.  
+are spread amongst fields throughout the halo.
+
+It is conceivable that this structure, being near the outskirts of the
+abundance distribution, is somehow concentrated in abundance space by
+some kind of shrinkage (in the statistical sense) induced by
+\thecannon's regression.
+However, it is a very dense feature in abundance space, and is worth
+following up.
+If follow-up observations show that the stars have abundances and that
+are consistent with having origin in a single stellar population or
+low-metallicty dwarf galaxy, it could represent an accretion event in
+the Milky Way halo.
 
 The k-means algorithm employed here is by no means optimal, and other clusters
 we identify are accompanied by a few stars that are not currently co-spatial.
@@ -788,7 +830,8 @@ Chemical tagging capabilities are expected to grow as the
 \emph{product} of the measured nucleosynthetic pathways.
 
 \acknowledgements
-It is a pleasure to thank
+It is a pleasure to thank an anonymous referee for useful comments that have led to improvements in the manuscript.
+We also thank
   Joss Bland-Hawthorn (Sydney),
   Jo Bovy (Toronto),
   Charlie Conroy (Harvard),
@@ -799,7 +842,7 @@ It is a pleasure to thank
   Keivan Stassun (Vanderbilt),
   Angus Williams (Cambridge),
   and the Blanton--Hogg group meeting
-for valuable comments and discussions.
+for valuable discussions and comments.
 This project was funded in part by
   the \acronym{NSF} (grants \acronym{IIS-1124794}, \acronym{AST-1312863}, \acronym{AST-1517237}),
   \acronym{NASA} (grant \acronym{NNX12AI50G}),
