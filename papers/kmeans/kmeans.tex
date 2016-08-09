@@ -520,7 +520,7 @@ over-densities in abundance space.
 
 We chose a few interesting cases from the high-density clusters
 in the $K=256$ run and show them in
-\figurename~\ref{fig:M13}, \ref{fig:Pal5}, \ref{fig:Sgr},
+\figurename~\ref{fig:M13}, \ref{fig:M5}, \ref{fig:Sgr},
 \ref{fig:halo}, and \ref{fig:disk}.
 The first three of these are dominated by stars in the known clusters
 M13 and M5, and the Sagittarius stream (we identify overlap with these objects
@@ -565,7 +565,7 @@ and some background contamination, and also is missing some true
 star-cluster members.
 
 Although we show only three stellar clusters in
-\figurename~\ref{fig:M13}, \ref{fig:Pal5}, and \ref{fig:Sgr}, many
+\figurename~\ref{fig:M13}, \ref{fig:M5}, and \ref{fig:Sgr}, many
 other clusters are visible among our densest abundance-space k-means
 clusters.
 These include M15, M92, and M107, among others.
@@ -606,7 +606,7 @@ catalogs of stellar clusters is beyond our present scope.
 \caption{Same as \figurename~\ref{fig:M13} but for another dense
   abundance-space cluster.
   This one turns out to be dominated by globular
-  cluster M5.\label{fig:Pal5}}
+  cluster M5.\label{fig:M5}}
 \end{figure}
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0177}
@@ -704,7 +704,7 @@ sub-optimally selected by k-means. For these reasons the fact that (a)~\thecanno
 reports these abundance correlations and (b)~k-means (as a simple algorithm
 without information about expectations in abundance space) does not appear to be
 severely impacted by these correlations, gives us great hope for more sophisticated approaches.
-That said, globular cluster members are over-represented in teh \apogee\ data set,
+That said, globular cluster members are over-represented in the \apogee\ data set,
 because many of them were specifically targeted for observations for being cluster
 members \citep{apogee}; that is, globular-cluster structure is over-represented relative to the
 field in this data set.
@@ -727,19 +727,9 @@ in high-dimensional space, and the first stars that would be assigned to another
 cluster would be those with the most extreme abundances: low [O/Fe] and
 high [Na/Fe].
 
-% HOGG: THIS PARAGRAPH IS ALL WRONG!
-% There are scant abundance measurements reported for Palomar 5, for which
-% most stars in the cluster in \figurename~\ref{fig:Pal5} belong. We find a mean
-% metallicity of [Fe/H]$ = -1.3$, which lies between the only
-% photometric \citep{Geisler_1997} and spectroscopic \citep{Smith_1985,Smith_2002} abundance
-% measurements for this cluster.  The anti-correlation in C--N and Na--O abundance
-% have been seen elsewhere \citep[][respectively]{Smith_1985,Smith_2002}, although
-% to our knowledge the Mg--Al anti-correlation has not previously been shown for this cluster.
-% Indeed, this work contains the largest number of abundances for Palomar 5,
-% permitting a thorough search of tidally disrupted members \citep[for example,][]{Kuzma_2015} 
-% that have retained the unique cluster abundance signature.
 
-[HOGG, CASEY: INSERT PARAGRAPH ABOUT M5 HERE]
+We find a mean metallicity of [Fe/H]$ = -1.3$ for the cluster we associate as M~5 (\figurename~\ref{fig:M5}), which agrees well with the [Fe/H]$ = -1.33 \pm 0.03$ measurement reported by \citet{Koch_2010}, and the $-1.29 \pm 0.02$ value listed in the compilation of \citet[][accessed 2016]{Harris_1996}.  The correlations in light elements---specifically Mg--Al and C--N---also agree well with other studies \citep{Ivans_2001,meszaros}.  In particular we find only a weak correlation in the [Na/Fe]--[O/Fe] abundance ratios \citep{Lai_2011}.  However, when we consider the extent of the literature on M~5, it would suggest that we do not recover the full extent of these correlations: the stars with the highest [Na/Fe], [Mg/Al], and lowest [O/Fe] abundance ratios are not represented in the cluster that we associate as M~5.  This is likely a consequence of our (poor) choice of the k-means algorithm, which is most effective for near-normal distributions, and clearly less powerful for clusters (in a statistical sense) that have polynomial relationships in dimensional space (e.g., [Na/Fe]--[O/Fe]).  Indeed, \citet{meszaros} report abundances for 122 members of M~5 using \apogee\ \acronym{DR12} data, whereas the cluster we associate as M~5 only contains $\approx60$ members, and only covers about half of the extent of [Na/Fe]--[O/Fe] relationship.
+
 
 All that said, we reiterate a caveat here that we also mentioned in
 \sectionname~\ref{sec:data}, which is that at very low metallicity, Na
@@ -782,7 +772,7 @@ the situation is far more extreme. We identify a group of stars with
 very similar abundances in 15 dimensions that are now spread throughout
 the Galaxy halo.
 Because some stars ($<8\%$) are candidate members of the massive globular
-cluster M53, it provides tantalizing possibility that these stars may
+cluster M53, it provides the tantalizing possibility that these stars may
 indeed be all members of the same co-natal gas cloud, implying that 
 these stars have been accreted onto the halo from a single globular
 cluster early in the Milky Way's formation. While speculative,
@@ -802,7 +792,7 @@ migration.
 
 It is worth reiterating here what is written above:
 There is no sense at all in which \figurename~\ref{fig:M13},
-\ref{fig:Pal5}, \ref{fig:Sgr}, \ref{fig:halo}, and \ref{fig:disk} show
+\ref{fig:M5}, \ref{fig:Sgr}, \ref{fig:halo}, and \ref{fig:disk} show
 a representative or complete set of features found in abundance space.
 These features were hand-chosen to be obviously interesting and
 interpetable.
@@ -819,13 +809,10 @@ The future is even brighter, however: \apogee\ is expanding to more measured
 elements, more stars, and all-sky angular coverage with \apogee2, and
 \galah\ is working towards releasing chemical abundances on a larger set
 of 29 elements.
-The \apogee\ elements employed in this project include alpha
-(Mg, O, Si, S, Ca, Ti), light proton-capture (C, N, S), odd-Z (Na, Al, K)
-and iron peak (Fe, Ni, V, Mn) elements.
+The \apogee\ elements employed in this project include alpha, light proton-capture, odd-Z, and iron peak elements.
 \galah\ will deliver element abundances from all the major
 nucleosynthetic processes, including light proton capture elements,
-alpha, odd-Z, iron-peak, light and heavy slow neutron capture, and
-rapid neutron capture.
+alpha, odd-Z, iron-peak, as well as neutron-capture elements.
 Chemical tagging capabilities are expected to grow as the
 \emph{product} of the measured nucleosynthetic pathways.
 
@@ -915,8 +902,6 @@ Font,~A.~S., Johnston,~K.~V., Bullock,~J.~S., Robertson,~B.~E., 2006, \apj, 638,
 Freeman,~K., Bland-Hawthorn,~J., 2002, \araa, 40, 487
 \bibitem[Garc{\'{\i}}a~P{\'e}rez \etal(2015)]{aspcap}
 Garc{\'{\i}}a~P{\'e}rez,~A.~E., Allende~Prieto,~C., Holtzman,~J.~A., \etal, 2015, arXiv:1510.07635
-\bibitem[Geisler \etal(1997)]{Geisler_1997}
-Geisler, D., Claria, J.~J., Minniti, D., 1997, \pasp, 109, 799 
 \bibitem[Gilmore \etal(2012)]{gaiaeso}
 Gilmore,~G., Randich,~S., Asplund,~M., \etal, 2012, The Messenger, 147, 25 
 \bibitem[Gratton \etal(2012)]{gratton}
@@ -931,14 +916,15 @@ Helmi,~A., Williams,~M., Freeman,~K.~C., Bland-Hawthorn,~J., \& De~Silva,~G., 20
 Holtzman, J.~A., Shetrone, M., Johnson, J.~A., \etal, 2015, \aj, 150, 148
 \bibitem[Hunter(2007)]{matplotlib}
 Hunter,~J.~D., 2007, Computing in Science \& Engineering, 9, 90
+\bibitem[Ivans et al.(2001)]{Ivans_2001} Ivans, I.~I., Kraft, R.~P., Sneden, C., et al.\ 2001, \aj, 122, 1438 
 \bibitem[Jofr{\'e} \etal(2015)]{jofre}
 Jofr{\'e},~P., M{\"a}dler,~T., Gilmore,~G., \etal, 2015, \mnras, 453, 1428 
 \bibitem[Johnson \& Pilachowski(2012)]{Johnson_Pilachowski_2012}
 Johnson, C.~I.,  Pilachowski, C.~A., 2012, \apjl, 754, L38 
+\bibitem[Koch \& McWilliam(2010)]{Koch_2010} Koch, A., \& McWilliam, A.\ 2010, \aj, 139, 2289 
 \bibitem[Kraft \etal(1992)]{Kraft_1992}
 Kraft, R.~P., Sneden, C., Langer, G.~E.,  Prosser, C.~F., 1992, \aj, 104, 645 
-\bibitem[Kuzma \etal(2015)]{Kuzma_2015}
-Kuzma, P.~B., Da Costa, G.~S., Keller, S.~C., Maunder, E., 2015, \mnras, 446, 3297 
+\bibitem[Lai et al.(2011)]{Lai_2011} Lai, D.~K., Smith, G.~H., Bolte, M., et al.\ 2011, \aj, 141, 62 
 \bibitem[Majewski \etal(2012)]{ocen}
 Majewski,~S.~R., Nidever,~D.~L., Smith,~V.~V., Damke,~G.~J., Kunkel,~W.~E.,
 Patterson,~R.~J., Bizyaev,~D., \& Garca~P ́erez~ A~ E,. 2012,\apjl, 747, L37
@@ -967,10 +953,6 @@ Pedregosa,~F., Varoquaux,~G., Gramfort,~A., \etal, 2011, Journal of Machine Lear
 Quillen,~A.~C., Anguiano,~B., De~Silva,~G., \etal, 2015, \mnras, 450, 2354
 \bibitem[Ro{\v s}kar \etal(2008)]{roskar}
 Ro{\v s}kar,~R., Debattista,~V.~P., Quinn,~T.~R., Stinson,~G.~S., Wadsley,~J., 2008, \apjl, 684, L79
-\bibitem[Smith(1985)]{Smith_1985}
-Smith, G.~H., 1985, \apj, 298, 249 
-\bibitem[Smith \etal(2002)]{Smith_2002}
-Smith, G.~H., Sneden, C., Kraft, R.~P., 2002, \aj, 123, 1502 
 \bibitem[Smith \etal(2005)]{Smith_2005}
 Smith, G.~H., Briley,~M.~M.,  Harbeck, D., 2005, \aj, 129, 1589
 \bibitem[Ting \etal(2016)]{ting}
