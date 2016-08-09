@@ -128,7 +128,7 @@ def plot_cluster_context(sizes, densities, dir, name=None, k=None, suffix="png")
         fn = "{}/clusters_{:04d}.{}".format(dir, K, suffix)
     else:
         fn = "{}/{}_context.{}".format(dir, name, suffix)
-    if os.th.exists(fn):
+    if os.path.exists(fn):
         print("plot_cluster_context(): {} exists already".format(fn))
         return
     if k is None:
@@ -330,6 +330,12 @@ if __name__ == "__main__":
                 plotdata_labels[d] = data_labels[d] + " - " + data_labels[0]
             metadata_labels = ["RA", "DEC", "GLON", "GLAT", "VHELIO_AVG", "TEFF_ASPCAP", "LOGG_ASPCAP", "FIELD", "APOGEE_ID"]
             metadata = get_metadata(dfn, metadata_labels, mask)
+
+            mknpfn = "data/mkn_{:04d}.pkl".format(K)
+            print("writing pickle")
+            pickle_to_file(mknpfn, (data, metadata))
+            print(mknpfn)
+
             fields =   metadata[:, -2]
             names  =   metadata[:, -1]
             metadata = metadata[:, 0:-2].astype(float)
