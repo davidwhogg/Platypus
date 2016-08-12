@@ -154,7 +154,9 @@ figure. This changes no conclusions.
 We fixed the (embarrassing) bug that everywhere we say "Pal 5" we mean
 "M5". This was a straight-up mistake in the paper, and leads to some
 changes in the discussion, including some reference changes. No
-fundamental conclusions change because of this.
+fundamental conclusions change because of this. This did cause us to
+replace the paragraph about Pal 5 with one about M5, and that also led
+to some changes in references and so on.
 
 We noted the point (related to the referee's comments) that everything
 we find that is dense in phase space is at low metallicity; this is

@@ -111,9 +111,9 @@
 Chemical tagging promises to use detailed abundance measurements to
 identify spatially separated stars that were in fact born together
 (in the same molecular cloud), long ago.
-This idea has not yielded much success, probably because of the
+This idea has not yielded much practical success, presumably because of the
 noise and incompleteness in chemical-abundance measurements.
-However, we have succeeded in substantially improving spectroscopic
+We have succeeded in substantially improving spectroscopic
 measurements with \thecannon, which has now delivered $15$ individual
 abundances for $\sim 10^5$ stars observed as part of the
 \apogee\ spectroscopic survey, with precisions around 0.04~dex.
@@ -128,9 +128,10 @@ We use \emph{only} abundance-space information (no positional information) to id
 % Results:
 We find that clusters in abundance space are indeed clusters in phase space.
 We recover some known phase-space clusters and find other interesting structures.
-This confirms the chemical-tagging hypothesis and verifies the precision of the abundance measurements delivered by \thecannon.
-This is the first-ever project to identify phase-space structures at survey-scale by blind search purely in abundance space;
-the prospects for future data sets are very good.
+This is the first-ever project to identify phase-space structures
+at survey-scale by blind search purely in abundance space;
+it verifies the precision of the abundance measurements delivered by \thecannon;
+the prospects for future data sets appear very good.
 \end{abstract}
 
 \keywords{
@@ -305,7 +306,7 @@ However, it has the disadvantage that its spatial coverage is incomplete
 which makes it hard to see, within the data set, linear or
 extended stellar structures.
 In many ways, \galah\ will deliver improvements, both because it will
-have more abundances (possibly 29) and contiguous sky coverage; that
+have more abundances (possibly 29) and contiguous sky coverage \citep{galah}; that
 said, it will not observe much of the thin disk.
 
 One final note:
@@ -474,6 +475,10 @@ These scalings were
   [Ni/H]/0.034.
 This scaling makes the space close to isotropic in measurement uncertainty or
 observational precision.
+Finally and related, because it looks for clusters compact in
+metric distance, k-means is more sensitive to clusters that are spherical
+in the scaled abundance space than clusters of the same density
+that are elongated in any sense.
 Importantly we use \emph{only} abundance-space information, and no
 positional or velocity information (nor $\teff$ nor $\logg$ nor any
 targeting or observational meta-data) as input to the clustering
@@ -727,9 +732,27 @@ in high-dimensional space, and the first stars that would be assigned to another
 cluster would be those with the most extreme abundances: low [O/Fe] and
 high [Na/Fe].
 
-
-We find a mean metallicity of [Fe/H]$ = -1.3$ for the cluster we associate as M~5 (\figurename~\ref{fig:M5}), which agrees well with the [Fe/H]$ = -1.33 \pm 0.03$ measurement reported by \citet{Koch_2010}, and the $-1.29 \pm 0.02$ value listed in the compilation of \citet[][accessed 2016]{Harris_1996}.  The correlations in light elements---specifically Mg--Al and C--N---also agree well with other studies \citep{Ivans_2001,meszaros}.  In particular we find only a weak correlation in the [Na/Fe]--[O/Fe] abundance ratios \citep{Lai_2011}.  However, when we consider the extent of the literature on M~5, it would suggest that we do not recover the full extent of these correlations: the stars with the highest [Na/Fe], [Mg/Al], and lowest [O/Fe] abundance ratios are not represented in the cluster that we associate as M~5.  This is likely a consequence of our (poor) choice of the k-means algorithm, which is most effective for near-normal distributions, and clearly less powerful for clusters (in a statistical sense) that have polynomial relationships in dimensional space (e.g., [Na/Fe]--[O/Fe]).  Indeed, \citet{meszaros} report abundances for 122 members of M~5 using \apogee\ \acronym{DR12} data, whereas the cluster we associate as M~5 only contains $\approx60$ members, and only covers about half of the extent of [Na/Fe]--[O/Fe] relationship.
-
+We find a mean metallicity of [Fe/H]$ = -1.3$ for the cluster we
+associate as M~5 (\figurename~\ref{fig:M5}), which agrees well with
+the [Fe/H]$ = -1.33 \pm 0.03$ measurement 
+\citep{Koch_2010}, and the $-1.29 \pm 0.02$ value listed in the
+standard compilation (\citealt{Harris_1996}; accessed 2016).  The correlations
+in light elements---specifically Mg--Al and C--N---also agree well
+with other studies \citep{Ivans_2001,meszaros}.  In particular we find
+only a weak correlation in the [Na/Fe]--[O/Fe] abundance ratios
+\citep{Lai_2011}.  However, when we consider the extent of the
+literature on M~5, it would suggest that we do not recover the full
+extent of these correlations: the stars with the highest [Na/Fe],
+[Mg/Al], and lowest [O/Fe] abundance ratios are not represented in the
+cluster that we associate as M~5.  This is likely a consequence of our
+(poor) choice of the k-means algorithm, which is most effective for
+near-circular distributions in the scaled abundance space, and reduced in power for clusters
+ that have polynomial relationships in dimensional
+space (for example, [Na/Fe]--[O/Fe]).  Indeed, 
+abundances for 122 members of M~5 have been reported in \apogee\ \acronym{DR12} data (\citealt{meszaros}),
+whereas the cluster we associate as M~5 only contains $\approx60$
+members, and only covers about half of the extent of [Na/Fe]--[O/Fe]
+relationship.
 
 All that said, we reiterate a caveat here that we also mentioned in
 \sectionname~\ref{sec:data}, which is that at very low metallicity, Na
@@ -760,7 +783,7 @@ However, it is a very dense feature in abundance space, and is worth
 following up.
 If follow-up observations show that the stars have abundances and that
 are consistent with having origin in a single stellar population or
-low-metallicty dwarf galaxy, it could represent an accretion event in
+low-metallicity dwarf galaxy, it could represent an accretion event in
 the Milky Way halo.
 
 The k-means algorithm employed here is by no means optimal, and other clusters
@@ -771,11 +794,12 @@ case of the high-velocity-dispersion structure in \figurename~\ref{fig:halo},
 the situation is far more extreme. We identify a group of stars with
 very similar abundances in 15 dimensions that are now spread throughout
 the Galaxy halo.
-Because some stars ($<8\%$) are candidate members of the massive globular
+Because some stars ($<8$\,percent) are candidate members of the massive globular
 cluster M53, it provides the tantalizing possibility that these stars may
 indeed be all members of the same co-natal gas cloud, implying that 
 these stars have been accreted onto the halo from a single globular
-cluster early in the Milky Way's formation. While speculative,
+cluster early in the Milky Way's formation (as
+has been hypothesized elsewhere; for example in \citealt{grebel}). While speculative,
 this idea demonstrates the promise of chemical tagging. 
 
 The abundance-space group of stars in the disk structure shown in
@@ -833,7 +857,9 @@ for valuable discussions and comments.
 This project was funded in part by
   the \acronym{NSF} (grants \acronym{IIS-1124794}, \acronym{AST-1312863}, \acronym{AST-1517237}),
   \acronym{NASA} (grant \acronym{NNX12AI50G}),
-  the Moore-Sloan Data Science Environment at \acronym{NYU}, and
+  the Moore-Sloan Data Science Environment at \acronym{NYU},
+  the Australian Research Council (DECRA Fellowship DE140100598),
+  and
   the European Research Council under the
   European Union's Seventh Framework Programme (FP~7)
   \acronym{ERC} Grant Agreement n.~\acronym{[320360, 321035]}).
@@ -932,6 +958,8 @@ Patterson,~R.~J., Bizyaev,~D., \& Garca~P ́erez~ A~ E,. 2012,\apjl, 747, L37
 Majewski,~S.~R., Schiavon,~R.~P., Frinchaboy,~P.~M., \etal, 2015, arXiv:1509.05420
 \bibitem[Martell(2015)]{martell}
 Martell,~S.~L., 2015, arXiv:1507.00079
+\bibitem[Martell \& Grebel(2010)]{grebel}
+Martell, S.~L., \& Grebel, E.~K., 2010, \aap, 519, A14 
 \bibitem[Martig \etal(2016)]{martig}
 Martig,~M., Fouesneau,~M., Rix,~H.-W., \etal, 2016, \mnras, 456, 3655
 \bibitem[Melendez \etal(2014)]{melendez}
