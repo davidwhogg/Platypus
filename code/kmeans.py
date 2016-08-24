@@ -84,9 +84,9 @@ def plot_one_cluster(data, labels, mask, name, dir, suffix):
             plt.clf()
             kwargs = {"ls": "none", "marker": "."}
             if mask is None:
-                plt.plot(data[:,x], data[:,y], c="k",    mec="none", ms=0.5, alpha=0.20, **kwargs, rasterized=True)
+                plt.plot(data[:,x], data[:,y], c="k",   mec="none", ms=0.5, alpha=0.50, **kwargs, rasterized=True)
             else:
-                plt.plot(data[:,x], data[:,y], c="0.75", mec="none", ms=0.5, alpha=0.20, **kwargs, rasterized=True)
+                plt.plot(data[:,x], data[:,y], c="0.5", mec="none", ms=0.5, alpha=0.50, **kwargs, rasterized=True)
                 cc = plt.get_cmap('viridis')
                 M = len(data[mask])
                 angles = (120. / M) * (data[mask, logg].argsort().argsort())
@@ -163,8 +163,8 @@ if __name__ == "__main__":
     Ks = 2 ** np.arange(8, 12) # do everything
     Ks = [256, ] # just do the winner
     # Ks = [2048, ] # just do the craziest
-    plot_everything = False # set to true only for MKN atlas
-    only_high_Z = True # set to true to only plot things in the metallicity bulk
+    plot_everything = True # set to true only for MKN atlas
+    only_high_Z = False # set to true to only plot things in the metallicity bulk
 
     scale_dict = {"FE_H": 0.0191707168068, # all from AC
                   "AL_H": 0.0549037045265,
@@ -351,7 +351,7 @@ if __name__ == "__main__":
         plot_one_cluster(plotdata, plotdata_labels, NGC6819_indices, "NGC_6819", dir, suffix)
 
         # plot clusters from this K
-        plotcount = 0
+        plotcount = 0 # fix!
         for k in (np.argsort(densities))[::-1]:
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
             if (not only_high_Z) or (fehs[k] > -0.5 and fehs[k] < 0.3):
