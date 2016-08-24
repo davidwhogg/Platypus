@@ -511,16 +511,13 @@ This density was used to rank abundance-space overdensities (from highest
 to lowest) for visual inspection.
 In \figurename~\ref{fig:densities} we show the distribution of cluster membership
 and density for the $K=256$ run of k-means.
-The densest clusters tend to have fewer members, presumably because
-the bulk of the population is not extremely strongly clustered, or not
-in ways to which k-means is sensitive.
 
 Importantly, the k-means algorithm assigns \emph{every} star to at
 least one cluster.
 For this reason, there is no sense in which \emph{every} ``cluster'' returned
 by k-means is a distinct overdensity in abundance space.
 In what follows, we only consider high-density clusters---clusters
-that are much more dense than average; these ought to represent true
+that are more dense than average for their occupation number (total membership); these ought to represent true
 over-densities in abundance space.
 
 We chose a few interesting cases from the high-density clusters
@@ -545,8 +542,8 @@ space \emph{by far}.
 The challenge of this work is to find structure in the high
 dimensionality space that is not obviously visible in any 2-d projection.
 Although we have by no means any model of the 15-d space, we do know
-that the structures shown in the \figurename s are very high in 15-d
-density.
+that the structures shown in the \figurename s are high in 15-d
+density, or at least relative to other clusters with the same occupation number.
 
 We have only shown results from the $K=256$ run of k-means.
 This run was chosen because its densest abundance-space clusters map
