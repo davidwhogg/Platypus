@@ -51,7 +51,7 @@ def get_metadata(fn, labels, mask):
     print("get_metadata()", dfn, metadata.shape)
     return metadata
 
-def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
+def plot_one_cluster(data, labels, mask, name, dir, suffix):
     print("plot_one_cluster(): plotting", name)
     for ly, lx, plotname in [
         ("MG_H - FE_H", "FE_H", "MgFe"),
@@ -84,9 +84,9 @@ def plot_one_cluster(data, labels, mask, name, dir, suffix="png"):
             plt.clf()
             kwargs = {"ls": "none", "marker": "."}
             if mask is None:
-                plt.plot(data[:,x], data[:,y], c="k",    mec="none", ms=0.5, alpha=0.20, **kwargs)
+                plt.plot(data[:,x], data[:,y], c="k",    mec="none", ms=0.5, alpha=0.20, **kwargs, rasterized=True)
             else:
-                plt.plot(data[:,x], data[:,y], c="0.75", mec="none", ms=0.5, alpha=0.20, **kwargs)
+                plt.plot(data[:,x], data[:,y], c="0.75", mec="none", ms=0.5, alpha=0.20, **kwargs, rasterized=True)
                 cc = plt.get_cmap('viridis')
                 M = len(data[mask])
                 angles = (120. / M) * (data[mask, logg].argsort().argsort())
@@ -118,7 +118,7 @@ def _clusterplot(xs, ys, k, ms=5.0):
     if k is not None:
         plt.plot(xs[k], thisys[k], marker="o", c="k", mfc="none", ms=1.5*ms, mew=2., alpha=1., ls="none")
 
-def plot_cluster_context(sizes, densities, dir, name=None, k=None, suffix="png"):
+def plot_cluster_context(sizes, densities, dir, suffix, name=None, k=None):
     """
     so many conditionals!
     """
@@ -157,7 +157,7 @@ def plot_cluster_context(sizes, densities, dir, name=None, k=None, suffix="png")
 if __name__ == "__main__":
     dfn = "./data/results-unregularized-matched.fits.gz"
     dir = "./kmeans_figs"
-    suffix = "png"
+    suffix = "pdf"
     data = None
     plotdata = None
     Ks = 2 ** np.arange(8, 12) # do everything
@@ -319,7 +319,7 @@ if __name__ == "__main__":
         print(K, "[Fe/H] range", np.min(fehs), np.median(fehs), np.max(fehs))
         print(K, "logdet range:", np.min(logdets), np.median(logdets), np.max(logdets))
         print(K, "density range", np.min(densities), np.median(densities), np.max(densities))
-        plot_cluster_context(sizes, densities, dir)
+        plot_cluster_context(sizes, densities, dir, suffix)
 
         # make plotting data
         if plotdata is None:
@@ -348,8 +348,7 @@ if __name__ == "__main__":
         for name in NGC6819_names:
             NGC6819_indices += list(np.arange(len(data))[names == name])
         NGC6819_indices = np.array(NGC6819_indices)
-        plot_one_cluster(plotdata, plotdata_labels, NGC6819_indices, "NGC_6819", dir)
-        assert False
+        plot_one_cluster(plotdata, plotdata_labels, NGC6819_indices, "NGC_6819", dir, suffix)
 
         # plot clusters from this K
         plotcount = 0
@@ -357,12 +356,12 @@ if __name__ == "__main__":
             clustername = "cluster_{:04d}_{:04d}".format(K, k)
             if (not only_high_Z) or (fehs[k] > -0.5 and fehs[k] < 0.3):
                 print(clustername, sizes[k], logdets[k], densities[k], fehs[k])
-                plot_cluster_context(sizes, densities, dir, k=k, name=clustername)
-                plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir)
+                plot_cluster_context(sizes, densities, dir, suffix, k=k, name=clustername)
+                plot_one_cluster(plotdata, plotdata_labels, (clusters==k), clustername, dir, suffix)
                 plotcount += 1
                 if (not plot_everything) and (plotcount >= 128):
                     break
 
     # summary plots
-    plot_cluster_context(sizes, densities, dir, k=None, name="all")
-    plot_one_cluster(plotdata, plotdata_labels, None, "all", dir)
+    plot_cluster_context(sizes, densities, dir, suffix, k=None, name="all")
+    plot_one_cluster(plotdata, plotdata_labels, None, "all", dir, suffix)
