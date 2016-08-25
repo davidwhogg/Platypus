@@ -507,10 +507,13 @@ variance tensor for the members of each cluster can be constructed.
 From this, an effective density in the abundance space can be computed
 as the number of points in the cluster divided by the square-root of
 the determinant of the tensor.
-This density was used to rank abundance-space overdensities (from highest
-to lowest) for visual inspection.
+This density was used to rank abundance-space overdensities
+for visual inspection.
 In \figurename~\ref{fig:densities} we show the distribution of cluster membership
 and density for the $K=256$ run of k-means.
+There is a bulk trend of larger clusters (clusters with more members or higher occupation number)
+being more dense, but the most interesting
+k-means densities are those that are more dense than this trend.
 
 Importantly, the k-means algorithm assigns \emph{every} star to at
 least one cluster.
@@ -584,9 +587,9 @@ catalogs of stellar clusters is beyond our present scope.
 \includegraphics[width=1.5\figwidth]{./figs/clusters_0256.pdf}
 \caption{The distribution of membership and density for the 256
   abundance-space clusters returned by the k-means algorithm at
-  $K=256$.  The densest cluster (which is displayed in more detail in 
-  \figurename~\ref{fig:M13}) is far more dense than the second
-  densest.\label{fig:densities}}
+  $K=256$.  There is a bulk trend and then clusters that are much more
+  dense than the trend. The densest cluster is displayed in more detail in 
+  \figurename~\ref{fig:M13}.\label{fig:densities}}
 \end{figure}
 \begin{figure}[!p]
 \insanefigure{cluster_0256_0253}
@@ -776,7 +779,7 @@ It is conceivable that this structure, being near the outskirts of the
 abundance distribution, is somehow concentrated in abundance space by
 some kind of shrinkage (in the statistical sense) induced by
 \thecannon's regression.
-However, it is a very dense feature in abundance space, and is worth
+However, it is a dense feature in abundance space, and is worth
 following up.
 If follow-up observations show that the stars have abundances and that
 are consistent with having origin in a single stellar population or
